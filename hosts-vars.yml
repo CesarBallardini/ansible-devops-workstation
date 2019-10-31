@@ -89,8 +89,6 @@ tinyproxy_no_upstream:
   - "192.168.20.0/22"
   - "."
 
-#tinyproxy_default_upstream: '10.1.15.180:8888'
-#tinyproxy_default_upstream: '10.10.254.219:3128'
 tinyproxy_default_upstream: 'DIRECCION_IP_PROXY_CORPORATIVO:PUERTO_PROXY_CORPORATIVO'
 tinyproxy_min_spare_servers: '5'
 tinyproxy_max_spare_servers: '20'
