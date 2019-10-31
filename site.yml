@@ -3,7 +3,7 @@
 # time ansible-playbook -vv -i hosts site.yml --limit localhost
 
 - import_playbook: all.yml
-  #- import_playbook: escritorio.yml
-  #- import_playbook: utn.yml
-  #- import_playbook: devops.yml
-  #- import_playbook: tinyproxy.yml
+- import_playbook: escritorio.yml
+- import_playbook: utn.yml
+- import_playbook: devops.yml
+- import_playbook: tinyproxy.yml
