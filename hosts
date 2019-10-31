@@ -1,0 +1,34 @@
+# hosts
+#
+# time ansible-playbook -vv -i hosts site.yml --extra-vars "@hosts-vars.yml"
+
+
+localhost ansible_connection=local
+
+[ejemplo]
+localhost
+
+[tinyproxy]
+localhost
+
+[ws]
+localhost
+
+[servidor]
+localhost
+
+[escritorio]
+localhost
+
+[devops]
+localhost
+
+[utn]
+localhost
+
+[python3]
+localhost
+
+[python3:vars]
+ansible_python_interpreter=/usr/bin/python3
+

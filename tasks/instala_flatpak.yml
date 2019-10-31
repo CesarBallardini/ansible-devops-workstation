@@ -1,0 +1,91 @@
+---
+
+- name: flatpak | instala flatpak
+  apt:
+    name:
+      - flatpak
+      #- gnome-software-plugin-flatpak
+    state: present
+  become: true
+  tags:
+    - escritorio
+    - flatpak
+
+##
+# FIXME: 2019-06-28  https://sdk.gnome.org/gnome-apps.flatpakrepo no existe
+#
+#- name: flatpak | Add the Gnome flatpak remote to the system installation
+#  flatpak_remote:
+#    name: gnome
+#    state: present
+#    flatpakrepo_url: https://sdk.gnome.org/gnome-apps.flatpakrepo
+#  become: true
+#  tags:
+#    - escritorio
+#    - flatpak
+
+- name: flatpak | Add the flathub flatpak repository remote to the system installation
+  flatpak_remote:
+    name: flathub
+    state: present
+    flatpakrepo_url: https://dl.flathub.org/repo/flathub.flatpakrepo
+    #method: user
+  become: true
+  tags:
+    - escritorio
+    - flatpak
+
+- name: flatpak | Install the package from flathub for system
+  flatpak:
+    name: "{{ item }}"
+    state: present
+    #method: user
+  with_items:
+      #- com.adobe.Flash-Player-Projector
+      - com.calibre_ebook.calibre
+      - com.dropbox.Client
+      - com.jetbrains.IntelliJ-IDEA-Community
+      - io.atom.Atom
+      - org.libreoffice.LibreOffice
+      - com.jetbrains.WebStorm
+      - com.skype.Client
+      - com.sublimetext.three
+      #- com.visualstudio.code.oss
+  become: true
+  tags:
+    - escritorio
+    - flatpak
+
+##
+# Como activar con un activation code
+# https://resharper-support.jetbrains.com/hc/en-us/articles/207327790-How-to-execute-an-offline-activation-
+#
+# licencias para PHPStorm
+# https://gist.github.com/bangnguyen47/96af3784c9d61d54280e0aadeb5576eb
+#
+# Building IntelliJ IDEA License Server on Ubuntu
+# https://developpaper.com/building-intellij-idea-license-server-on-ubuntu/
+#
+
+- name: flatpak | Update the package from flathub for system
+  command: "flatpak update --assumeyes --app {{ item }}"
+  with_items:
+      #- com.adobe.Flash-Player-Projector
+      - com.calibre_ebook.calibre
+      - com.dropbox.Client
+      - com.jetbrains.IntelliJ-IDEA-Community
+      - io.atom.Atom
+      - org.libreoffice.LibreOffice
+      - com.jetbrains.WebStorm
+      - com.skype.Client
+      - com.sublimetext.three
+      #- com.visualstudio.code.oss
+  become: true
+  tags:
+    - escritorio
+    - flatpak
+
+
+# el siguiente puede fallar por culpa de Adobe: https://github.com/flathub/com.adobe.Flash-Player-Projector/issues/11
+# LANG=C flatpak update --assumeyes --app com.adobe.Flash-Player-Projector
+

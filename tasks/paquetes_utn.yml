@@ -1,0 +1,157 @@
+---
+
+## 
+# Para ejecutar Pharo con una iagen fresca, hacer:
+# cp /opt/pharo/Pharo7.0* . ; PHARO_IMAGE=$( echo Pharo7.0*image )  /opt/pharo/pharo &
+
+- set_fact:
+    pharo_version_family: "70"
+    pharo_home_directory: "/opt/pharo"
+  tags:
+    - utn
+    - pharo
+
+
+
+- name: utn | instala prolog
+  apt:
+    name:
+      - swi-prolog-nox
+      - swi-prolog-doc
+      - gprolog
+      - gprolog-doc
+    state: present
+  become: true
+  tags:
+    - utn
+    - prolog
+
+
+- name: utn | instala racket scheme
+  apt:
+    name:
+      - racket
+      - racket-doc
+    state: present
+  become: true
+  tags:
+    - utn
+    - scheme
+
+# Pharo puede instalarse mediante zeroconf: https://pharo.org/download
+# curl -L https://get.pharo.org/64/ | bash
+
+##
+# FIXME
+# revisar este script para copiar la imagen y fuentes de pharo si no existe en el directorio actual; adaptarlo
+#
+##/bin/sh
+#if [ ! -f ./pharo.changes -o ! -f ./pharo.image ]
+#then
+#  cp /usr/local/pharo4.0/shared/Pharo4.0.image   ./pharo.image
+#  cp /usr/local/pharo4.0/shared/Pharo4.0.changes ./pharo.changes
+#  cp /usr/local/pharo4.0/shared/PharoV40.sources .
+#fi
+#exec /usr/local/pharo4.0/bin/pharo
+
+
+- name: utn | Verifico si existe instalacion de pharo
+  command: /opt/pharo/bin/pharo --headless /opt/pharo/images/Pharo.image printVersion
+  register: reg_pharo_version_instalada
+  failed_when: false
+  changed_when: false
+  tags:
+    - utn
+    - pharo
+
+- name: utn | asegura existe directorio de instalacion y descargas para pharo
+  file:
+    path: "{{ item }}"
+    state: directory
+    owner: root
+    group: root
+  become: true
+  with_items:
+    - "{{ pharo_home_directory }}"
+    - "{{ pharo_home_directory }}/downloads"
+  tags:
+    - utn
+    - pharo
+
+- name: utn | directorio de imagenes cualquiera puede escribirlo
+  file:
+    path: "{{ pharo_home_directory }}/images"
+    state: directory
+    owner: root
+    group: root
+    mode: 0657
+  become: true
+  tags:
+    - utn
+    - pharo
+
+
+# imagen: https://files.pharo.org/get-files/70/pharo64.zip
+- name: utn | Descarga imagen Pharo
+  get_url:
+    url: "https://files.pharo.org/get-files/{{ pharo_version_family }}/pharo64.zip"
+    dest: "{{ pharo_home_directory }}/downloads/pharo64.zip"
+  when: reg_pharo_version_instalada.rc != 0
+  become: true
+  tags:
+    - utn
+    - pharo
+
+
+
+# vm:  https://files.pharo.org/get-files/70/pharo64-linux-stable.zip
+- name: utn | Descarga VM Pharo
+  get_url:
+    url: "http://files.pharo.org/get-files/{{ pharo_version_family }}/pharo64-linux-stable.zip"
+    dest: "{{ pharo_home_directory }}/downloads/pharo64-linux-stable.zip"
+  when: reg_pharo_version_instalada.rc != 0
+  become: true
+  tags:
+    - utn
+    - pharo
+
+
+- name: utn | descomprime la VM Pharo
+  unarchive:
+    src: "{{ pharo_home_directory }}/downloads/pharo64-linux-stable.zip"
+    dest: "{{ pharo_home_directory }}"
+    remote_src: yes
+  when: reg_pharo_version_instalada.rc != 0
+  become: true
+  tags:
+    - utn
+    - pharo
+
+- name: utn | descomprime la imagen Pharo
+  unarchive:
+    src: "{{ pharo_home_directory }}/downloads/pharo64.zip"
+    dest: "{{ pharo_home_directory }}"
+    remote_src: yes
+  when: reg_pharo_version_instalada.rc != 0
+  become: true
+  tags:
+    - utn
+    - pharo
+
+- name: utn | Pharo copia las imagenes originales al directorio de trabajo
+  shell: |
+    cp {{ pharo_home_directory }}/Pharo7.0.1-0-64bit-*.image {{ pharo_home_directory }}/images/Pharo.image
+    chmod o+rw {{ pharo_home_directory }}/images/Pharo.image
+
+    cp {{ pharo_home_directory }}/Pharo7.0.1-0-64bit-*.changes {{ pharo_home_directory }}/images/Pharo.changes
+    chmod o+rw {{ pharo_home_directory }}/images/Pharo.changes
+
+    cp {{ pharo_home_directory }}/Pharo7.0-*.sources {{ pharo_home_directory }}/images/
+    chmod o+rw {{ pharo_home_directory }}/images/Pharo7.0-*.sources
+  when: reg_pharo_version_instalada.rc != 0
+  become: true
+  tags:
+    - utn
+    - pharo
+
+

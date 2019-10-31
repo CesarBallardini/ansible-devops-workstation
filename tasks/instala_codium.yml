@@ -1,0 +1,54 @@
+---
+
+# https://itsfoss.com/vscodium/
+# https://gitlab.com/paulcarroty/vscodium-deb-rpm-repo
+# https://github.com/VSCodium/vscodium
+
+# When we [Microsoft] build Visual Studio Code, we do exactly this. We clone the vscode repository, we lay down a customized product.json that has Microsoft specific functionality (telemetry, gallery, logo, etc.), and then produce a build that we release under our license.
+#
+#When you clone and build from the vscode repo, none of these endpoints are configured in the default product.json. Therefore, you generate a "clean" build, without the Microsoft customizations, which is by default licensed under the MIT license
+
+#wget -qO - https://gitlab.com/paulcarroty/vscodium-deb-rpm-repo/raw/master/pub.gpg | sudo apt-key add -
+#echo 'deb https://gitlab.com/paulcarroty/vscodium-deb-rpm-repo/raw/repos/debs/ vscodium main' | sudo tee --append /etc/apt/sources.list
+#sudo apt update
+#sudo apt install codium
+
+
+- name: codium | actualizo lista paquetes .deb
+  apt:
+    update_cache: yes
+    cache_valid_time: 3600
+  become: true
+  tags:
+    - codium
+
+
+- name: codium | agrega clave del repo
+  apt_key:
+    url: 'https://gitlab.com/paulcarroty/vscodium-deb-rpm-repo/raw/master/pub.gpg'
+    state: present
+  become: true
+  tags:
+    - codium
+
+
+- name: codium | agrego repo
+  apt_repository:
+    repo: "deb [arch=amd64] https://gitlab.com/paulcarroty/vscodium-deb-rpm-repo/raw/repos/debs/ vscodium main"
+    state: present
+    update_cache: yes
+    filename: codium
+  become: true
+  tags:
+    - codium
+
+
+- name: codium | instala codium
+  apt:
+    name:
+      - codium
+    state: present
+  become: true
+  tags:
+    - codium
+

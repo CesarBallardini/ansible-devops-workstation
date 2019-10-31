@@ -1,0 +1,91 @@
+---
+# See https://github.com/aelsabbahy/goss/releases for release versions
+
+- name: devops | paquetes generales
+  apt:
+    name:
+      - jq
+      - git
+      - wget
+      - curl
+      - unzip
+    state: present
+  become: true
+  tags:
+    - devops
+    - govc
+
+
+- name: devops | govc | version actual instalada
+  shell: |
+     LANG=C /usr/local/bin/govc version  | sed -n  -e "s/govc [ ]*\([0-9\.]*\)/\1/p"
+  register: reg_govc_version
+  failed_when: false
+  changed_when: false
+  tags:
+    - devops
+    - govc
+
+
+- name: devops | govc | busca el nombre de la version actual
+  shell: |
+    curl --silent https://api.github.com/repos/vmware/govmomi/releases/latest | jq -r ".tag_name"
+
+  register: reg_govc_url_version
+  changed_when: false
+  args:
+    warn: false
+  tags:
+    - devops
+    - govc
+
+- set_fact:
+    govc_version_instalada: "{{ reg_govc_version.rc == 0 and reg_govc_version.stdout or false }}"
+    govc_url_version: "{{ reg_govc_url_version.stdout[1:] }}"
+  tags:
+    - devops
+    - govc
+
+- set_fact:
+    govc_url_actual: "https://github.com/vmware/govmomi/releases/download/v{{ govc_url_version }}/govc_linux_amd64.gz"
+  tags:
+    - devops
+    - govc
+
+- debug: msg="GOVC, version instalada - {{ govc_version_instalada }}"
+  tags:
+    - devops
+    - govc
+- debug: msg="GOVC, url actual        - {{ govc_url_actual }}"
+  tags:
+    - devops
+    - govc
+- debug: msg="GOVC, url version       - {{ govc_url_version }}"
+  tags:
+    - devops
+    - govc
+
+- name: devops | govc | descarga paquete
+  get_url:
+    url: "{{ govc_url_actual }}"
+    dest: "/tmp/{{ govc_url_actual | basename }}"
+    mode: 0755
+    force: yes
+  become: true
+  when: govc_version_instalada != govc_url_version
+  tags:
+    - devops
+    - govc
+
+
+- name: devops | govc | instala binario
+  shell: |
+       gunzip --to-stdout /tmp/{{ govc_url_actual | basename }} > /usr/local/bin/govc
+       chmod a+rx /usr/local/bin/govc
+
+  become: true
+  when: govc_version_instalada != govc_url_version
+  tags:
+   - devops
+   - govc
+

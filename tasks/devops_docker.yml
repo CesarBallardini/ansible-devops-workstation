@@ -1,0 +1,148 @@
+---
+
+# config proxy https://elegantinfrastructure.com/docker/ultimate-guide-to-docker-http-proxy-configuration/
+
+- name: devops | docker | install requisites
+  apt:
+    name:
+      - apt-transport-https
+      - ca-certificates
+      - curl
+      - gnupg2
+      - software-properties-common
+    state: present
+  become: true
+  tags:
+    - devops
+    - docker
+
+
+- name: devops | docker | agrega clave del repo
+  apt_key:
+    url: 'https://download.docker.com/linux/ubuntu/gpg'
+    state: present
+  become: true
+  tags:
+    - devops
+    - docker
+
+
+
+- name: devops | docker | agrego repo
+  apt_repository:
+    repo: "deb [arch=amd64] https://download.docker.com/linux/ubuntu  {{ ansible_distribution_release }} stable"
+    state: present
+    update_cache: yes
+    filename: docker
+  become: true
+  register: reg_add_repo_docker
+  tags:
+    - devops
+    - docker
+
+
+- name: devops | docker | actualizo lista paquetes .deb
+  apt:
+    update_cache: yes
+    cache_valid_time: 3600
+  become: true
+  when: reg_add_repo_docker is changed
+  tags:
+    - devops
+    - docker
+
+- name: devops | docker | instala docker-ce
+  apt:
+    name: 
+      - docker-ce
+      - docker-compose
+    state: present
+  become: true
+  tags:
+    - devops
+    - docker
+
+
+- name: devops | docker | Ensure 'docker' group exists
+  group:
+    name: docker
+  become: yes
+  tags:
+    - devops
+    - docker
+
+
+- name: devops | docker | "Add users to 'docker' group."
+  user:
+    name:  "{{ devops_user }}"
+    groups:
+      - docker
+    append: yes
+  become: yes
+  tags:
+    - devops
+    - docker
+
+
+- name: devops | docker | Make sure that systemd directory exists
+  file:
+    path: '/etc/systemd/system'
+    state: 'directory'
+    owner: 'root'
+    group: 'root'
+    mode: '0755'
+  when: ansible_service_mgr == 'systemd'
+  become: yes
+  tags:
+    - devops
+    - docker
+
+- name: devops | docker | Make sure that docker.service.d directory exists
+  file:
+    path: '/etc/systemd/system/docker.service.d'
+    state: 'directory'
+    owner: 'root'
+    group: 'root'
+    mode: '0755'
+  when: (ansible_service_mgr == 'systemd' and
+        (docker__env_http_proxy is defined or docker__env_https_proxy is defined))
+  become: yes
+  tags:
+    - devops
+    - docker
+
+- debug: var=docker__env_https_proxy
+  tags:
+    - devops
+    - docker
+
+- debug: var=https_proxy
+  tags:
+    - devops
+    - docker
+
+- name: devops | docker | configura proxy
+  template:
+    src: 'http-proxy.conf.j2'
+    dest: '/etc/systemd/system/docker.service.d/http-proxy.conf'
+    owner: 'root'
+    group: 'root'
+    mode: '0644'
+  become: yes
+  register: reg_docker_proxy
+  when: (ansible_service_mgr == 'systemd' and
+        (docker__env_http_proxy is defined or docker__env_https_proxy is defined))
+  tags:
+    - devops
+    - docker
+
+- name: devops | docker | docker deamon is running
+  systemd:
+    state: restarted
+    daemon_reload: yes
+    name: docker
+  become: true
+  when: reg_docker_proxy is changed
+  tags:
+    - devops
+    - docker

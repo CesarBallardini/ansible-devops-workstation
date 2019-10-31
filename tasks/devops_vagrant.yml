@@ -1,0 +1,205 @@
+---
+
+- set_fact:
+    vagrant_version_deseada: ''
+    #vagrant_version_deseada: "2.2.3"
+  tags:
+   - devops
+   - vagrant
+
+
+- name: devops | paquetes generales
+  apt:
+    name:
+      - jq
+      - git
+      - wget
+      - curl
+      - unzip
+    state: present
+  become: true
+  tags:
+   - devops
+   - vagrant
+
+
+- name: devops | lista de productos de hashicorp
+  get_url:
+    url: https://releases.hashicorp.com/index.json
+    dest: /tmp/hashicorp_index.json
+  changed_when: false
+  tags:
+   - devops
+   - vagrant
+
+- name: devops | vagrant | version actual instalada
+  shell: |
+     LANG=C vagrant --version | sed -n  -e "s/Vagrant[ ]*\([0-9\.]*\)/\1/p"
+  register: reg_vagrant_version
+  failed_when: false
+  changed_when: false
+  tags:
+   - devops
+   - vagrant
+
+
+- name: devops | vagrant | busca URL de la version actual
+  shell: |
+    cat /tmp/hashicorp_index.json \
+         | jq '{vagrant}' \
+         | egrep "linux.*amd64" \
+         | sort -rV \
+         | awk -F[\"] '{print $4}' \
+         | grep 'vagrant_[0-9]*\.[0-9]*\.[0-9]*'_ \
+         | head -n1
+
+  register: reg_vagrant_url_actual
+  changed_when: false
+  tags:
+   - devops
+   - vagrant
+
+
+- name: devops | vagrant | busca el nombre de la version actual
+  shell: |
+    cat /tmp/hashicorp_index.json \
+         |  jq '.vagrant.versions| .[] | .version' \
+         | sort -rV \
+         | sed -n  's/\("[0-9]*\.[0-9]*\.[0-9]*"\)/\1/p' \
+         | head -n1  \
+         | tr -d '"'
+
+  register: reg_vagrant_url_version
+  changed_when: false
+  tags:
+   - devops
+   - vagrant
+
+
+- set_fact:
+    vagrant_version_instalada: "{{ reg_vagrant_version.rc == 0 and reg_vagrant_version.stdout or false }}"
+    vagrant_url_actual: "{{ reg_vagrant_url_actual.stdout }}"
+    vagrant_url_version: "{{ reg_vagrant_url_version.stdout }}"
+    vagrant_plugins_deseados:
+      - hostmanager
+      - vagrant-cachier
+      - vagrant-hostmanager
+      - vagrant-proxyconf
+      - vagrant-share
+      - vagrant-vbguest
+      #- vagrant-lxc
+  tags:
+   - devops
+   - vagrant
+
+- set_fact:
+    vagrant_version_a_instalar: "{{ vagrant_version_deseada | d('')  if vagrant_version_deseada | d('') != '' else  vagrant_url_version }}"
+  tags:
+   - devops
+   - vagrant
+
+- debug: msg="Vagrant, version instalada  - {{ vagrant_version_instalada }}"
+  tags:
+   - devops
+   - vagrant
+- debug: msg="Vagrant, version deseada    - {{ vagrant_version_deseada | d() }}"
+  tags:
+   - devops
+   - vagrant
+- debug: msg="Vagrant, version a instalar - {{ vagrant_version_a_instalar }}"
+  tags:
+   - devops
+   - vagrant
+- debug: msg="Vagrant, url actual         - {{ vagrant_url_actual}}"
+  tags:
+   - devops
+   - vagrant
+- debug: msg="Vagrant, url version        - {{ vagrant_url_version}}"
+  tags:
+   - devops
+   - vagrant
+
+
+- name: devops | vagrant | instala paquete
+  apt:
+    deb: "https://releases.hashicorp.com/vagrant/{{ vagrant_version_a_instalar }}/vagrant_{{ vagrant_version_a_instalar }}_x86_64.deb"
+    dpkg_options: force-downgrade
+    force: yes
+  become: true
+  when: vagrant_version_instalada != vagrant_version_a_instalar
+  tags:
+   - devops
+   - vagrant
+
+
+- name: devops | vagrant | encuentra plugins instalados
+  shell: vagrant plugin list 2>/dev/null | sed -n -e 's/^\([^ ]*\) (.*)/\1/p'
+  register: reg_plugins_instalados
+  changed_when: false
+  become: true
+  become_user: "{{ devops_user }}"
+  tags:
+   - devops
+   - vagrant
+
+
+- name : devops | vagrant | instala plugins
+  command: "vagrant plugin install {{ item }}"
+  with_items: "{{ (vagrant_plugins_deseados | difference(reg_plugins_instalados.stdout_lines)) }}"
+  become: true
+  become_user: "{{ devops_user }}"
+  tags:
+   - devops
+   - vagrant
+
+
+- name: devops | vagrant | configura plugin vagrant-proxyconf
+  copy:
+    dest: ~/.vagrant.d/Vagrantfile
+    content: |
+      Vagrant.configure("2") do |config|
+        puts "proxyconf..."
+      #  if defined?(VagrantPlugins::ProxyConf)       # vagrant 1.2
+        if Vagrant.has_plugin?("vagrant-proxyconf")   # otros vagrant
+          puts "se encontro el plugin proxyconf !"
+          if ENV["http_proxy"]
+            puts "http_proxy: " + ENV["http_proxy"]
+            config.proxy.http     = ENV["http_proxy"]
+          end
+          if ENV["https_proxy"]
+            puts "https_proxy: " + ENV["https_proxy"]
+            config.proxy.https    = ENV["https_proxy"]
+          end
+          if ENV["no_proxy"]
+            puts "no_proxy: " + ENV["no_proxy"]
+            config.proxy.no_proxy = ENV["no_proxy"]
+          end
+        else
+          puts "no se encontro el plugin proxyconf !"
+        end
+      end
+
+  become: true
+  become_user: "{{ devops_user }}"
+  tags:
+   - devops
+   - vagrant
+
+- name: devops | vagrant | plugin repair
+  command: vagrant plugin repair
+  changed_when: false
+  become: true
+  become_user: "{{ devops_user }}"
+  tags:
+   - devops
+   - vagrant
+
+- name: devops | vagrant | plugin update
+  command: vagrant plugin update
+  changed_when: false
+  become: true
+  become_user: "{{ devops_user }}"
+  tags:
+   - devops
+   - vagrant
+

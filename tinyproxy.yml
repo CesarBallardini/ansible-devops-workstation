@@ -1,0 +1,33 @@
+---
+- hosts: tinyproxy
+
+  tasks:
+
+    - name: tinyproxy | instala paquete
+      apt:
+        name: tinyproxy
+      become: true
+      tags: [ tinyproxy ]
+
+
+    - name: tinyproxy | configuracion
+      template:
+        src: 'tinyproxy.conf.j2'
+        dest: '/etc/tinyproxy/tinyproxy.conf'
+        owner: 'root'
+        group: 'root'
+        mode: '0644'
+      become: yes
+      register: reg_tinyproxy_conf
+      tags: [ tinyproxy ]
+
+
+    - name: tinyproxy | daemon restarted
+      service:
+        state: restarted
+        enabled: true
+        name: tinyproxy
+      become: true
+      when: reg_tinyproxy_conf is changed
+      tags: [ tinyproxy ]
+

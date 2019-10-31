@@ -1,0 +1,13 @@
+---
+- name: apt | agrega un repo
+  apt_repository: 
+    repo: "deb {{item.value.uri}} {{ ansible_distribution_release }}{{ item.value.suffix }} {{ item.value.components|join(\" \") }}"
+    state: "{{ item.value.state }}"
+    update_cache: yes
+  loop: "{{ un_repo |dict2items }}"
+  become: yes
+  tags:
+    - apt
+
+
+

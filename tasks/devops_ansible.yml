@@ -1,0 +1,109 @@
+---
+
+# Como parte del bootstrap de la estación de trabajo se instaló Ansible mediante:
+# (sino se da el problema de cómo correr ansible para instalar ansible :)
+#
+#  sudo apt-get install -y python3-pip
+#  sudo -H python3 -m pip install --upgrade pip setuptools wheel
+#  sudo -H python3 -m pip install --upgrade ansible
+
+# Ahora lo mantenemos actualizado.
+
+- name: devops | ansible | instala python3-pip python3-setuptools
+  apt:
+    name: 
+      - python3-pip
+      - python3-setuptools
+    state: present
+  become: true
+  tags:
+    - devops
+    - ansible
+
+
+- name: devops | ansible | verifica pip existe localmente
+  stat:
+    path: /usr/local/bin/pip
+  register: reg_local_pip
+
+- name: devops | ansible | instala pip desde pip
+  command: python3 -m pip install --upgrade pip
+  args:
+    creates: /usr/local/bin/pip
+  when: not reg_local_pip.stat.exists
+  become: true
+
+
+- name: devops | ansible | actualiza pip
+  pip:
+    name: pip
+    state: latest
+    executable: /usr/local/bin/pip
+  become: true
+  tags:
+    - devops
+    - ansible
+
+- name: devops | ansible | actualiza setuptools
+  pip:
+    name: setuptools
+    state: latest
+    executable: /usr/local/bin/pip
+  become: true
+  tags:
+    - devops
+    - ansible
+
+- name: devops | ansible | actualiza ansible
+  pip:
+    name: ansible
+    state: latest
+    executable: /usr/local/bin/pip
+  become: true
+  tags:
+    - devops
+    - ansible
+
+- name: devops | ansible | actualiza ansible-lint
+  pip:
+    name: ansible-lint
+    state: latest
+    executable: /usr/local/bin/pip
+  become: true
+  tags:
+    - devops
+    - ansible
+
+- name: devops | ansible | actualiza proxmoxer
+  pip:
+    name: proxmoxer
+    state: latest
+    executable: /usr/local/bin/pip
+  become: true
+  tags:
+    - devops
+    - ansible
+
+- name: devops | ansible | actualiza requests
+  pip:
+    name: requests
+    state: latest
+    executable: /usr/local/bin/pip
+  become: true
+  tags:
+    - devops
+    - ansible
+
+- name: devops | ansible | actualiza paramiko
+  pip:
+    name: paramiko
+    state: latest
+    executable: /usr/local/bin/pip
+  become: true
+  tags:
+    - devops
+    - ansible
+
+
+# FIXME: instala modulos de ansible para infra a bajo nivel (esxi, vshpere, etc)
+

@@ -1,0 +1,33 @@
+---
+
+#  echo 'Acquire::Languages "none";' | sudo tee /etc/apt/apt.conf.d/00languages
+- name: apt | Elimina APT languages
+  copy:
+    dest: "/etc/apt/apt.conf.d/00languages"
+    content: 'Acquire::Languages "none";'
+  become: true
+  tags:
+    - apt
+
+
+- name: apt | Pone en blanco a sources.list
+  copy:
+    dest: /etc/apt/sources.list
+    content: ''
+  become: true
+  tags:
+    - apt
+
+- include_tasks: agrego_repositorio.yml
+  with_items: "{{ apt_repositories }}"
+  loop_control:
+    loop_var: un_repo
+
+- name: apt | actualizo lista paquetes .deb
+  apt:
+    update_cache: yes
+    cache_valid_time: 3600
+  become: true
+  tags:
+    - apt
+

@@ -1,0 +1,112 @@
+---
+
+- name: devops | paquetes generales
+  apt:
+    name:
+      - jq
+      - git
+      - wget
+      - curl
+      - unzip
+    state: present
+  become: true
+  tags:
+   - devops
+   - terraform
+
+
+- name: devops | lista de productos de hashicorp
+  get_url:
+    url: https://releases.hashicorp.com/index.json
+    dest: /tmp/hashicorp_index.json
+  changed_when: false
+  tags:
+   - devops
+   - terraform
+
+- name: devops | terraform | version actual instalada
+  shell: |
+     /usr/local/bin/terraform --version  | sed -n  -e "s/^Terraform[ ]*v\(.*\)/\1/p"
+  register: reg_terraform_version
+  failed_when: false
+  changed_when: false
+  tags:
+   - devops
+   - terraform
+
+
+- name: devops | terraform | busca URL de la version actual
+  shell: |
+    cat /tmp/hashicorp_index.json \
+         | jq '{terraform}' \
+         | egrep "linux.*amd64" \
+         | sort -rV \
+         | awk -F[\"] '{print $4}' \
+         | grep 'terraform_[0-9]*\.[0-9]*\.[0-9]*'_ \
+         | head -n1
+
+  register: reg_terraform_url_actual
+  changed_when: false
+  tags:
+   - devops
+   - terraform
+
+
+- name: devops | terraform | busca el nombre de la version actual
+  shell: |
+    cat /tmp/hashicorp_index.json \
+         | jq '.terraform.versions| .[] | .version' \
+         | sort -rV \
+         | sed -n  's/\("[0-9]*\.[0-9]*\.[0-9]*"\)/\1/p' \
+         | head -n1 \
+         | tr -d '"'
+
+  register: reg_terraform_url_version
+  changed_when: false
+  tags:
+   - devops
+   - terraform
+
+
+- set_fact:
+    terraform_version_instalada: "{{ reg_terraform_version.rc == 0 and reg_terraform_version.stdout or false }}"
+    terraform_url_actual: "{{ reg_terraform_url_actual.stdout }}"
+    terraform_url_version: "{{ reg_terraform_url_version.stdout }}"
+  tags:
+   - devops
+   - terraform
+
+
+- debug: msg="Terraform, version instalada - {{ terraform_version_instalada }}"
+  tags:
+   - devops
+   - terraform
+- debug: msg="Terraform, url actual        - {{ terraform_url_actual}}"
+  tags:
+   - devops
+   - terraform
+- debug: msg="Terraform, url version       - {{ terraform_url_version}}"
+  tags:
+   - devops
+   - terraform
+
+- name: devops | terraform | descarga paquete
+  get_url:
+    url: "{{ terraform_url_actual }}"
+    dest: "/tmp/{{ terraform_url_actual | basename }}"
+  when: terraform_version_instalada != terraform_url_version
+  tags:
+   - devops
+   - terraform
+
+- name: devops | terraform | instala binario
+  unarchive:
+    src: "/tmp/{{ terraform_url_actual | basename }}"
+    dest: /usr/local/bin
+    remote_src: true
+  become: true
+  when: terraform_version_instalada != terraform_url_version
+  tags:
+   - devops
+   - terraform
+

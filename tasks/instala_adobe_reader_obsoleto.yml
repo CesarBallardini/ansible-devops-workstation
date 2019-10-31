@@ -1,0 +1,54 @@
+---
+# esto es para ver archivos PDF firmados digitalmente
+# no existe alternativa libre para eso, al 2019-01-19
+
+#instala_adobe_reader_desde_ftp() {
+#
+#  # Instala Adobe Reader 9.5.5 que es una version de 26/04/2013
+#
+#  sudo apt install libgtk2.0-0
+#  sudo apt install libstdc++6:i386
+#  sudo apt install libxml2:i386
+#
+#  sudo mkdir -p  /var/cache/adobereader
+#  sudo chmod 447 /var/cache/adobereader
+#
+#  pushd /var/cache/adobereader
+#  wget -c ftp://ftp.adobe.com/pub/adobe/reader/unix/9.x/9.5.5/enu/AdbeRdr9.5.5-1_i386linux_enu.deb
+#  sudo dpkg -i AdbeRdr9.5.5-1_i386linux_enu.deb
+#  popd
+#
+#  sudo apt-get -f install  -y
+#  popd
+#}
+
+# tags: [ acrobat-reader ]
+
+#instala_adobe_reader_desde_ppa_obsoleto() {
+#
+#  # Instala desde un repo obsoleto e inseguro, luego elimina inmediatamente el repo
+#
+#  sudo add-apt-repository "deb http://archive.canonical.com/ precise partner"
+#  sudo apt-get update
+#
+#  #sudo apt-get install acroread 
+#  sudo apt-get install adobereader-enu  -y
+#  #sudo apt install adoberead-bin:i386
+#
+#  sudo add-apt-repository -r "deb http://archive.canonical.com/ precise partner"
+#  sudo apt-get update
+#
+## Se instalarán los siguientes paquetes NUEVOS:
+##   acroread-bin:i386 libatk1.0-0:i386 libcairo2:i386 libdatrie1:i386
+##   libgdk-pixbuf2.0-0:i386 libgraphite2-3:i386 libgtk2.0-0:i386
+##   libharfbuzz0b:i386 libidn11:i386 libjasper1:i386 libpango-1.0-0:i386
+##   libpango1.0-0:i386 libpangocairo-1.0-0:i386 libpangoft2-1.0-0:i386
+##   libpangox-1.0-0:i386 libpangoxft-1.0-0:i386 libpixman-1-0:i386 libthai0:i386
+##   libxcb-render0:i386 libxcb-shm0:i386 libxft2:i386
+#
+#}
+
+
+
+
+

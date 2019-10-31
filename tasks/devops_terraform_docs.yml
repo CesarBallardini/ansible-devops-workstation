@@ -1,0 +1,106 @@
+---
+
+- name: devops | paquetes generales
+  apt:
+    name:
+      - jq
+      - git
+      - wget
+      - curl
+      - unzip
+    state: present
+  become: true
+  tags:
+   - devops
+   - terraform
+   - terraform-docs
+
+
+- name: devops | terraform-docs | version actual instalada
+  shell: |
+     /usr/local/bin/terraform-docs --version
+  register: reg_terraform_docs_version
+  failed_when: false
+  changed_when: false
+  tags:
+   - devops
+   - terraform
+   - terraform-docs
+
+
+- name: devops | terraform-docs | busca el nombre de la version actual
+  shell: |
+    curl --silent "https://api.github.com/repos/segmentio/terraform-docs/releases" \
+      | jq -r '.[0].name'
+
+  register: reg_terraform_docs_url_version
+  changed_when: false
+  args:
+    warn: false
+  tags:
+   - devops
+   - terraform
+   - terraform-docs
+
+
+- set_fact:
+    terraform_docs_url_version: "{{ reg_terraform_docs_url_version.stdout[1:] }}"
+    terraform_docs_version_instalada: "{{ reg_terraform_docs_version.rc == 0 and reg_terraform_docs_version.stdout or false }}"
+  tags:
+   - devops
+   - terraform
+   - terraform-docs
+
+
+- name: devops | terraform-docs | busca el URL de la version actual
+  shell: |
+    curl --silent "https://api.github.com/repos/segmentio/terraform-docs/releases" \
+      | jq -r '.[] | select(.name == "v{{ terraform_docs_url_version }}").assets[] | select(.name | contains( "linux-amd64")).browser_download_url'
+
+  register: reg_terraform_docs_url_actual
+  changed_when: false
+  args:
+    warn: false
+  tags:
+   - devops
+   - terraform
+   - terraform-docs
+
+
+- set_fact:
+    terraform_docs_url_actual: "{{ reg_terraform_docs_url_actual.stdout }}"
+  tags:
+   - devops
+   - terraform
+   - terraform-docs
+
+
+- debug: msg="Terraform-docs, version instalada - {{ terraform_docs_version_instalada }}"
+  tags:
+   - devops
+   - terraform
+   - terraform-docs
+- debug: msg="Terraform-docs, url actual        - {{ terraform_docs_url_actual }}"
+  tags:
+   - devops
+   - terraform
+   - terraform-docs
+- debug: msg="Terraform-docs, url version       - {{ terraform_docs_url_version }}"
+  tags:
+   - devops
+   - terraform
+   - terraform-docs
+
+- name: devops | terraform-docs | descarga paquete
+  get_url:
+    url: "{{ terraform_docs_url_actual }}"
+    dest: /usr/local/bin/terraform-docs
+    mode: 0755
+  become: true
+  when: terraform_docs_version_instalada != terraform_docs_url_version
+  tags:
+   - devops
+   - terraform
+   - terraform-docs
+
+

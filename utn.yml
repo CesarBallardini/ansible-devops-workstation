@@ -1,0 +1,10 @@
+---
+- hosts: utn
+  tasks:
+
+  - include_tasks: tasks/paquetes_utn.yml
+    tags:
+      - prolog
+      - scheme
+      - pharo
+

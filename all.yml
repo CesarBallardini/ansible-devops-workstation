@@ -1,0 +1,51 @@
+---
+- hosts: all
+
+  tasks:
+
+  - name: all | /etc/environment
+    template:
+      src: environment.j2
+      dest: /etc/environment
+      owner: root
+      group: root
+      mode: '0644'
+    become: true
+
+  - name: requisitos para modulo apt
+    apt:
+      name: aptitude
+      state: present
+    become: true
+
+  - name: requisitos para modulo apt_repository
+    apt:
+      name: python3-apt
+      state: present
+    become: true
+
+  - include_tasks: tasks/apt.yml
+    tags: [ apt ]
+
+  - include_tasks: tasks/instala_apt_fast.yml
+    tags: [ apt-fast, apt ]
+
+  - include_tasks: tasks/actualiza_sistema.yml
+    tags: [ apt, upgrade ]
+
+  - name: paquetes generales requisitos para instalar devops
+    apt:
+      name:
+        - jq
+        - git
+        - wget
+        - curl
+        - socat
+        - unzip
+      state: present
+    become: true
+
+  - include_tasks: tasks/mejora_performance.yml
+    tags: [ performance ]
+
+

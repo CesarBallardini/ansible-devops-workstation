@@ -1,0 +1,12 @@
+---
+
+- name: emulador_3270 | instala paquetes
+  apt:
+    name:
+      - c3270
+      - s3270
+      - x3270
+      - xfonts-x3270-misc
+  become: true
+  tags: [ emulador_3270 ]
+

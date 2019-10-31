@@ -1,0 +1,47 @@
+---
+
+# https://blog.programster.org/ubuntu-18-04-install-unetbootin
+# https://askubuntu.com/questions/776611/unetbootin-has-no-gui-on-ubuntu-gnome/885894#885894
+#
+# CORRER CON:
+# sudo QT_X11_NO_MITSHM=1 unetbootin
+#
+# What the above command does is disable shared memory access for running this Qt based application, allowing it to work properly on GNOME.
+
+
+
+- name: unetbootin | agrega clave del repo
+  apt_key:
+    url: 'https://keyserver.ubuntu.com/pks/lookup?op=get&search=0xd45df2e8fc91ae7e'
+    id: 'BCCCC1E2835433FA7DB85D51D45DF2E8FC91AE7E'
+    state: present
+  become: true
+  tags: [ unetbootin ]
+
+
+- name: unetbootin | agrego repo
+  apt_repository:
+    repo: "deb http://ppa.launchpad.net/gezakovacs/ppa/ubuntu {{ ansible_distribution_release }} main"
+    state: present
+    update_cache: yes
+    filename: unetbootin
+  become: true
+  register: reg_add_ppa_unetbootin
+  tags: [ unetbootin ]
+
+
+- name: unetbootin | actualizo lista paquetes .deb
+  apt:
+    update_cache: yes
+    cache_valid_time: 3600
+  become: true
+  when: reg_add_ppa_unetbootin is changed
+  tags: [ unetbootin ]
+  
+- name: unetbootin | instala paquete
+  apt:
+    name:  unetbootin
+    state: present
+  become: true
+  tags: [ unetbootin ]
+

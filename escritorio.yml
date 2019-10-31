@@ -1,0 +1,34 @@
+---
+- hosts: escritorio
+
+  tasks:
+    # template para /etc/systemd/timesyncd.conf poner los servidores NTP
+    # sudo service systemd-timesyncd restart
+
+  - include_tasks: tasks/instala_ffmpeg.yml
+    tags: [ ffmpeg, video ]
+
+  #- include_tasks: tasks/instala_adobe_reader_obsoleto.yml # solamente si lo instalaria ver PDF firmado digitalmente
+  #  tags: [ adobe-reader ]
+
+  - include_tasks: tasks/paquetes_de_escritorio.yml
+    tags: [ escritorio ]
+
+  - include_tasks: tasks/instala_codium.yml
+    tags: 
+      - escritorio
+      - codium
+
+  #- include_tasks: tasks/instala_microsoft_visualstudio_code.yml
+  #  tags: 
+  #    - escritorio
+  #    - microsoft_visualstudio_code
+  
+  #- include_tasks: tasks/liveusb-multiboot.yml # no funciona correctamente sobre ubuntu 18.04 (2019/02/06)
+  #tags: [ multiboot ]
+
+  - include_tasks: tasks/unetbootin.yml
+    tags: [ unetbootin ]
+
+  #- include_tasks: tasks/instala_emulador_3270.yml
+

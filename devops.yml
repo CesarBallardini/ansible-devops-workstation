@@ -1,0 +1,80 @@
+---
+- hosts: devops
+
+  roles:
+          - { role: vmware-workstation, become: true, tags: [ devops, vmware-workstation ] }
+
+  tasks:
+
+  - name: devops | desactiva vmware workstation
+    shell: |
+      update-rc.d vmware disable
+      update-rc.d vmware-workstation-server disable
+      update-rc.d vmware-USBArbitrator disable
+    become: true
+    tags: 
+      - devops
+      - vmware-workstation
+
+  - include_tasks: tasks/devops_ansible.yml
+    tags: 
+      - devops
+      - ansible 
+
+  - include_tasks: tasks/devops_git.yml
+    tags: 
+      - devops
+      - git
+
+  - include_tasks: tasks/devops_terraform.yml
+    tags: 
+      - devops
+      - terraform
+
+  - include_tasks: tasks/devops_terraform_docs.yml
+    tags: 
+      - devops
+      - terraform
+      - terraform-docs
+
+  - include_tasks: tasks/devops_terragrunt.yml
+    tags: 
+      - devops
+      - terraform
+      - terragrunt
+
+  - include_tasks: tasks/devops_virtualbox.yml
+    tags: 
+      - devops
+      - virtualbox
+
+  - include_tasks: tasks/devops_vagrant.yml
+    tags: 
+      - devops
+      - vagrant
+
+  - include_tasks: tasks/devops_packer.yml
+    tags: 
+      - devops
+      - packer
+
+  - include_tasks: tasks/devops_goss.yml
+    tags: 
+      - devops
+      - goss
+
+  - include_tasks: tasks/devops_govc.yml
+    tags: 
+      - devops
+      - govc
+
+# FIXME: vmware_workstation
+#    tags: 
+#      - devops
+#      - vmware_workstation
+
+  - include_tasks: tasks/devops_docker.yml
+    tags: 
+      - devops
+      - docker
+

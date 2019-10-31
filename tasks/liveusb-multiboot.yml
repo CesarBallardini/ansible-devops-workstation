@@ -1,0 +1,50 @@
+---
+
+# http://liveusb.info/dotclear/
+# http://liveusb.info/dotclear/index.php?pages/install
+
+- name: liveUSB-multiboot | agrega clave del repo
+  apt_key:
+    url: 'http://liveusb.info/multisystem/depot/multisystem.asc'
+    state: present
+  become: true
+  tags: [ multiboot ]
+
+
+- name: liveUSB-multiboot | agrego repo
+  apt_repository:
+    repo: 'deb http://liveusb.info/multisystem/depot all main'
+    state: present
+    update_cache: yes
+    filename: liveUSB-multiboot
+  become: true
+  register: reg_add_ppa_liveusb_multiboot
+  tags: [ multiboot ]
+
+
+- name: liveUSB-multiboot | actualizo lista paquetes .deb
+  apt:
+    update_cache: yes
+    cache_valid_time: 3600
+  become: true
+  when: reg_add_ppa_liveusb_multiboot is changed
+  tags: [ multiboot ]
+  
+- name: liveUSB-multiboot | instala paquete
+  apt:
+    name:  multisystem
+    state: present
+  become: true
+  tags: [ multiboot ]
+
+
+#  ## Users Xubuntu / Lubuntu,
+#
+# Under Xubuntu / Lubuntu drag and drop in the multisystem window does not work, 
+# add iso doing right click file copy on your iso file 
+# and in the area of drag and drop of multisystem, use ctrl + v and press enter. 
+# Another solution: use multi-selection interface, the big green button at the bottom right.
+
+#  ## After installation,
+#
+# in MultiSystem go to the Non-free menu and add Plop Boot Manager

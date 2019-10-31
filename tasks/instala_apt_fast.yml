@@ -1,0 +1,126 @@
+---
+
+
+#  sudo debconf-set-selections <<!EOF
+#apt-fast        apt-fast/aptmanager     select  apt-get
+#apt-fast        apt-fast/downloader     select  aria2c
+#apt-fast        apt-fast/dlflag boolean true
+#apt-fast        apt-fast/maxdownloads   string  5
+#!EOF
+#
+
+- name: apt-fast | Selecciona apt-get como manager de apt-fast
+  debconf:
+    name: apt-fast
+    question: apt-fast/aptmanager
+    value: apt-get
+    vtype: select
+  become: true
+  tags:
+    - apt
+    - apt-fast
+
+- name: apt-fast | Selecciona aria2c como downloader de apt-fast
+  debconf:
+    name: apt-fast
+    question: apt-fast/downloader
+    value: aria2c
+    vtype: select
+  become: true
+  tags:
+    - apt
+    - apt-fast
+
+- name: apt-fast | dlflag
+  debconf:
+    name: apt-fast
+    question: apt-fast/dlflag
+    value: 'true'
+    vtype: boolean
+  become: true
+  tags:
+    - apt
+    - apt-fast
+
+- name: apt-fast | dlflag
+  debconf:
+    name: apt-fast
+    question: apt-fast/maxdownloads
+    value: "5"
+    vtype: string
+  become: true
+  tags:
+    - apt
+    - apt-fast
+
+
+#  sudo add-apt-repository ppa:saiarcot895/myppa -y
+#  sudo apt-get update
+#  sudo apt-get -y install aria2 apt-fast
+
+# https://keyserver.ubuntu.com/pks/lookup?fingerprint=on&op=index&search=0xA2166B8DE8BDC3367D1901C11EE2FF37CA8DA16B
+
+- name: apt-fast | agrega clave del repo
+  apt_key:
+    url: 'https://keyserver.ubuntu.com/pks/lookup?op=get&search=0x1EE2FF37CA8DA16B'
+    id: 'A2166B8DE8BDC3367D1901C11EE2FF37CA8DA16B'
+    state: present
+  become: true
+  tags:
+    - apt
+    - apt-fast
+
+
+- name: apt-fast | agrego repo
+  apt_repository:
+    #repo: 'ppa:apt-fast/stable' # no se puede porque intenta descargar la key mediante hkp: y no sale si el proxy no permite HKP
+    repo: "deb http://ppa.launchpad.net/apt-fast/stable/ubuntu {{ ansible_distribution_release }} main"
+    state: present
+    update_cache: yes
+    filename: aptfast
+  become: true
+  register: reg_add_ppa_aptfast
+  tags:
+    - apt
+    - apt-fast
+
+
+- name: apt-fast | actualizo lista paquetes .deb
+  apt:
+    update_cache: yes
+    cache_valid_time: 3600
+  become: true
+  when: reg_add_ppa_aptfast is changed
+  tags:
+    - apt
+    - apt-fast
+  
+- name: apt-fast | instala apt-fast
+  apt:
+    name: 
+      - aria2
+      - apt-fast
+    state: present
+  become: true
+  tags:
+    - apt
+    - apt-fast
+
+
+# https://stackoverflow.com/a/27617181 sed multistage para separar por espacios y comas
+- name: apt-fast | configura mirrors
+  shell: |
+    APT_FAST_MIRRORS=$( grep -R "^deb" /etc/apt/sources.list* | awk '$2 ~ /http/ {print $2; next; } {print $3 } ' | sort -u | sed -n '$! s/$/,/; 1 h; 1 ! H; $ { x; s/\n/ /g; p; }' )
+    APT_FAST_MIRRORS="'"$APT_FAST_MIRRORS"'"
+    
+    # si es la primera vez que se instala, cambia el comentario original
+    sudo sed -i "s|^#MIRRORS=( 'none' )|MIRRORS=\( ${APT_FAST_MIRRORS} \)|" /etc/apt-fast.conf
+    
+    # si es una vez posterior, cambia la linea de MIRRORS activa
+    sudo sed -i "s|^MIRRORS=.*|MIRRORS=\( ${APT_FAST_MIRRORS} \)|" /etc/apt-fast.conf
+
+  changed_when: false
+  become: true
+  tags:
+    - apt
+    - apt-fast

@@ -1,0 +1,57 @@
+---
+
+#sudo apt update
+#sudo apt install software-properties-common apt-transport-https wget
+#wget -q https://packages.microsoft.com/keys/microsoft.asc -O- | sudo apt-key add -
+#sudo add-apt-repository "deb [arch=amd64] https://packages.microsoft.com/repos/vscode stable main"
+#sudo apt update
+#sudo apt install code
+
+- name: microsoft_visualstudio_code | actualizo lista paquetes .deb
+  apt:
+    update_cache: yes
+    cache_valid_time: 3600
+  become: true
+  tags:
+    - microsoft_visualstudio_code
+
+
+- name: microsoft_visualstudio_code | asegura dependencias
+  apt:
+    name:
+      - software-properties-common
+      - apt-transport-https
+    state: present
+  become: true
+  tags:
+    - microsoft_visualstudio_code
+
+- name: microsoft_visualstudio_code | agrega clave del repo
+  apt_key:
+    url: 'https://packages.microsoft.com/keys/microsoft.asc'
+    state: present
+  become: true
+  tags:
+    - microsoft_visualstudio_code
+
+
+- name: microsoft_visualstudio_code | agrego repo
+  apt_repository:
+    repo: "deb [arch=amd64] https://packages.microsoft.com/repos/vscode stable main"
+    state: present
+    update_cache: yes
+    filename: vscode
+  become: true
+  tags:
+    - microsoft_visualstudio_code
+
+    
+- name: microsoft_visualstudio_code | instala microsoft_visualstudio_code
+  apt:
+    name:
+      - code
+    state: present
+  become: true
+  tags:
+    - microsoft_visualstudio_code
+

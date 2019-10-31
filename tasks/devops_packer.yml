@@ -1,0 +1,111 @@
+---
+
+- name: devops | paquetes generales
+  apt:
+    name:
+      - jq
+      - git
+      - wget
+      - curl
+      - unzip
+    state: present
+  become: true
+  tags:
+    - devops
+    - packer
+
+
+- name: devops | lista de productos de hashicorp
+  get_url:
+    url: https://releases.hashicorp.com/index.json
+    dest: /tmp/hashicorp_index.json
+  changed_when: false
+  tags:
+    - devops
+    - packer
+
+- name: devops | packer | version actual instalada
+  shell: |
+     /usr/local/bin/packer --version
+  register: reg_packer_version
+  failed_when: false
+  changed_when: false
+  tags:
+    - devops
+    - packer
+
+
+- name: devops | packer | busca URL de la version actual
+  shell: |
+    cat /tmp/hashicorp_index.json \
+         | jq '{packer}' \
+         | egrep "linux.*amd64" \
+         | sort -rV \
+         | head -1 \
+         | awk -F[\"] '{print $4}'
+
+  register: reg_packer_url_actual
+  changed_when: false
+  tags:
+    - devops
+    - packer
+
+
+- name: devops | packer | busca el nombre de la version actual
+  shell: |
+    cat /tmp/hashicorp_index.json \
+         |  jq '.packer.versions| .[] | .version' \
+         | sort -rV \
+         | sed -n  's/\("[0-9]*\.[0-9]*\.[0-9]*"\)/\1/p' \
+         | head -n1 \
+         | tr -d '"'
+
+  register: reg_packer_url_version
+  changed_when: false
+  tags:
+    - devops
+    - packer
+
+
+- set_fact:
+    packer_version_instalada: "{{ reg_packer_version.rc == 0 and reg_packer_version.stdout or false }}"
+    packer_url_actual: "{{ reg_packer_url_actual.stdout }}"
+    packer_url_version: "{{ reg_packer_url_version.stdout }}"
+  tags:
+    - devops
+    - packer
+
+
+- debug: msg="Packer, version instalada - {{ packer_version_instalada }}"
+  tags:
+    - devops
+    - packer
+- debug: msg="Packer, url actual        - {{ packer_url_actual}}"
+  tags:
+    - devops
+    - packer
+- debug: msg="Packer, url version       - {{ packer_url_version}}"
+  tags:
+    - devops
+    - packer
+
+- name: devops | packer | descarga paquete
+  get_url:
+    url: "{{ packer_url_actual }}"
+    dest: "/tmp/{{ packer_url_actual | basename }}"
+  when: packer_version_instalada != packer_url_version
+  tags:
+    - devops
+    - packer
+
+- name: devops | packer | instala binario
+  unarchive:
+    src: "/tmp/{{ packer_url_actual | basename }}"
+    dest: /usr/local/bin
+    remote_src: true
+  become: true
+  when: packer_version_instalada != packer_url_version
+  tags:
+    - devops
+    - packer
+

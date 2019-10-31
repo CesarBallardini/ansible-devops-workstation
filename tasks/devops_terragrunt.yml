@@ -1,0 +1,113 @@
+---
+
+- name: devops | paquetes generales
+  apt:
+    name:
+      - jq
+      - git
+      - wget
+      - curl
+      - unzip
+    state: present
+  become: true
+  tags:
+   - devops
+   - terraform
+   - terragrunt
+
+
+- name: devops | terragrunt | version actual instalada
+  shell: |
+     /usr/local/bin/terragrunt --version  | sed "s/terragrunt version v//"
+  register: reg_terragrunt_version
+  failed_when: false
+  changed_when: false
+  tags:
+   - devops
+   - terraform
+   - terragrunt
+
+
+- name: devops | terragrunt | busca el nombre de la version actual
+  shell: |
+    curl --silent "https://api.github.com/repos/gruntwork-io/terragrunt/releases" \
+      | jq -r '.[] | select(.name|test("v[0-9]*.[0-9]*.[0-9]*$")) | .name ' \
+      | head -n 1
+
+  register: reg_terragrunt_url_version
+  changed_when: false
+  args:
+    warn: false
+  tags:
+   - devops
+   - terraform
+   - terragrunt
+
+
+- set_fact:
+    terragrunt_url_version: "{{ reg_terragrunt_url_version.stdout[1:] }}"
+    terragrunt_version_instalada: "{{ reg_terragrunt_version.rc == 0 and reg_terragrunt_version.stdout or false }}"
+  tags:
+   - devops
+   - terraform
+   - terragrunt
+
+
+- name: devops | terragrunt | busca el URL de la version actual
+  shell: |
+    curl --silent "https://api.github.com/repos/gruntwork-io/terragrunt/releases" \
+      | jq -r '.[] | select(.name == "v{{ terragrunt_url_version }}").assets[] | select(.name == "terragrunt_linux_amd64").browser_download_url'
+
+  register: reg_terragrunt_url_actual
+  changed_when: false
+  args:
+    warn: false
+  tags:
+   - devops
+   - terraform
+   - terragrunt
+
+
+- set_fact:
+    terragrunt_url_actual: "{{ reg_terragrunt_url_actual.stdout }}"
+  tags:
+   - devops
+   - terraform
+   - terragrunt
+
+
+- debug:
+    msg: "Terragrunt, version instalada - {{ terragrunt_version_instalada }}"
+  tags:
+   - devops
+   - terraform
+   - terragrunt
+
+- debug:
+    msg: "Terragrunt, url actual        - {{ terragrunt_url_actual }}"
+  tags:
+   - devops
+   - terraform
+   - terragrunt
+
+- debug:
+    msg: "Terragrunt, url version       - {{ terragrunt_url_version }}"
+  tags:
+   - devops
+   - terraform
+   - terragrunt
+
+- name: devops | terragrunt | descarga paquete
+  get_url:
+    url: "{{ terragrunt_url_actual }}"
+    dest: /usr/local/bin/terragrunt
+    mode: 0755
+    force: true
+  become: true
+  when: terragrunt_version_instalada != terragrunt_url_version
+  tags:
+   - devops
+   - terraform
+   - terragrunt
+
+
