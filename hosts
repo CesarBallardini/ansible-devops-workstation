@@ -2,6 +2,11 @@
 #
 # time ansible-playbook -vv -i hosts site.yml --extra-vars "@hosts-vars.yml"
 
+# Para asegurar que el inventario esta correcto, deben funcionar los siguientes mandatos:
+#
+#  ansible all -i inventario -m ping 
+#  ansible all -i inventario -m shell -a "id"
+#  ansible all -i inventario -b -m shell -a "id"
 
 localhost ansible_connection=local
 
