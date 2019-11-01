@@ -4,6 +4,7 @@
 # Para ejecutar Pharo con una iagen fresca, hacer:
 # cp /opt/pharo/Pharo7.0* . ; PHARO_IMAGE=$( echo Pharo7.0*image )  /opt/pharo/pharo &
 
+# FIXME: version de pharo debe ir a variables de host
 - set_fact:
     pharo_version_family: "70"
     pharo_home_directory: "/opt/pharo"

@@ -22,6 +22,8 @@
   with_items: "{{ apt_repositories }}"
   loop_control:
     loop_var: un_repo
+  tags:
+    - apt
 
 - name: apt | actualizo lista paquetes .deb
   apt:

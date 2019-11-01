@@ -21,7 +21,7 @@
   tags: [ performance ]
 
 
-# para configurar laptop-mode-tools:
+# TODO: para configurar laptop-mode-tools:
 # sudo lmt-config-gui 
 
 - name: performance | inicia tlp
@@ -31,7 +31,7 @@
   tags: [ performance ]
 
 ##
-# desactiva animaciones - hacer que se guarde, sino anda en la sesión actual únicamente:
+# FIXME: desactiva animaciones - hacer que se guarde, sino anda en la sesión actual únicamente:
 #
 # gsettings set org.gnome.desktop.interface enable-animations 'false'
 # gsettings set org.gnome.desktop.search-providers disable-external 'true'

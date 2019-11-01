@@ -75,17 +75,20 @@
    - terraform-docs
 
 
-- debug: msg="Terraform-docs, version instalada - {{ terraform_docs_version_instalada }}"
+- debug:
+    msg: "Terraform-docs, version instalada - {{ terraform_docs_version_instalada }}"
   tags:
    - devops
    - terraform
    - terraform-docs
-- debug: msg="Terraform-docs, url actual        - {{ terraform_docs_url_actual }}"
+- debug:
+        msg: "Terraform-docs, url actual        - {{ terraform_docs_url_actual }}"
   tags:
    - devops
    - terraform
    - terraform-docs
-- debug: msg="Terraform-docs, url version       - {{ terraform_docs_url_version }}"
+- debug:
+    msg: "Terraform-docs, url version       - {{ terraform_docs_url_version }}"
   tags:
    - devops
    - terraform

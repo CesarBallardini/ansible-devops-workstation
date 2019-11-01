@@ -1,5 +1,6 @@
 ---
 
+# Si vagrant_version_deseada es una cadena vacia, se instala la ultima version disponible
 - set_fact:
     vagrant_version_deseada: ''
     #vagrant_version_deseada: "2.2.3"
@@ -84,10 +85,13 @@
       - hostmanager
       - vagrant-cachier
       - vagrant-hostmanager
+      - vagrant-mutate
       - vagrant-proxyconf
+      - vagrant-rekey-ssh
       - vagrant-share
       - vagrant-vbguest
       #- vagrant-lxc
+      #- vagrant-libvirt
   tags:
    - devops
    - vagrant

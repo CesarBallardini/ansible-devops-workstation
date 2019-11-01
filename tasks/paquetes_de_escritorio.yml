@@ -8,8 +8,6 @@
   tags:
     - escritorio
 
-      ##
-      # FIXME:  fatal: [localhost]: FAILED! => {"changed": false, "msg": "E:El repositorio «http://dl.google.com/linux/chrome/deb stable Release» ya no tiene un archivo de lanzamiento."}
 - name: escritorio | agrego repo google chrome
   apt_repository:
     repo: "deb [arch=amd64] http://dl.google.com/linux/chrome/deb/ stable main"
@@ -107,6 +105,7 @@
       - debconf-utils
       - deborphan
       - dnsmasq
+      - inetutils-traceroute
       - iotop
       - iproute2
       - htop
@@ -115,7 +114,7 @@
       - openssh-server
       - rdiff-backup
       - screen
-      - inetutils-traceroute
+      - sshpass
     state: present
   become: true
   tags:
@@ -124,6 +123,7 @@
 - name: escritorio | instala varios
   apt:
     name:
+      - antiword
       - axel
       - dia
       - djview4
@@ -137,6 +137,7 @@
       - graphviz
       - ipcalc
       - libavcodec-extra
+      - libnotify-bin
       #- libdvd-pkg
       - makepasswd
       - minicom

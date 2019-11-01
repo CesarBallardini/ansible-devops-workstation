@@ -14,15 +14,15 @@
 ##
 # FIXME: 2019-06-28  https://sdk.gnome.org/gnome-apps.flatpakrepo no existe
 #
-#- name: flatpak | Add the Gnome flatpak remote to the system installation
-#  flatpak_remote:
-#    name: gnome
-#    state: present
-#    flatpakrepo_url: https://sdk.gnome.org/gnome-apps.flatpakrepo
-#  become: true
-#  tags:
-#    - escritorio
-#    - flatpak
+- name: flatpak | Add the Gnome flatpak remote to the system installation
+  flatpak_remote:
+    name: gnome
+    state: present
+    flatpakrepo_url: https://sdk.gnome.org/gnome-apps.flatpakrepo
+  become: true
+  tags:
+    - escritorio
+    - flatpak
 
 - name: flatpak | Add the flathub flatpak repository remote to the system installation
   flatpak_remote:
@@ -41,7 +41,6 @@
     state: present
     #method: user
   with_items:
-      #- com.adobe.Flash-Player-Projector
       - com.calibre_ebook.calibre
       - com.dropbox.Client
       - com.jetbrains.IntelliJ-IDEA-Community
@@ -50,7 +49,6 @@
       - com.jetbrains.WebStorm
       - com.skype.Client
       - com.sublimetext.three
-      #- com.visualstudio.code.oss
   become: true
   tags:
     - escritorio
@@ -70,7 +68,6 @@
 - name: flatpak | Update the package from flathub for system
   command: "flatpak update --assumeyes --app {{ item }}"
   with_items:
-      #- com.adobe.Flash-Player-Projector
       - com.calibre_ebook.calibre
       - com.dropbox.Client
       - com.jetbrains.IntelliJ-IDEA-Community
@@ -79,13 +76,8 @@
       - com.jetbrains.WebStorm
       - com.skype.Client
       - com.sublimetext.three
-      #- com.visualstudio.code.oss
   become: true
   tags:
     - escritorio
     - flatpak
-
-
-# el siguiente puede fallar por culpa de Adobe: https://github.com/flathub/com.adobe.Flash-Player-Projector/issues/11
-# LANG=C flatpak update --assumeyes --app com.adobe.Flash-Player-Projector
 

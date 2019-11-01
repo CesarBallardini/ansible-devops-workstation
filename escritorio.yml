@@ -2,23 +2,28 @@
 - hosts: escritorio
 
   tasks:
+
+    # TODO:
     # template para /etc/systemd/timesyncd.conf poner los servidores NTP
     # sudo service systemd-timesyncd restart
 
   - include_tasks: tasks/instala_ffmpeg.yml
     tags: [ ffmpeg, video ]
 
-  #- include_tasks: tasks/instala_adobe_reader_obsoleto.yml # solamente si lo instalaria ver PDF firmado digitalmente
-  #  tags: [ adobe-reader ]
-
   - include_tasks: tasks/paquetes_de_escritorio.yml
     tags: [ escritorio ]
+
+  - include_tasks: tasks/dev_netbeans.yml
+    tags: 
+      - escritorio
+      - netbeans
 
   - include_tasks: tasks/instala_codium.yml
     tags: 
       - escritorio
       - codium
 
+  ## Microsoft VisualStudio Code es version privativa, uso VSCodium, el fork libre
   #- include_tasks: tasks/instala_microsoft_visualstudio_code.yml
   #  tags: 
   #    - escritorio
@@ -30,5 +35,5 @@
   - include_tasks: tasks/unetbootin.yml
     tags: [ unetbootin ]
 
-  #- include_tasks: tasks/instala_emulador_3270.yml
+  #- include_tasks: tasks/instala_emulador_3270.yml # se usa para conectarse a minis y mainframes IBM
 

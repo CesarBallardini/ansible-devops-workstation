@@ -76,15 +76,18 @@
     - packer
 
 
-- debug: msg="Packer, version instalada - {{ packer_version_instalada }}"
+- debug:
+    msg: "Packer, version instalada - {{ packer_version_instalada }}"
   tags:
     - devops
     - packer
-- debug: msg="Packer, url actual        - {{ packer_url_actual}}"
+- debug:
+    msg: "Packer, url actual        - {{ packer_url_actual}}"
   tags:
     - devops
     - packer
-- debug: msg="Packer, url version       - {{ packer_url_version}}"
+- debug:
+    msg: "Packer, url version       - {{ packer_url_version}}"
   tags:
     - devops
     - packer
