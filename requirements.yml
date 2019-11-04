@@ -1,6 +1,5 @@
 
  - src: https://github.com/vmware/ansible-role-vmware-workstation
-   version: master
+   version: 695b54daca38927f52695f0ce8d0c052d228b20d
    scm: git
    name: vmware-workstation
-
