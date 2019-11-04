@@ -141,10 +141,10 @@
 
 - name: utn | Pharo copia las imagenes originales al directorio de trabajo
   shell: |
-    cp {{ pharo_home_directory }}/Pharo7.0.1-0-64bit-*.image {{ pharo_home_directory }}/images/Pharo.image
+    cp {{ pharo_home_directory }}/Pharo7.0.*-64bit-*.image {{ pharo_home_directory }}/images/Pharo.image
     chmod o+rw {{ pharo_home_directory }}/images/Pharo.image
 
-    cp {{ pharo_home_directory }}/Pharo7.0.1-0-64bit-*.changes {{ pharo_home_directory }}/images/Pharo.changes
+    cp {{ pharo_home_directory }}/Pharo7.0.*-64bit-*.changes {{ pharo_home_directory }}/images/Pharo.changes
     chmod o+rw {{ pharo_home_directory }}/images/Pharo.changes
 
     cp {{ pharo_home_directory }}/Pharo7.0-*.sources {{ pharo_home_directory }}/images/
