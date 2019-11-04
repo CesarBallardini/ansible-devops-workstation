@@ -149,6 +149,7 @@
       - vim
       - wv
       - x11-xkb-utils
+      - xauth
       - xchm
       - xscreensaver
       - zram-config
