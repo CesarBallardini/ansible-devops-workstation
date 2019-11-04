@@ -1,4 +1,5 @@
 inventario/
 roles/
 *.retry
+*.log
 tmp/
