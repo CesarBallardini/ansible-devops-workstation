@@ -10,7 +10,7 @@
     - upgrade
 
 - name: actualiza | apt-fast upgrade
-  command: apt-fast -y upgrade
+  command: apt-fast -y -o Dpkg::Options::="--force-confdef" -o Dpkg::Options::="--force-confold" upgrade
   become: true
   tags:
     - apt
@@ -27,7 +27,16 @@
     - upgrade
 
 - name: actualiza | apt-fast dist-upgrade
-  command: apt-fast -y -o Dpkg::Options::="--force-confdef" -o Dpkg::Options::="--force-confold" upgrade
+  command: apt-fast -y -o Dpkg::Options::="--force-confdef" -o Dpkg::Options::="--force-confold" dist-upgrade
+  environment:
+          DEBIAN_FRONTEND: "noninteractive"
+  become: true
+  tags:
+    - apt
+    - upgrade
+
+- name: actualiza | apt-fast full-upgrade
+  command: apt-fast -y -o Dpkg::Options::="--force-confdef" -o Dpkg::Options::="--force-confold" full-upgrade
   environment:
           DEBIAN_FRONTEND: "noninteractive"
   become: true
