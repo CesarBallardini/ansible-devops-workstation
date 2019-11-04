@@ -84,6 +84,7 @@
     vagrant_plugins_deseados:
       - hostmanager
       - vagrant-cachier
+      - vagrant-disksize
       - vagrant-hostmanager
       - vagrant-mutate
       - vagrant-proxyconf
