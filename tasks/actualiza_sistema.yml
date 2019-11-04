@@ -11,7 +11,6 @@
 
 - name: actualiza | apt-fast upgrade
   command: apt-fast -y upgrade
-  changed_when: false
   become: true
   tags:
     - apt
@@ -22,7 +21,6 @@
     apt-fast install linux-headers-$( uname -r ) -y
     apt-fast install linux-headers-lowlatency -y
 
-  changed_when: false
   become: true
   tags:
     - apt
@@ -32,7 +30,6 @@
   command: apt-fast -y -o Dpkg::Options::="--force-confdef" -o Dpkg::Options::="--force-confold" upgrade
   environment:
           DEBIAN_FRONTEND: "noninteractive"
-  changed_when: false
   become: true
   tags:
     - apt
@@ -40,7 +37,6 @@
 
 - name: actualiza | apt-fast autoremove
   command: apt-fast -y autoremove
-  changed_when: false
   become: true
   tags:
     - apt
@@ -48,7 +44,6 @@
 
 - name: actualiza | apt-fast clean
   command: apt-fast -y clean
-  changed_when: false
   become: true
   tags:
     - apt
