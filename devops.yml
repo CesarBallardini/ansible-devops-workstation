@@ -2,7 +2,12 @@
 - hosts: devops
 
   roles:
-          - { role: vmware-workstation, become: true, tags: [ devops, vmware-workstation ] }
+    - { role: vmware-workstation, become: true, tags: [ devops, vmware-workstation ] }
+  environment:
+    - LC_ALL: "C"
+  # https://communities.vmware.com/thread/620226
+
+- hosts: devops
 
   tasks:
 
