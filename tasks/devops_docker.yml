@@ -105,13 +105,13 @@
     group: 'root'
     mode: '0755'
   when: (ansible_service_mgr == 'systemd' and
-        (docker__env_http_proxy is defined or docker__env_https_proxy is defined))
+        (__env_http_proxy is defined or __env_https_proxy is defined))
   become: yes
   tags:
     - devops
     - docker
 
-- debug: var=docker__env_https_proxy
+- debug: var=__env_https_proxy
   tags:
     - devops
     - docker
@@ -131,7 +131,11 @@
   become: yes
   register: reg_docker_proxy
   when: (ansible_service_mgr == 'systemd' and
-        (docker__env_http_proxy is defined or docker__env_https_proxy is defined))
+        (__env_http_proxy is defined or __env_https_proxy is defined))
+  vars :
+    __env_http_proxy:  "{{ docker__env_http_proxy }}"
+    __env_https_proxy: "{{ docker__env_https_proxy }}"
+    __env_no_proxy:    "{{ docker__env_no_proxy }}"
   tags:
     - devops
     - docker

@@ -1,0 +1,59 @@
+---
+
+- name: snap | actualizo lista paquetes .deb
+  apt:
+    update_cache: yes
+    cache_valid_time: 3600
+  become: true
+  tags:
+    - snap
+
+- name: snap | instala snapd
+  apt:
+    name: snapd
+    state: present
+  become: true
+  tags:
+    - snap
+
+- name: devops | snap | Make sure that snapd.service.d directory exists
+  file:
+    path: '/etc/systemd/system/snapd.service.d/'
+    state: 'directory'
+    owner: 'root'
+    group: 'root'
+    mode: '0755'
+  when: (ansible_service_mgr == 'systemd' and
+        (__env_http_proxy is defined or __env_https_proxy is defined))
+  become: yes
+  tags:
+    - snap
+
+- name: devops | snap | configura proxy
+  template:
+    src: 'http-proxy.conf.j2'
+    dest: '/etc/systemd/system/snapd.service.d/http-proxy.conf'
+    owner: 'root'
+    group: 'root'
+    mode: '0644'
+  become: yes
+  register: reg_snap_proxy
+  when: (ansible_service_mgr == 'systemd' and
+        (__env_http_proxy is defined or __env_https_proxy is defined))
+  vars:
+    __env_http_proxy:  "{{ http_proxy }}"
+    __env_https_proxy: "{{ https_proxy }}"
+    __env_no_proxy:    "{{ no_proxy }}"
+  tags:
+    - snap
+
+- name: devops | snap | snap deamon is running
+  systemd:
+    state: restarted
+    daemon_reload: yes
+    name: snapd
+  become: true
+  when: reg_snap_proxy is changed
+  tags:
+    - snap
+                                                                                              
