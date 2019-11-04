@@ -1,6 +1,20 @@
 # -*- mode: ruby -*-
 # vi: set ft=ruby :
 
+# Para aprovechae este Vagrantfile necesita Vagrant y Virtualbox instalados:
+#
+#   * Virtualbox
+#
+#   * Vagrant
+#
+#   * Plugins de Vagrant:
+#       + vagrant-proxyconf y su configuracion si requiere de un Proxy para salir a Internet
+#       + vagrant-cachier
+#       + vagrant-disksize
+#       + vagrant-hostmanager
+#       + vagrant-share
+#       + vagrant-vbguest
+
 VAGRANTFILE_API_VERSION = "2"
 
 HOSTNAME = "devopsws"
@@ -104,9 +118,12 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
       end
     end
 
+    proxy_host_port = ENV['all_proxy'] || ENV['http_proxy']  || ""
+    proxy_host_port = proxy_host_port.scan(/\/\/([0-9\.]*):/)[0][0]+':'+proxy_host_port.scan(/:([0-9]*)$/)[0][0]
+
     config.vm.provision "ansible-provision", type: :ansible do |ansible|
       ansible.playbook = "site.yml"
-      #ansible.config_file = "./provision/ansible/ansible.cfg"
+      ansible.config_file = "./vagrant-inventory/ansible.cfg"
       ansible.inventory_path = "./vagrant-inventory/"
       ansible.verbose= "-vv"
       ansible.become = false
