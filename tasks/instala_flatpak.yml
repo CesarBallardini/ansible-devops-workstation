@@ -11,19 +11,6 @@
     - escritorio
     - flatpak
 
-##
-# FIXME: 2019-06-28  https://sdk.gnome.org/gnome-apps.flatpakrepo no existe
-#
-- name: flatpak | Add the Gnome flatpak remote to the system installation
-  flatpak_remote:
-    name: gnome
-    state: present
-    flatpakrepo_url: https://sdk.gnome.org/gnome-apps.flatpakrepo
-  become: true
-  tags:
-    - escritorio
-    - flatpak
-
 - name: flatpak | Add the flathub flatpak repository remote to the system installation
   flatpak_remote:
     name: flathub
