@@ -90,18 +90,21 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
     ##
     # Aprovisionamiento
     #
-    config.vm.provision "fix-no-tty", type: "shell" do |s|  # http://foo-o-rama.com/vagrant--stdin-is-not-a-tty--fix.html
-        s.privileged = false
-        s.inline = <<-SHELL
-          sudo apt-get update
-          sudo apt-get upgrade -y
-          sudo apt full-upgrade -y
-          sudo apt autoremove -y
-        SHELL
-    end
-    config.vm.provision "actualiza", type: "shell" do |s|
+    config.vm.provision "fix-no-tty", type: "shell" do |s|
         s.privileged = false
         s.inline = "sudo sed -i '/tty/!s/mesg n/tty -s \\&\\& mesg n/' /root/.profile"
+    end
+    config.vm.provision "actualiza", type: "shell" do |s|  # http://foo-o-rama.com/vagrant--stdin-is-not-a-tty--fix.html
+        s.privileged = false
+        s.inline = <<-SHELL
+          export DEBIAN_FRONTEND=noninteractive
+          sudo apt-get update -y -qq
+          sudo dpkg-reconfigure libc6
+          sudo -E apt-get -q --option "Dpkg::Options::=--force-confold" --assume-yes install libssl1.1 # https://bugs.launchpad.net/ubuntu/+source/openssl/+bug/1832919
+          sudo apt-get upgrade -y -o Dpkg::Options::="--force-confdef" -o Dpkg::Options::="--force-confold" 
+          sudo apt full-upgrade -y -o Dpkg::Options::="--force-confdef" -o Dpkg::Options::="--force-confold" 
+          sudo apt autoremove -y
+        SHELL
     end
     config.vm.provision "ssh_pub_key", type: :shell do |s|
       begin
