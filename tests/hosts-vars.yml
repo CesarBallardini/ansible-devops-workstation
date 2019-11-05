@@ -1,11 +1,11 @@
 ---
-security_repo_base_url: "security.ubuntu.com/ubuntu/"
+security_repo_base_url: "security.ubuntu.com/ubuntu"
 
 security_repositories:
   vendor_base:
     uri: "http://{{ security_repo_base_url }}"
     suffix: "-security"
-    state: "present"
+    state: "absent"
     components:
       - main
       - restricted
@@ -15,9 +15,9 @@ security_repositories:
 ##
 # https://launchpad.net/ubuntu/+archivemirrors
 #
-standard_repo_base_url: "mirrors.edge.kernel.org/ubuntu/"
-#standard_repo_base_url: "ar.archive.ubuntu.com/ubuntu/"
-#standard_repo_base_url: "mirror.enzu.com/ubuntu/"
+standard_repo_base_url: "mirrors.edge.kernel.org/ubuntu"
+#standard_repo_base_url: "ar.archive.ubuntu.com/ubuntu"
+#standard_repo_base_url: "mirror.enzu.com/ubuntu"
 
 standard_repositories:
   vendor_base:
@@ -29,10 +29,28 @@ standard_repositories:
       - restricted
       - universe
       - multiverse
+  vendor_backports:
+    uri: "http://{{ standard_repo_base_url }}"
+    suffix: "-backports"
+    state: "absent"
+    components:
+      - main
+      - restricted
+      - universe
+      - multiverse
+  vendor_proposed:
+    uri: "http://{{ standard_repo_base_url }}"
+    suffix: "-proposed"
+    state: "absent"
+    components:
+      - main
+      - restricted
+      - universe
+      - multiverse
   vendor_security:
     uri: "http://{{ standard_repo_base_url }}"
     suffix: "-security"
-    state: "present"
+    state: "absent"
     components:
       - main
       - restricted
@@ -41,16 +59,7 @@ standard_repositories:
   vendor_updates:
     uri: "http://{{ standard_repo_base_url }}"
     suffix: "-updates"
-    state: "present"
-    components:
-      - main
-      - restricted
-      - universe
-      - multiverse
-  vendor_backports:
-    uri: "http://{{ standard_repo_base_url }}"
-    suffix: "-backports"
-    state: "present"
+    state: "absent"
     components:
       - main
       - restricted
@@ -82,7 +91,7 @@ apt_repositories:
   - "{{ standard_repositories }}"
   - "{{ security_repositories }}"
 
-devops_user: 'cesarballardini'
+devops_user: 'root'
 
 tinyproxy_listen_ip: 'localhost'
 tinyproxy_listen_port: '8888'
