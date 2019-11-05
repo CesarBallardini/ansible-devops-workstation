@@ -3,6 +3,7 @@
 A partir de una instalación base de Ubuntu 18.04 se pueden agregar las herramientas
 populares para trabajar en las siguientes áreas:
 
+
 * Escritorio gráfico para navegar en Internet (el escritorio se instala previamente al trabajo de los playbooks)
   * Google Chrome
   * LibreOffice
