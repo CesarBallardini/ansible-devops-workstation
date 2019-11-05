@@ -80,7 +80,7 @@ apt_repositories:
 
 devops_user: 'cesarballardini'
 
-tinyproxy_listen_ip: '<DIRECCION_IP_INTERFAZ_DE_RED>'
+tinyproxy_listen_ip: 'localhost'
 tinyproxy_listen_port: '8888'
 
 tinyproxy_no_upstream:
@@ -89,26 +89,21 @@ tinyproxy_no_upstream:
   - "192.168.20.0/22"
   - "."
 
-tinyproxy_default_upstream: 'DIRECCION_IP_PROXY_CORPORATIVO:PUERTO_PROXY_CORPORATIVO'
+tinyproxy_default_upstream: ''
 tinyproxy_min_spare_servers: '5'
 tinyproxy_max_spare_servers: '20'
 
 tinyproxy_allow:
-  - '<MI_DIRECCION_IP>'
+  - 'localhost'
   - '192.168.11.0/24'
   - '192.168.20.0/22'
-  - '<OTRA_DIRECCION_QUE_AUTORIZO_EN_TINYPROXY>'
 
 
-organizacion: "<MI_ORGANIZACION>"
+organizacion: "MI_ORGANIZACION"
 
-all_proxy: 'http://<DIRECCION_IP_INTERFAZ_DE_RED>:8888'
+all_proxy: ''
 http_proxy: '{{ all_proxy }}'
 https_proxy: '{{ all_proxy }}'
 ftp_proxy: '{{ all_proxy }}'
 no_proxy: '10.,192.168.,wpad,127.0.0.1,localhost,.dominio.local.tld'
 soap_use_proxy: 'on'
-
-docker__env_http_proxy: "{{ http_proxy }}"
-docker__env_https_proxy: "{{ https_proxy }}"
-docker__env_no_proxy: "{{ no_proxy }}"
