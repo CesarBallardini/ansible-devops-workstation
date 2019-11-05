@@ -1,4 +1,7 @@
+
 # Playbooks Ansible que instalan una estación de trabajo para personal DevOps
+
+[![Build Status](https://travis-ci.com/CesarBallardini/ansible-devops-workstation.svg?branch=master)](https://travis-ci.com/CesarBallardini/ansible-devops-workstation)
 
 A partir de una instalación base de Ubuntu 18.04 se pueden agregar las herramientas
 populares para trabajar en las siguientes áreas:
