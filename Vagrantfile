@@ -1,7 +1,7 @@
 # -*- mode: ruby -*-
 # vi: set ft=ruby :
 
-# Para aprovechae este Vagrantfile necesita Vagrant y Virtualbox instalados:
+# Para aprovechar este Vagrantfile necesita Vagrant y Virtualbox instalados:
 #
 #   * Virtualbox
 #
@@ -80,7 +80,7 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
 
     srv.vm.provider :virtualbox do |vb|
       vb.gui = false
-      vb.cpus = 1
+      vb.cpus = 2
       vb.memory = "1536"
 
       # https://www.virtualbox.org/manual/ch08.html#vboxmanage-modifyvm mas parametros para personalizar en VB
@@ -122,7 +122,7 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
     end
 
     proxy_host_port = ENV['all_proxy'] || ENV['http_proxy']  || ""
-    proxy_host_port = proxy_host_port.scan(/\/\/([0-9\.]*):/)[0][0]+':'+proxy_host_port.scan(/:([0-9]*)$/)[0][0]
+    proxy_host_port = if proxy_host_port.empty? then "" else proxy_host_port.scan(/\/\/([0-9\.]*):/)[0][0]+':'+proxy_host_port.scan(/:([0-9]*)$/)[0][0] end
 
     config.vm.provision "ansible-provision", type: :ansible do |ansible|
       ansible.playbook = "site.yml"
