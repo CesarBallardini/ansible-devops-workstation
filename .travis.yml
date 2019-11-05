@@ -1,0 +1,23 @@
+---
+os: linux
+arch: arm64
+dist: bionic
+language: python
+python: "3.6"
+
+before_install:
+  - sudo apt-get update -qqa
+  - sudo apt-get install -y python3-pip
+
+install:
+  - sudo -H python3 -m pip install --upgrade pip setuptools wheel
+  - sudo -H python3 -m pip install --upgrade ansible
+  - df -h 
+  - mkdir roles/
+
+  # Add ansible.cfg to pick up roles path.
+  - "printf '[defaults]\ngathering = smart\nroles_path = roles/' > ansible.cfg"
+
+script:
+  # Check the role/playbook's syntax.
+  - ansible-playbook -i tests/inventory tests/test.yml --syntax-check
