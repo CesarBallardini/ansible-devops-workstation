@@ -11,6 +11,9 @@ before_install:
   - free -m
   - mount
   - df -h .
+  - find  /etc/apt/sources.list.d
+  - cat /etc/apt/sources.list
+
 
 
 install:
