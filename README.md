@@ -11,7 +11,9 @@ Se consideran algunas optimizaciones de performance para aquellos que trabajan c
 computadoras de bajos recursos (4 GB RAM, Intel(R) Core(TM) i3-4130 CPU @ 3.40GHz, 
 almacenamiento magnético rotativo, etc.)
 
-# 1. Cómo usar este repositorio
+# 1. Cómo usar este repositorio sobre un nodo físico
+
+Cómo instalar una notebook o pc con estas herramientas.
 
 ## 1.1. Instale desde DVD o mediante PXE un escritorio Ubuntu 18.04
 
@@ -155,4 +157,41 @@ https_proxy: '{{ all_proxy }}'
 ftp_proxy: '{{ all_proxy }}'
 no_proxy: '10.,192.168.,wpad,127.0.0.1,localhost,.dominio.local.tld'
 soap_use_proxy: 'on'
+```
+
+# 2. Cómo comprobar los playbooks mediante Vagrant y VirtualBox
+
+## 2.1. Configure su estación de trabajo como en el punto 1. anterior
+
+Si lo hace manualmente, debe tener instalados:
+
+* Oracle Virtualbox y Oracle VM VirtualBox Extension Pack
+* Vagrant
+* Plugins de Vagrant:
+  * vagrant-proxyconf y su configuracion si requiere de un Proxy para salir a Internet
+  * vagrant-cachier
+  * vagrant-disksize
+  * vagrant-hostmanager
+  * vagrant-share
+  * vagrant-vbguest
+
+
+## 2.2. Ejecute Vagrant
+
+```bash
+time vagrant up
+```
+
+
+Se usarán las configuraciones de Proxy de la estación de trabajo y el inventario (con sus variables) disponible
+en `vagrant-inventory`.
+
+`vagrant-inventory` tiene los archivos:
+
+```text
+vagrant-inventory/
+├── ansible.cfg
+├── hosts
+└── host_vars
+    └── devopsws
 ```
