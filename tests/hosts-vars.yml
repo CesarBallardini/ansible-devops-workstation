@@ -1,6 +1,11 @@
 ---
 security_repo_base_url: "security.ubuntu.com/ubuntu"
 
+
+deb http://ports.ubuntu.com/ubuntu-ports bionic main restricted universe multiverse
+deb http://ports.ubuntu.com/ubuntu-ports bionic-updates main restricted universe multiverse
+deb http://ports.ubuntu.com/ubuntu-ports bionic-security main restricted universe multiverse
+
 security_repositories:
   vendor_base:
     uri: "http://{{ security_repo_base_url }}"
@@ -13,17 +18,15 @@ security_repositories:
       - multiverse
 
 ##
-# https://launchpad.net/ubuntu/+archivemirrors
+# El repo que usa Travis
 #
-standard_repo_base_url: "mirrors.edge.kernel.org/ubuntu"
-#standard_repo_base_url: "ar.archive.ubuntu.com/ubuntu"
-#standard_repo_base_url: "mirror.enzu.com/ubuntu"
+standard_repo_base_url: "ports.ubuntu.com/ubuntu-ports"
 
 standard_repositories:
   vendor_base:
     uri: "http://{{ standard_repo_base_url }}"
     suffix: ""
-    state: "absent"
+    state: "present"
     components:
       - main
       - restricted
@@ -50,7 +53,7 @@ standard_repositories:
   vendor_security:
     uri: "http://{{ standard_repo_base_url }}"
     suffix: "-security"
-    state: "absent"
+    state: "present"
     components:
       - main
       - restricted
@@ -59,7 +62,7 @@ standard_repositories:
   vendor_updates:
     uri: "http://{{ standard_repo_base_url }}"
     suffix: "-updates"
-    state: "absent"
+    state: "present"
     components:
       - main
       - restricted
