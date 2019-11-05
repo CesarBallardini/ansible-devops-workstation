@@ -1,11 +1,22 @@
 ---
 - hosts: devops
 
-  roles:
-    - { role: vmware-workstation, become: true, tags: [ devops, vmware-workstation ] }
-  environment:
-    LC_ALL: "C"
-  # https://communities.vmware.com/thread/620226
+  tasks:
+    - include_role:
+        name: vmware-workstation
+        apply:
+          become: true
+          environment: # https://communities.vmware.com/thread/620226
+            LC_ALL: "C"
+          tags:
+            - devops
+            - vmware-workstation
+      vars:
+        workstation_tempdir: /var/cache/workstation-downloads
+      tags: 
+        - devops
+        - vmware-workstation
+
 
 - hosts: devops
 
