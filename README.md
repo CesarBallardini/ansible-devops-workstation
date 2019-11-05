@@ -206,6 +206,7 @@ Si lo hace manualmente, debe tener instalados:
   * vagrant-share
   * vagrant-vbguest
 
+Hace falta unos 26 GB de espacio en disco para crear la VM
 
 ## 2.2. Ejecute Vagrant
 
