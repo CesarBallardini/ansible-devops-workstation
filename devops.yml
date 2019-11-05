@@ -84,11 +84,6 @@
       - devops
       - govc
 
-# FIXME: vmware_workstation
-#    tags: 
-#      - devops
-#      - vmware_workstation
-
   - include_tasks: tasks/devops_docker.yml
     tags: 
       - devops
