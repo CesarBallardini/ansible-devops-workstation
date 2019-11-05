@@ -13,6 +13,7 @@
     repo: "deb [arch=amd64] http://dl.google.com/linux/chrome/deb/ stable main"
     state: present
     filename: google-chrome
+    update_cache: yes
   become: true
   tags:
     - escritorio
