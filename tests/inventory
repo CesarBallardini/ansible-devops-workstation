@@ -7,19 +7,19 @@ localhost ansible_connection=local
 [tinyproxy]
 localhost
 
-#[ws]
+[ws]
 #localhost
 
-#[servidor]
+[servidor]
 #localhost
 
 [escritorio]
 localhost
 
-#[devops]
+[devops]
 #localhost
 
-#[utn]
+[utn]
 #localhost
 
 [python3]
