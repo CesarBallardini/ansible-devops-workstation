@@ -23,12 +23,12 @@ standard_repositories:
   vendor_base:
     uri: "http://{{ standard_repo_base_url }}"
     suffix: ""
-    state: "present"
+    state: "absent"
     components:
       - main
-      #- restricted
-      #- universe
-      #- multiverse
+      - restricted
+      - universe
+      - multiverse
   vendor_backports:
     uri: "http://{{ standard_repo_base_url }}"
     suffix: "-backports"
