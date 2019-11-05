@@ -161,7 +161,7 @@ no upstream "{{ site }}"
 #
 #  # default upstream is internet firewall
 #  upstream firewall.internal.example.com:80
-{% if tinyproxy_default_upstream is defined %}
+{% if tinyproxy_default_upstream is defined and tinyproxy_default_upstream|trim|length %}
 upstream {{ tinyproxy_default_upstream }}
 {% endif %}
 #
