@@ -10,7 +10,7 @@ before_install:
   - sudo cat /proc/meminfo
   - free -m
   - mount
-  - df -h 
+  - df -h .
 
 
 install:
