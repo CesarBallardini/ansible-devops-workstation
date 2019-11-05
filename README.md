@@ -148,8 +148,4 @@ https_proxy: '{{ all_proxy }}'
 ftp_proxy: '{{ all_proxy }}'
 no_proxy: '10.,192.168.,wpad,127.0.0.1,localhost,.dominio.local.tld'
 soap_use_proxy: 'on'
-
-docker__env_http_proxy: "{{ http_proxy }}"
-docker__env_https_proxy: "{{ https_proxy }}"
-docker__env_no_proxy: "{{ no_proxy }}"
 ```
