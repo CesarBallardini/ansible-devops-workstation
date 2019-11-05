@@ -3,9 +3,40 @@
 A partir de una instalación base de Ubuntu 18.04 se pueden agregar las herramientas
 populares para trabajar en las siguientes áreas:
 
-* escritorio gráfico para navegar en Internet
-* devops
-* programación SWI-Prolog, Scheme y Pharo Smalltalk
+* Escritorio gráfico para navegar en Internet (el escritorio se instala previamente al trabajo de los playbooks)
+  * Google Chrome
+  * LibreOffice
+  * Herramientas para crear screencasts
+  * Emulador 3270 (está comentado el código para que no se instale)
+  * Flatpak
+  * Snap
+  * Skype (para hablar con los clientes :)  
+
+* Editores / IDEs
+  * Atom
+  * IntelliJ IDEA Community
+  * MS VisualStudio Code (está comentado el código para que no se instale)
+  * Netbeans
+  * Sublime 3
+  * VSCodium
+  * WebStorm
+
+* DevOps
+  * Ansible
+  * Docker
+  * Git
+  * Goss / DGoss
+  * GOVC: gestión de VMware vCenter
+  * Packer
+  * Terraform / Terraform Docs / Terragrunt
+  * Vagrant + plugins
+  * VirtualBox
+  * vmWare Workstation (queda deshabilitado para que no corra al inicio del sistema)
+  
+* Útiles en la asignatura Paradigmas de Programación
+  * SWI-Prolog
+  * Racket (Scheme)
+  * Pharo Smalltalk
 
 Se consideran algunas optimizaciones de performance para aquellos que trabajan con
 computadoras de bajos recursos (4 GB RAM, Intel(R) Core(TM) i3-4130 CPU @ 3.40GHz, 
