@@ -26,9 +26,9 @@ standard_repositories:
     state: "present"
     components:
       - main
-      - restricted
-      - universe
-      - multiverse
+      #- restricted
+      #- universe
+      #- multiverse
   vendor_backports:
     uri: "http://{{ standard_repo_base_url }}"
     suffix: "-backports"
