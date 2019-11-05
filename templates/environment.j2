@@ -1,16 +1,36 @@
 ORGANIZATION="{{ organizacion }}"
 
+{% if all_proxy|d() %}
 ALL_PROXY="{{ all_proxy }}"
+{% endif %}
+{% if https_proxy|d() %}
 HTTPS_PROXY="{{ https_proxy }}"
+{% endif %}
+{% if http_proxy|d() %}
 HTTP_PROXY="{{ http_proxy }}"
+{% endif %}
+{% if ftp_proxy|d() %}
 FTP_PROXY="{{ ftp_proxy }}"
+{% endif %}
+{% if no_proxy|d() %}
 NO_PROXY="{{ no_proxy }}"
+{% endif %}
 
+{% if all_proxy|d() %}
 all_proxy="{{ all_proxy }}"
+{% endif %}
+{% if https_proxy|d() %}
 https_proxy="{{ https_proxy }}"
+{% endif %}
+{% if http_proxy|d() %}
 http_proxy="{{ http_proxy }}"
+{% endif %}
+{% if ftp_proxy|d() %}
 ftp_proxy="{{ ftp_proxy }}"
+{% endif %}
+{% if no_proxy|d() %}
 no_proxy="{{ no_proxy }}"
+{% endif %}
 
 soap_use_proxy=on
 
