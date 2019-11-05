@@ -120,24 +120,31 @@ cp hosts-vars.yml inventario/host_vars/localhost
 Las variables a modificar según su ambiente local son las siguientes:
 
 
-`security_repo_base_url` URL base del repositorio de seguridad para Ubuntu (no es necesario modificarla)
+`security_repo_base_url`:
+URL base del repositorio de seguridad para Ubuntu (no es necesario modificarla)
 
-`standard_repo_base_url` URL base del repositorio base para Ubuntu (no es necesario modificarla)
+`standard_repo_base_url`:
+URL base del repositorio base para Ubuntu (no es necesario modificarla)
 
-`oracle_java_repository` Repositorio para Java de Oracle, deprecado pues Oracle no distribuye más sin pago sus binarios
+`oracle_java_repository`:
+Repositorio para Java de Oracle, deprecado pues Oracle no distribuye más sin pago sus binarios
 
-`devops_user` El username de la cuenta que usa el usuario devops
+`devops_user`:
+El username de la cuenta que usa el usuario devops
 
-`tinyproxy_listen_ip` y `tinyproxy_listen_port` Dirección IP donde debe escuchar peticiones el servidor TinyProxy
+`tinyproxy_listen_ip` y `tinyproxy_listen_port`:
+Dirección IP donde debe escuchar peticiones el servidor TinyProxy
 
-`tinyproxy_no_upstream` lista de dominios y CIDR que el TinyProxy debe acceder directamente, sin pasar por el proxy de aguas arriba
+`tinyproxy_no_upstream`:
+lista de dominios y CIDR que el TinyProxy debe acceder directamente, sin pasar por el proxy de aguas arriba
 
-`tinyproxy_default_upstream` 'DIRECCION_IP_PROXY_CORPORATIVO:PUERTO_PROXY_CORPORATIVO' info del proxy aguas arriba, o sea, el proxy 
+`tinyproxy_default_upstream`:
+'DIRECCION_IP_PROXY_CORPORATIVO:PUERTO_PROXY_CORPORATIVO' info del proxy aguas arriba, o sea, el proxy 
 corporativo que nos permite salir a Internet desde la oficina.
 
-`tinyproxy_allow` lista de CIDR autorizados a usar el TinyProxy, no olvidar localhost y mi dirección de IP en la red local
+`tinyproxy_allow`: lista de CIDR autorizados a usar el TinyProxy, no olvidar localhost y mi dirección de IP en la red local
 
-`organizacion` String con el nombre de la organización, sólo a efectos de anotarla en `/etc/environment`
+`organizacion`: String con el nombre de la organización, sólo a efectos de anotarla en `/etc/environment`
 
 Y la configuración de proxy para salir a Internet.  Basta con asignar `all_proxy` y `no_proxy` cuando hay un solo proxy para todos los protocolos:
 
