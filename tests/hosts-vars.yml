@@ -12,8 +12,12 @@ security_repositories:
       - universe
       - multiverse
 
+##
+# https://launchpad.net/ubuntu/+archivemirrors
+#
 #standard_standard_repo_base_url: "mirrors.us.kernel.org/ubuntu/"
-standard_repo_base_url: "ar.archive.ubuntu.com/ubuntu/"
+#standard_repo_base_url: "ar.archive.ubuntu.com/ubuntu/"
+standard_repo_base_url: "mirror.enzu.com/ubuntu/"
 
 standard_repositories:
   vendor_base:
