@@ -1,11 +1,6 @@
 ---
 security_repo_base_url: "security.ubuntu.com/ubuntu"
 
-
-deb http://ports.ubuntu.com/ubuntu-ports bionic main restricted universe multiverse
-deb http://ports.ubuntu.com/ubuntu-ports bionic-updates main restricted universe multiverse
-deb http://ports.ubuntu.com/ubuntu-ports bionic-security main restricted universe multiverse
-
 security_repositories:
   vendor_base:
     uri: "http://{{ security_repo_base_url }}"
