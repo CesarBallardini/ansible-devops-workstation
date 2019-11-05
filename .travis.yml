@@ -2,8 +2,6 @@
 os: linux
 arch: arm64
 dist: bionic
-language: python
-python: "3.6"
 
 before_install:
   - sudo apt-get update -qq
