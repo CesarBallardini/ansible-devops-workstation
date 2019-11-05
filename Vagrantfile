@@ -130,6 +130,7 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
       ansible.inventory_path = "./vagrant-inventory/"
       ansible.verbose= "-vv"
       ansible.become = false
+      # heredo la configuracion de Proxy del entorno del host Vagrant:
       ansible.extra_vars = {
         organizacion: "Mi organizacion",
         all_proxy:   ENV['all_proxy']   || ENV['http_proxy']  || "",
