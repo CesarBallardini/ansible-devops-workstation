@@ -1,5 +1,5 @@
 ---
-security_repo_base_url: "security.ubuntu.com/ubuntu/"
+security_repo_base_url: "security.ubuntu.com/ubuntu"
 
 security_repositories:
   vendor_base:
@@ -12,8 +12,8 @@ security_repositories:
       - universe
       - multiverse
 
-#standard_standard_repo_base_url: "mirrors.us.kernel.org/ubuntu/"
-standard_repo_base_url: "ar.archive.ubuntu.com/ubuntu/"
+standard_repo_base_url: "mirrors.edge.kernel.org/ubuntu"
+#standard_repo_base_url: "ar.archive.ubuntu.com/ubuntu"
 
 standard_repositories:
   vendor_base:
