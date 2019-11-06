@@ -139,7 +139,7 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
         ftp_proxy:   ENV['ftp_proxy']   || "",
         no_proxy:    ENV['no_proxy']    || "",
         tinyproxy_listen_ip: '192.168.33.11',
-        tinyproxy_default_upstream: ENV['all_proxy'] || ENV['http_proxy']  || "",
+        tinyproxy_default_upstream: "#{proxy_host_port}",
         tinyproxy_allow: [ '192.168.33.11/24', '192.168.11.0/24', '192.168.20.0/22' ]
       }
     end
