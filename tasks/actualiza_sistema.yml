@@ -12,6 +12,10 @@
 - name: actualiza | apt-fast upgrade
   command: apt-fast -y -o Dpkg::Options::="--force-confdef" -o Dpkg::Options::="--force-confold" upgrade
   become: true
+  environment:
+    DEBIAN_FRONTEND: "noninteractive"
+    DEBCONF_NONINTERACTIVE_SEEN: "true"
+    UCF_FORCE_CONFOLD: 1
   tags:
     - apt
     - upgrade
@@ -22,6 +26,10 @@
     apt-fast install linux-headers-lowlatency -y
 
   become: true
+  environment:
+    DEBIAN_FRONTEND: "noninteractive"
+    DEBCONF_NONINTERACTIVE_SEEN: "true"
+    UCF_FORCE_CONFOLD: 1
   tags:
     - apt
     - upgrade
@@ -29,7 +37,9 @@
 - name: actualiza | apt-fast dist-upgrade
   command: apt-fast -y -o Dpkg::Options::="--force-confdef" -o Dpkg::Options::="--force-confold" dist-upgrade
   environment:
-          DEBIAN_FRONTEND: "noninteractive"
+    DEBIAN_FRONTEND: "noninteractive"
+    DEBCONF_NONINTERACTIVE_SEEN: "true"
+    UCF_FORCE_CONFOLD: 1
   become: true
   tags:
     - apt
@@ -38,7 +48,9 @@
 - name: actualiza | apt-fast full-upgrade
   command: apt-fast -y -o Dpkg::Options::="--force-confdef" -o Dpkg::Options::="--force-confold" full-upgrade
   environment:
-          DEBIAN_FRONTEND: "noninteractive"
+    DEBIAN_FRONTEND: "noninteractive"
+    DEBCONF_NONINTERACTIVE_SEEN: "true"
+    UCF_FORCE_CONFOLD: 1
   become: true
   tags:
     - apt
