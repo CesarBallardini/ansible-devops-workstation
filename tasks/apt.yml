@@ -1,4 +1,18 @@
 ---
+- name: apt | fix corrida anterior que quedo colgada
+  shell: >
+    killall dpkg ;
+    sleep 2 ;
+    killall -9 dpkg ;
+    export DEBIAN_FRONTEND=noninteractive ;
+    export DEBCONF_NONINTERACTIVE_SEEN=true ;
+    export UCF_FORCE_CONFOLD=1 ;
+    dpkg --configure -a ;
+    apt-get -q --option \"Dpkg::Options::=--force-confold\" install -f -y ;
+  become: true
+  tags:
+    - apt
+
 
 #  echo 'Acquire::Languages "none";' | sudo tee /etc/apt/apt.conf.d/00languages
 - name: apt | Elimina APT languages
@@ -31,4 +45,18 @@
   become: true
   tags:
     - apt
+
+# https://bugs.launchpad.net/ubuntu/+source/ansible/+bug/1833013/comments/6
+# https://github.com/hashicorp/vagrant/issues/10914
+- name: apt | fix error libssl1.1 que solicita intervencion interactiva
+  shell: >
+    dpkg-reconfigure libc6 ;
+    export DEBIAN_FRONTEND=noninteractive ;
+    export DEBCONF_NONINTERACTIVE_SEEN=true ;
+    export UCF_FORCE_CONFOLD=1 ;
+    apt-get -q --option \"Dpkg::Options::=--force-confold\" install libssl1.1 -y
+  become: true
+  tags:
+    - apt
+
 
