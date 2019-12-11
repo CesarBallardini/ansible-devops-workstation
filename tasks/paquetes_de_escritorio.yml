@@ -116,7 +116,6 @@
       - pv
       - rdiff-backup
       - screen
-      - sshfs
       - sshpass
     state: present
   become: true

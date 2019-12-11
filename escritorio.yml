@@ -13,6 +13,9 @@
   - include_tasks: tasks/paquetes_de_escritorio.yml
     tags: [ escritorio ]
 
+  - include_tasks: tasks/sshfs-fuse.yml
+    tags: [ escritorio ]
+
   - include_tasks: tasks/instala_snap.yml
     tags: 
       - escritorio

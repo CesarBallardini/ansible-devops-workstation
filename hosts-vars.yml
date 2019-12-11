@@ -108,3 +108,10 @@ https_proxy: '{{ all_proxy }}'
 ftp_proxy: '{{ all_proxy }}'
 no_proxy: '10.,192.168.,wpad,127.0.0.1,localhost,.dominio.local.tld'
 soap_use_proxy: 'on'
+
+# /etc/fuse.conf
+fuse_mount_max: 'default'
+# Allow non-root users to specify the allow_other or allow_root mount options.
+fuse_user_allow_other: true
+fuse_restrict_access: False
+
