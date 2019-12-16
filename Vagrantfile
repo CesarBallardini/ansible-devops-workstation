@@ -98,7 +98,9 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
         s.privileged = false
         s.inline = <<-SHELL
           export DEBIAN_FRONTEND=noninteractive
+          export APT_LISTCHANGES_FRONTEND=none
           sudo apt-get update -y -qq
+          echo 'libc6 libraries/restart-without-asking boolean true' | sudo debconf-set-selections
           sudo dpkg-reconfigure libc6
           sudo -E apt-get -q --option "Dpkg::Options::=--force-confold" --assume-yes install libssl1.1 # https://bugs.launchpad.net/ubuntu/+source/openssl/+bug/1832919
           sudo apt-get upgrade -y -o Dpkg::Options::="--force-confdef" -o Dpkg::Options::="--force-confold" 
