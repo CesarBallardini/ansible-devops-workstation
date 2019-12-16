@@ -37,6 +37,9 @@
   #    - escritorio
   #    - microsoft_visualstudio_code
   
+  - include_tasks: tasks/instala_rambox.yml
+    tags: [ rambox ]
+
   #- include_tasks: tasks/liveusb-multiboot.yml # no funciona correctamente sobre ubuntu 18.04 (2019/02/06)
   #tags: [ multiboot ]
 
