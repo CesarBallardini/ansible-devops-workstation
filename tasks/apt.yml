@@ -7,6 +7,7 @@
     export DEBIAN_FRONTEND=noninteractive ;
     export DEBCONF_NONINTERACTIVE_SEEN=true ;
     export UCF_FORCE_CONFOLD=1 ;
+    export APT_LISTCHANGES_FRONTEND=none
     dpkg --configure -a ;
     apt-get -q --option \"Dpkg::Options::=--force-confold\" install -f -y ;
   become: true
@@ -54,6 +55,11 @@
     export DEBIAN_FRONTEND=noninteractive ;
     export DEBCONF_NONINTERACTIVE_SEEN=true ;
     export UCF_FORCE_CONFOLD=1 ;
+    export APT_LISTCHANGES_FRONTEND=none
+
+    echo 'libc6 libraries/restart-without-asking boolean true' | debconf-set-selections
+    sudo dpkg-reconfigure libc6
+
     apt-get -q --option \"Dpkg::Options::=--force-confold\" install libssl1.1 -y
   become: true
   tags:
