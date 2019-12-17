@@ -7,7 +7,7 @@
     export DEBIAN_FRONTEND=noninteractive ;
     export DEBCONF_NONINTERACTIVE_SEEN=true ;
     export UCF_FORCE_CONFOLD=1 ;
-    export APT_LISTCHANGES_FRONTEND=none
+    export APT_LISTCHANGES_FRONTEND=none ;
     dpkg --configure -a ;
     apt-get -q --option \"Dpkg::Options::=--force-confold\" install -f -y ;
   become: true
