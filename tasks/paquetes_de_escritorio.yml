@@ -229,3 +229,16 @@
     - escritorio
     - flatpak
 
+
+# FIXME:
+#
+#  sudo vi /usr/local/bin/gdmflexiserver
+#
+# #!/bin/sh
+# # 
+# # replacement for missing gdmflexiserver in Ubuntu 1[48].04
+# #
+# dm-tool switch-to-greeter
+#
+#  sudo chmod a+rx  /usr/local/bin/gdmflexiserver
+
