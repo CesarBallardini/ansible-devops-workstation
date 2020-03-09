@@ -27,10 +27,15 @@
     - docker
 
 
+# TODO: no hay paquete al dia de hoy en focal: 2020-03-05
+- set_fact:
+        docker_distro_release: "{{ ansible_distribution_release != 'focal' and ansible_distribution_release or 'eoan' }}"
+
+
 
 - name: devops | docker | agrego repo
   apt_repository:
-    repo: "deb [arch=amd64] https://download.docker.com/linux/ubuntu  {{ ansible_distribution_release }} stable"
+    repo: "deb [arch=amd64] https://download.docker.com/linux/ubuntu  {{ docker_distro_release }} stable"
     state: present
     update_cache: yes
     filename: docker
@@ -74,7 +79,7 @@
 
 - name: devops | docker | "Add users to 'docker' group."
   user:
-    name:  "{{ devops_user }}"
+    name:  "{{ devops_user_name }}"
     groups:
       - docker
     append: yes

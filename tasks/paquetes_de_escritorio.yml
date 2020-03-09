@@ -102,7 +102,7 @@
 - name: escritorio | instala paquetes de servidor
   apt:
     name:
-      - cgroup-bin
+      - cgroup-tools
       - debconf-utils
       - deborphan
       - dnsmasq
@@ -202,13 +202,13 @@
     - escritorio
 
 - name: escritorio | actualiza youtube-dl
-  command: youtube-dl --update
+  command: python3 /usr/local/bin/youtube-dl --update
   changed_when: false
   become: true
   tags:
     - escritorio
 
-- name: escritorio | configura cgroup-bin en grub
+- name: escritorio | configura cgroup-tools en grub
   lineinfile:
     path: /etc/default/grub
     regexp: '^GRUB_CMDLINE_LINUX_DEFAULT='

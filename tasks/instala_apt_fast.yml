@@ -70,11 +70,14 @@
     - apt
     - apt-fast
 
+# TODO: no hay paquete al dia de hoy en focal: 2020-03-05
+- set_fact:
+        apt_fast_distro_release: "{{ ansible_distribution_release != 'focal' and ansible_distribution_release or 'bionic' }}"
 
 - name: apt-fast | agrego repo
   apt_repository:
     #repo: 'ppa:apt-fast/stable' # no se puede porque intenta descargar la key mediante hkp: y no sale si el proxy no permite HKP
-    repo: "deb http://ppa.launchpad.net/apt-fast/stable/ubuntu {{ ansible_distribution_release }} main"
+    repo: "deb http://ppa.launchpad.net/apt-fast/stable/ubuntu {{ apt_fast_distro_release }} main"
     state: present
     update_cache: yes
     filename: aptfast

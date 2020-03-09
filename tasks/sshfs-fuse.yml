@@ -48,7 +48,7 @@
     groups: 'fuse'
     append: True
   with_flattened:
-    - '{{ devops_user }}'
+    - '{{ devops_user_name }}'
   become: true
 
 - name: fuse | Setup udev rule for fuse to change file permissions

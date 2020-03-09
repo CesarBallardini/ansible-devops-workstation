@@ -15,7 +15,7 @@
     dest: ~/.git-prompt.sh
     mode: 0660
   become: true
-  become_user: "{{ devops_user }}"
+  become_user: "{{ devops_user_name }}"
   tags:
     - devops
     - git
@@ -25,7 +25,7 @@
     path: ~/.bashrc
     line: 'source ~/.git-prompt.sh'
   become: true
-  become_user: "{{ devops_user }}"
+  become_user: "{{ devops_user_name }}"
   tags:
     - devops
     - git

@@ -142,7 +142,7 @@
   register: reg_plugins_instalados
   changed_when: false
   become: true
-  become_user: "{{ devops_user }}"
+  become_user: "{{ devops_user_name }}"
   tags:
    - devops
    - vagrant
@@ -152,7 +152,7 @@
   command: "vagrant plugin install {{ item }}"
   with_items: "{{ (vagrant_plugins_deseados | difference(reg_plugins_instalados.stdout_lines)) }}"
   become: true
-  become_user: "{{ devops_user }}"
+  become_user: "{{ devops_user_name }}"
   tags:
    - devops
    - vagrant
@@ -185,7 +185,7 @@
       end
 
   become: true
-  become_user: "{{ devops_user }}"
+  become_user: "{{ devops_user_name }}"
   tags:
    - devops
    - vagrant
@@ -194,7 +194,7 @@
   command: vagrant plugin repair
   changed_when: false
   become: true
-  become_user: "{{ devops_user }}"
+  become_user: "{{ devops_user_name }}"
   tags:
    - devops
    - vagrant
@@ -203,7 +203,7 @@
   command: vagrant plugin update
   changed_when: false
   become: true
-  become_user: "{{ devops_user }}"
+  become_user: "{{ devops_user_name }}"
   tags:
    - devops
    - vagrant

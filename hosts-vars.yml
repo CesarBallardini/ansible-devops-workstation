@@ -78,7 +78,8 @@ apt_repositories:
   - "{{ standard_repositories }}"
   - "{{ security_repositories }}"
 
-devops_user: 'cesarballardini'
+devops_user_name: 'cesarballardini'
+devops_user_uid: 1001
 
 tinyproxy_listen_ip: '<DIRECCION_IP_INTERFAZ_DE_RED>'
 tinyproxy_listen_port: '8888'

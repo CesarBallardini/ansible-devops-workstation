@@ -22,10 +22,22 @@
     name:
       - ffmpeg
       - x264
-      - key-mon
       - graphicsmagick
     state: present
   become: true
   tags:
     - video
     - ffmpeg
+
+# TODO: no hay paquete al dia de hoy en focal: 2020-03-05
+- name: ffmpeg | instala key-mon excepto en focal
+  apt:
+    name:
+      - key-mon
+    state: present
+  become: true
+  when: ansible_distribution_release != "focal"
+  tags:
+    - video
+    - ffmpeg
+

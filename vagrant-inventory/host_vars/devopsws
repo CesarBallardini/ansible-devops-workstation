@@ -78,7 +78,8 @@ apt_repositories:
   - "{{ standard_repositories }}"
   - "{{ security_repositories }}"
 
-devops_user: 'vagrant'
+devops_user_name: 'vagrant'
+devops_user_uid: 1000
 
 tinyproxy_listen_ip: '<DIRECCION_IP_INTERFAZ_DE_RED>'
 tinyproxy_listen_port: '8888'

@@ -1,0 +1,95 @@
+---
+#
+# time ansible-playbook -i inventario bootstrap.yml --limit alpha
+
+- hosts: all
+
+  vars:
+      initial_devops_password: "debian"
+      initial_root_password: "debian"
+
+  tasks:
+
+  - name: bootstrap | agrega SSH host key 
+    ping: 
+    environment:
+      ANSIBLE_HOST_KEY_CHECKING: False
+
+
+  - name: bootstrap | verifica usuario de conexion al nodo
+    command:  id
+
+  - name: bootstrap | verifica usuario de conexion al nodo puede pasar a root
+    command:  id
+    become: True
+
+  - name: bootstrap | crea grupo para usuario devops
+    group:
+      name: "{{ devops_user_name }}"
+      gid: "{{ devops_user_uid }}"
+      state: present
+    become: True
+
+  - name: bootstrap | crea cuenta usuario devops
+    user:
+      name: "{{ devops_user_name }}"
+      uid: "{{ devops_user_uid }}"
+      group: "{{ devops_user_name }}"
+      createhome: True
+      password: "{{ initial_devops_password | password_hash('sha512') }}"
+      update_password: on_create
+      shell: /bin/bash
+      state: present
+    become: True
+
+  - name: bootstrap | paquete sudo esta instalado
+    apt:
+      name: sudo
+    become: True
+
+  - name: bootstrap | cuenta devops pertenece a grupo sudo
+    user:
+      name: "{{ devops_user_name }}"
+      groups: sudo
+      append: yes
+    become: True
+
+  - name: bootstrap | cuentas en grupo sudo no necesitan ingresar su password
+    lineinfile:
+      path: /etc/sudoers
+      regexp: "^%ADMIN ALL="
+      line: "%sudo ALL=(ALL:ALL) NOPASSWD: ALL"
+      validate: "/usr/sbin/visudo -cf %s"
+      state: present
+    become: True
+
+# IP=192.168.11.12 ; ssh-keygen -f ~/.ssh/known_hosts" -R "${IP}" ; ssh-keyscan -H ${IP} >> ~/.ssh/known_hosts ; sshpass -p debian  ssh-copy-id root@${IP}
+  - name: bootstrap | masajeo SSH para entrar con clave publica
+    shell: |
+      ssh-keygen -f ~/.ssh/known_hosts -R {{ ansible_default_ipv4.address }}
+      ssh-keyscan -H {{ ansible_default_ipv4.address }} >> ~/.ssh/known_hosts
+      sshpass -p {{ initial_root_password }} ssh-copy-id root@{{ ansible_default_ipv4.address }}                      # para equipos a controlar como root
+      sshpass -p {{ initial_devops_password }} ssh-copy-id {{ devops_user_name }}@{{ ansible_default_ipv4.address }}  # solo para equipos propios
+    delegate_to: localhost
+
+
+ #  - name: bootstrap | escritorio Mate instalado
+ #   apt:
+ #     name: ubuntu-mate-desktop
+ #   become: True
+
+  - name: bootstrap | escritorio LXDE instalado
+    apt:
+      name: lubuntu-desktop
+    become: True
+
+
+# http://ubuntuhandbook.org/index.php/2014/06/enable-onscreen-keyboard-in-lightdm-gtk-greeter-in-ubuntu-14-04/ REVISAR ESTE
+# https://askubuntu.com/questions/604564/how-do-i-add-or-manipulate-application-system-indicators-in-the-login-screen
+# En /usr/share/glib-2.0/schemas/90_unity-greeter.gschema.override poner:
+#   [com.canonical.unity-greeter]
+#   indicators=['com.canonical.indicator.session']
+#
+# sudo glib-compile-schemas /usr/share/glib-2.0/schemas/
+# sudo service lightdm restart
+
