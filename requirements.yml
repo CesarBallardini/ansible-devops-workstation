@@ -1,5 +1,12 @@
+---
 
- - src: https://github.com/vmware/ansible-role-vmware-workstation
-   version: 695b54daca38927f52695f0ce8d0c052d228b20d
-   scm: git
-   name: vmware-workstation
+- src: https://github.com/vmware/ansible-role-vmware-workstation
+  version: 695b54daca38927f52695f0ce8d0c052d228b20d
+  scm: git
+  name: vmware-workstation
+
+#- src: https://github.com/CesarBallardini/ansible-locales
+- src: https://github.com/Oefenweb/ansible-locales
+  version: v1.0.41
+  scm: git
+  name: locales
