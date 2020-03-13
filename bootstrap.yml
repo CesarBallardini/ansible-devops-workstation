@@ -63,6 +63,17 @@
       state: present
     become: True
 
+  - name: all | /etc/environment
+    template:
+      src: environment.j2
+      dest: /etc/environment
+      owner: root
+      group: root
+      mode: '0644'
+    become: true
+
+##
+# Ejemplo con Bash y con Ansible
 # IP=192.168.11.12 ; ssh-keygen -f ~/.ssh/known_hosts" -R "${IP}" ; ssh-keyscan -H ${IP} >> ~/.ssh/known_hosts ; sshpass -p debian  ssh-copy-id root@${IP}
   - name: bootstrap | masajeo SSH para entrar con clave publica
     shell: |
@@ -73,23 +84,17 @@
     delegate_to: localhost
 
 
- #  - name: bootstrap | escritorio Mate instalado
- #   apt:
- #     name: ubuntu-mate-desktop
- #   become: True
+##
+## En caso de nodos que se vana  usar como escritorios, asegurar los dos gustos siguientes:
+##
 
-  - name: bootstrap | escritorio LXDE instalado
-    apt:
-      name: lubuntu-desktop
-    become: True
+#  - name: bootstrap | escritorio Mate instalado
+#   apt:
+#     name: ubuntu-mate-desktop
+#   become: True
 
-
-# http://ubuntuhandbook.org/index.php/2014/06/enable-onscreen-keyboard-in-lightdm-gtk-greeter-in-ubuntu-14-04/ REVISAR ESTE
-# https://askubuntu.com/questions/604564/how-do-i-add-or-manipulate-application-system-indicators-in-the-login-screen
-# En /usr/share/glib-2.0/schemas/90_unity-greeter.gschema.override poner:
-#   [com.canonical.unity-greeter]
-#   indicators=['com.canonical.indicator.session']
-#
-# sudo glib-compile-schemas /usr/share/glib-2.0/schemas/
-# sudo service lightdm restart
+#  - name: bootstrap | escritorio LXDE instalado
+#    apt:
+#      name: lubuntu-desktop
+#    become: True
 
