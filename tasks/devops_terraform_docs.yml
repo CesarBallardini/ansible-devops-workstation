@@ -18,7 +18,7 @@
 
 - name: devops | terraform-docs | version actual instalada
   shell: |
-     /usr/local/bin/terraform-docs --version
+     /usr/local/bin/terraform-docs --version  | sed -n  -e "s/^terraform-docs version *v\([^ ]*\) .*/\1/p"
   register: reg_terraform_docs_version
   failed_when: false
   changed_when: false
