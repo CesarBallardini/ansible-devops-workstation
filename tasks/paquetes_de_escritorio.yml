@@ -182,6 +182,19 @@
     - escritorio
 
 # http://duncanlock.net/blog/2013/05/03/how-to-set-your-compose-key-on-xfce-xubuntu-lxde-linux/
+# http://wiki.linuxquestions.org/wiki/List_of_Keysyms_Recognised_by_Xmodmap
+# /usr/share/X11/locale/en_US.UTF-8/Compose lista de simbolos para Compose
+# http://wiki.linuxquestions.org/wiki/List_of_keysyms
+# FIXME: para arreglarlo a nivel sistema modificar en /etc/default/keyboard XKBOPTIONS="compose:paus"
+#
+# https://wiki.archlinux.org/index.php/Linux_console_(Espa%C3%B1ol)/Keyboard_configuration_(Espa%C3%B1ol)
+# localectl status
+# https://wiki.archlinux.org/index.php/Keyboard_input
+# https://wiki.archlinux.org/index.php/Xorg/Keyboard_configuration#Configuring_compose_key
+# grep "compose:" /usr/share/X11/xkb/rules/base.lst
+# setxkbmap -print -verbose 10
+
+
 - name: escritorio | activa tecla de Compose
   shell: setxkbmap -option "compose:paus"
   failed_when: false
