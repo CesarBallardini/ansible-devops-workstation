@@ -2,6 +2,17 @@
 - hosts: devops
 
   tasks:
+
+    - name: devops | verifica si hay virtualizacion por hardware requerido para VMware Workstation
+      command: egrep "svm|vmx" /proc/cpuinfo
+      ignore_errors: True
+      changed_when: False
+      become: True
+      register: hay_virtualizacion_register
+      tags: 
+        - devops
+        - vmware-workstation
+
     - include_role:
         name: vmware-workstation
         apply:
@@ -11,6 +22,7 @@
           tags:
             - devops
             - vmware-workstation
+      when: hay_virtualizacion_register is succeeded
       vars:
         workstation_tempdir: /var/cache/workstation-downloads
       tags: 
@@ -27,6 +39,7 @@
       update-rc.d vmware disable
       update-rc.d vmware-workstation-server disable
       update-rc.d vmware-USBArbitrator disable
+    when: hay_virtualizacion_register is succeeded
     become: true
     tags: 
       - devops
