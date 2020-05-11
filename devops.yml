@@ -12,6 +12,7 @@
       tags: 
         - devops
         - vmware-workstation
+        - virtualbox
 
     - include_role:
         name: vmware-workstation
@@ -73,6 +74,27 @@
       - terragrunt
 
   - include_tasks: tasks/devops_virtualbox.yml
+    when: hay_virtualizacion_register is succeeded
+    vars:
+      virtualbox_old_packages_to_remove: 
+        - virtualbox-dkms
+        - virtualbox-5.1
+        - virtualbox-5.2
+        - virtualbox-6.0
+      virtualbox_version_to_install: "virtualbox-6.1"
+    tags: 
+      - devops
+      - virtualbox
+
+  - include_tasks: tasks/devops_virtualbox.yml
+    when: hay_virtualizacion_register is failed
+    vars:
+      virtualbox_old_packages_to_remove: 
+        - virtualbox-dkms
+        - virtualbox-5.1
+        - virtualbox-5.2
+        - virtualbox-6.1
+      virtualbox_version_to_install: "virtualbox-6.0"
     tags: 
       - devops
       - virtualbox

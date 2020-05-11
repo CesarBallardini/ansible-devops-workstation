@@ -2,11 +2,7 @@
 
 - name: virtualbox | elimina versiones viejas de virtualbox
   apt:
-    name:       
-    - virtualbox-dkms
-    - virtualbox-5.1
-    - virtualbox-5.2
-    - virtualbox-6.0
+    name: "{{ virtualbox_old_packages_to_remove }}"
     state: absent
   become: true
   tags:
@@ -27,6 +23,9 @@
 # TODO: no hay paquete al dia de hoy en focal: 2020-03-05
 - set_fact:
         virtualbox_distro_release: "{{ ansible_distribution_release != 'focal' and ansible_distribution_release or 'eoan' }}"
+  tags:
+    - devops
+    - virtualbox
 
 
 - name: virtualbox | agrego repo
@@ -54,7 +53,7 @@
 
 - name: virtualbox | instala virtualbox
   apt:
-    name: virtualbox-6.1
+    name: "{{ virtualbox_version_to_install }}"
     state: present
   become: true
   tags:
