@@ -6,6 +6,7 @@
     - virtualbox-dkms
     - virtualbox-5.1
     - virtualbox-5.2
+    - virtualbox-6.0
     state: absent
   become: true
   tags:
@@ -53,7 +54,7 @@
 
 - name: virtualbox | instala virtualbox
   apt:
-    name: virtualbox-6.0
+    name: virtualbox-6.1
     state: present
   become: true
   tags:
