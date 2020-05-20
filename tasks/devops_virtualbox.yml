@@ -14,6 +14,7 @@
 - name: virtualbox | agrega clave del repo
   apt_key:
     url: 'https://www.virtualbox.org/download/oracle_vbox_2016.asc'
+    id: B9F8D658297AF3EFC18D5CDFA2F683C52980AECF
     state: present
   become: true
   tags:
