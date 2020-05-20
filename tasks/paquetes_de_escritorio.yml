@@ -3,6 +3,7 @@
 - name: escritorio | agrego clave del repo de google chrome
   apt_key:
     url: https://dl-ssl.google.com/linux/linux_signing_key.pub
+    id: 'A040830F7FAC5991'
     state: present
   become: true
   tags:

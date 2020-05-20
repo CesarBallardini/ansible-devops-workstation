@@ -29,6 +29,7 @@
 - name: microsoft_visualstudio_code | agrega clave del repo
   apt_key:
     url: 'https://packages.microsoft.com/keys/microsoft.asc'
+    id: 'EB3E94ADBE1229CF'
     state: present
   become: true
   tags:

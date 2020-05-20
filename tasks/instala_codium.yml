@@ -26,6 +26,7 @@
 - name: codium | agrega clave del repo
   apt_key:
     url: 'https://gitlab.com/paulcarroty/vscodium-deb-rpm-repo/raw/master/pub.gpg'
+    id: '54678CF75A278D9C'
     state: present
   become: true
   tags:

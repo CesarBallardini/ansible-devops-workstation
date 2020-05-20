@@ -6,6 +6,7 @@
 - name: liveUSB-multiboot | agrega clave del repo
   apt_key:
     url: 'http://liveusb.info/multisystem/depot/multisystem.asc'
+    id: '4E940D7FDD7FB8CC'
     state: present
   become: true
   tags: [ multiboot ]
