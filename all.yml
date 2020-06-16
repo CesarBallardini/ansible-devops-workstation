@@ -48,6 +48,10 @@
       state: present
     become: true
 
+  - name: all | pup Parsing HTML at the command line
+    include_tasks: tasks/instala_pup.yml
+    tags: [ pup ]
+
   - name: all | mejora performance
     include_tasks: tasks/mejora_performance.yml
     tags: [ performance ]
