@@ -1,0 +1,71 @@
+---
+# See https://zoom.us/download#client_4meeting
+
+- name: zoom | paquetes generales
+  apt:
+    name:
+      - jq
+      - git
+      - wget
+      - curl
+      - unzip
+    state: present
+  become: true
+  tags:
+    - zoom
+
+
+- name: zoom | version actual instalada
+  shell: |
+     LANG=C dpkg-query --showformat='${Version}\n' --show zoom
+  register: reg_zoom_version_instalada
+  failed_when: false
+  changed_when: false
+  tags:
+    - zoom
+
+
+- name: zoom | busca el nombre de la version actual
+  shell: |
+    wget -o /dev/null -O - https://zoom.us/download#client_4meeting | pup 'span[class="linux-ver-text"] text{}' | awk '{print $2}'
+  register: reg_zoom_version_actual
+  changed_when: false
+  args:
+    warn: false
+  tags:
+    - zoom
+
+- set_fact:
+    zoom_url_actual: "https://zoom.us/client/latest/zoom_amd64.deb"
+    zoom_version_instalada: "{{ reg_zoom_version_instalada.stdout }}"
+    zoom_version_actual:    "{{ reg_zoom_version_actual.stdout }}"
+  tags:
+    - zoom
+
+- debug: msg="zoom, version instalada - {{ zoom_version_instalada }}"
+  tags:
+    - zoom
+- debug: msg="zoom, url actual        - {{ zoom_url_actual }}"
+  tags:
+    - zoom
+- debug: msg="zoom, url version       - {{ zoom_version_actual }}"
+  tags:
+    - zoom
+
+- name: zoom | instala paquete
+  apt:
+    deb: "{{ zoom_url_actual }}"
+  become: true
+  when: zoom_version_instalada != zoom_version_actual
+  tags:
+    - zoom
+
+
+- name: zoom | asegura dependencias
+  shell: |
+       apt-get -y -f install
+  become: true
+  when: zoom_version_instalada != zoom_version_actual
+  tags:
+   - zoom
+

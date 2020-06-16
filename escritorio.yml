@@ -7,6 +7,9 @@
     # template para /etc/systemd/timesyncd.conf poner los servidores NTP
     # sudo service systemd-timesyncd restart
 
+  - include_tasks: tasks/instala_zoom.yml
+    tags: [ zoom ]
+
   - include_tasks: tasks/instala_ffmpeg.yml
     tags: [ ffmpeg, video ]
 
