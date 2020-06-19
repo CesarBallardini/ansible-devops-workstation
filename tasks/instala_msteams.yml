@@ -1,0 +1,42 @@
+---
+
+- name: msteams | agrega clave del repo
+  apt_key:
+    url: 'https://packages.microsoft.com/keys/microsoft.asc'
+    id: 'EB3E94ADBE1229CF'
+    state: present
+  become: true
+  tags:
+    - msteams
+
+- name: msteams | agrego repo
+  apt_repository:
+    repo: "deb [arch=amd64] https://packages.microsoft.com/repos/ms-teams stable main"
+    state: present
+    update_cache: yes
+    filename: teams
+  become: true
+  register: reg_add_repo_teams
+  tags:
+    - msteams
+
+
+- name: msteams | actualizo lista paquetes .deb
+  apt:
+    update_cache: yes
+    cache_valid_time: 3600
+  become: true
+  when: reg_add_repo_teams is changed
+  tags:
+    - msteams
+
+
+- name: msteams | instala msteams
+  apt:
+    name: teams
+    state: present
+  become: true
+  tags:
+    - msteams
+
+
