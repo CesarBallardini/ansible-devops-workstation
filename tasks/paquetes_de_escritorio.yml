@@ -104,6 +104,7 @@
   apt:
     name:
       - cgroup-tools
+      - cmake
       - debconf-utils
       - deborphan
       - dnsmasq
