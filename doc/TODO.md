@@ -3,6 +3,13 @@
 # Ubuntu 18.04 Bionic
 
 * ttf-mscorefonts-installer fallo al descargar archivos extras durante la instalacion FIXME
+* Touch to click no funciona:
+
+```bash
+xinput set-prop 11 301 1
+xinput list-props 11
+```
+
 
 # Ubuntu 20.04 Focal Fossa
 
