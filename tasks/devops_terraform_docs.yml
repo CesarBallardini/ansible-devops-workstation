@@ -100,6 +100,7 @@
     url: "{{ terraform_docs_url_actual }}"
     dest: /usr/local/bin/terraform-docs
     mode: 0755
+    force: yes
   become: true
   when: terraform_docs_version_instalada != terraform_docs_url_version
   tags:
