@@ -31,7 +31,8 @@
 - name: devops | terraform-docs | busca el nombre de la version actual
   shell: |
     curl --location --silent "https://api.github.com/repos/segmentio/terraform-docs/releases" \
-      | jq -r '.[0].name'
+      | jq -r '.[] | select(.name|test("v[0-9]*.[0-9]*.[0-9]*$")) | .name ' \
+      | head -n 1
 
   register: reg_terraform_docs_url_version
   changed_when: false
