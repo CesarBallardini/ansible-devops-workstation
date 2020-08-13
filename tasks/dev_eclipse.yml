@@ -1,0 +1,9 @@
+---
+
+- name: eclipse | instala desde snap
+  snap:
+    name: eclipse
+    classic: yes
+  become: true
+  tags:
+    - eclipse

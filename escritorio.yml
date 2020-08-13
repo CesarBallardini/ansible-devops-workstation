@@ -27,6 +27,11 @@
       - escritorio
       - snap
 
+  - include_tasks: tasks/dev_eclipse.yml
+    tags: 
+      - escritorio
+      - eclipse
+
   - include_tasks: tasks/dev_netbeans.yml
     tags: 
       - escritorio
