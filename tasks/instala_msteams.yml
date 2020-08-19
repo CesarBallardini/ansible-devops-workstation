@@ -33,8 +33,9 @@
 
 - name: msteams | instala msteams
   apt:
-    name: teams
+    name: teams=1.3.00.5153
     state: present
+    force: yes
   become: true
   tags:
     - msteams
