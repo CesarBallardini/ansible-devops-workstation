@@ -2,11 +2,12 @@
 
 ## 
 # Para ejecutar Pharo con una iagen fresca, hacer:
-# cp /opt/pharo/Pharo7.0* . ; PHARO_IMAGE=$( echo Pharo7.0*image )  /opt/pharo/pharo &
+# cp /opt/pharo/Pharo8.0* . ; PHARO_IMAGE=$( echo Pharo8.0*image )  /opt/pharo/pharo &
 
 # FIXME: version de pharo debe ir a variables de host
 - set_fact:
-    pharo_version_family: "70"
+    pharo_version_family: "80"
+    pharo_version: "8.0"
     pharo_home_directory: "/opt/pharo"
   tags:
     - utn
@@ -57,13 +58,26 @@
 
 
 - name: utn | Verifico si existe instalacion de pharo
-  command: /opt/pharo/bin/pharo --headless /opt/pharo/images/Pharo.image printVersion
+  shell: /opt/pharo/bin/pharo --headless /opt/pharo/images/Pharo.image printVersion 2>/dev/null \
+         | sed -e "s/\[version\] *'Pharo\([0-9]*\.[0-9]*\)\.[0-9]*.*/\1/"
   register: reg_pharo_version_instalada
   failed_when: false
   changed_when: false
   tags:
     - utn
     - pharo
+
+
+- name: utn | directorio de instalacion se elimina al cambiar de version de Pharo
+  file:
+    path: "{{ pharo_home_directory }}/"
+    state: absent
+  when: reg_pharo_version_instalada.rc != 0 or reg_pharo_version_instalada.stdout != pharo_version
+  become: true
+  tags:
+    - utn
+    - pharo
+
 
 - name: utn | asegura existe directorio de instalacion y descargas para pharo
   file:
@@ -92,12 +106,12 @@
     - pharo
 
 
-# imagen: https://files.pharo.org/get-files/70/pharo64.zip
+# imagen: https://files.pharo.org/get-files/80/pharo64.zip
 - name: utn | Descarga imagen Pharo
   get_url:
     url: "https://files.pharo.org/get-files/{{ pharo_version_family }}/pharo64.zip"
     dest: "{{ pharo_home_directory }}/downloads/pharo64.zip"
-  when: reg_pharo_version_instalada.rc != 0
+  when: reg_pharo_version_instalada.rc != 0 or reg_pharo_version_instalada.stdout != pharo_version
   become: true
   tags:
     - utn
@@ -105,12 +119,12 @@
 
 
 
-# vm:  https://files.pharo.org/get-files/70/pharo64-linux-stable.zip
+# vm:  https://files.pharo.org/get-files/80/pharo64-linux-stable.zip
 - name: utn | Descarga VM Pharo
   get_url:
     url: "http://files.pharo.org/get-files/{{ pharo_version_family }}/pharo64-linux-stable.zip"
     dest: "{{ pharo_home_directory }}/downloads/pharo64-linux-stable.zip"
-  when: reg_pharo_version_instalada.rc != 0
+  when: reg_pharo_version_instalada.rc != 0 or reg_pharo_version_instalada.stdout != pharo_version
   become: true
   tags:
     - utn
@@ -122,7 +136,7 @@
     src: "{{ pharo_home_directory }}/downloads/pharo64-linux-stable.zip"
     dest: "{{ pharo_home_directory }}"
     remote_src: yes
-  when: reg_pharo_version_instalada.rc != 0
+  when: reg_pharo_version_instalada.rc != 0 or reg_pharo_version_instalada.stdout != pharo_version
   become: true
   tags:
     - utn
@@ -133,7 +147,7 @@
     src: "{{ pharo_home_directory }}/downloads/pharo64.zip"
     dest: "{{ pharo_home_directory }}"
     remote_src: yes
-  when: reg_pharo_version_instalada.rc != 0
+  when: reg_pharo_version_instalada.rc != 0 or reg_pharo_version_instalada.stdout != pharo_version
   become: true
   tags:
     - utn
@@ -141,15 +155,15 @@
 
 - name: utn | Pharo copia las imagenes originales al directorio de trabajo
   shell: |
-    cp {{ pharo_home_directory }}/Pharo7.0.*-64bit-*.image {{ pharo_home_directory }}/images/Pharo.image
+    cp {{ pharo_home_directory }}/Pharo{{ pharo_version }}*-64bit-*.image {{ pharo_home_directory }}/images/Pharo.image
     chmod o+rw {{ pharo_home_directory }}/images/Pharo.image
 
-    cp {{ pharo_home_directory }}/Pharo7.0.*-64bit-*.changes {{ pharo_home_directory }}/images/Pharo.changes
+    cp {{ pharo_home_directory }}/Pharo{{ pharo_version }}*-64bit-*.changes {{ pharo_home_directory }}/images/Pharo.changes
     chmod o+rw {{ pharo_home_directory }}/images/Pharo.changes
 
-    cp {{ pharo_home_directory }}/Pharo7.0-*.sources {{ pharo_home_directory }}/images/
-    chmod o+rw {{ pharo_home_directory }}/images/Pharo7.0-*.sources
-  when: reg_pharo_version_instalada.rc != 0
+    cp {{ pharo_home_directory }}/Pharo{{ pharo_version }}-*.sources {{ pharo_home_directory }}/images/
+    chmod o+rw {{ pharo_home_directory }}/images/Pharo{{ pharo_version }}-*.sources
+  when: reg_pharo_version_instalada.rc != 0 or reg_pharo_version_instalada.stdout != pharo_version
   become: true
   tags:
     - utn
