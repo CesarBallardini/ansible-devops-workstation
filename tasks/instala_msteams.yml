@@ -1,4 +1,9 @@
 ---
+- set_fact:
+    msteams_version_deseada: '1.3.00.5153'
+  tags:
+    - msteams
+
 
 - name: msteams | agrega clave del repo
   apt_key:
@@ -9,6 +14,7 @@
   tags:
     - msteams
 
+
 - name: msteams | agrego repo
   apt_repository:
     repo: "deb [arch=amd64] https://packages.microsoft.com/repos/ms-teams stable main"
@@ -17,6 +23,15 @@
     filename: teams
   become: true
   register: reg_add_repo_teams
+  tags:
+    - msteams
+
+
+- name: msteams | agrego pin
+  template:
+    src: msteams-preference.j2
+    dest: "/etc/apt/preferences.d/teams"
+  become: true
   tags:
     - msteams
 
@@ -33,11 +48,10 @@
 
 - name: msteams | instala msteams
   apt:
-    name: teams=1.3.00.5153
+    name: teams={{ msteams_version_deseada }}
     state: present
     force: yes
   become: true
   tags:
     - msteams
-
 
