@@ -29,6 +29,7 @@
   copy:
     dest: /etc/apt/sources.list
     content: ''
+    mode: 0644
   become: true
   tags:
     - apt

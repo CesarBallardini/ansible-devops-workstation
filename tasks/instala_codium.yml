@@ -42,6 +42,7 @@
 #    state: present
 #    update_cache: yes
 #    filename: codium
+#    mode: 0644
 #  become: true
 #  tags:
 #    - codium
@@ -56,6 +57,7 @@
     state: present
     update_cache: yes
     filename: codium
+    mode: 0644
   become: true
   tags:
     - codium
