@@ -18,8 +18,19 @@
 - name: utn | instala prolog
   apt:
     name:
-      - swi-prolog-nox
       - swi-prolog-doc
+    state: present
+  when: ansible_distribution_release != "focal"
+  become: true
+  tags:
+    - utn
+    - prolog
+
+
+- name: utn | instala prolog
+  apt:
+    name:
+      - swi-prolog-nox
       - gprolog
       - gprolog-doc
     state: present
