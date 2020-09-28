@@ -7,6 +7,9 @@
     # template para /etc/systemd/timesyncd.conf poner los servidores NTP
     # sudo service systemd-timesyncd restart
 
+  - include_tasks: tasks/paquetes_de_escritorio.yml
+    tags: [ escritorio ]
+
   - include_tasks: tasks/instala_zoom.yml
     tags: [ zoom ]
 
@@ -15,9 +18,6 @@
 
   - include_tasks: tasks/instala_ffmpeg.yml
     tags: [ ffmpeg, video ]
-
-  - include_tasks: tasks/paquetes_de_escritorio.yml
-    tags: [ escritorio ]
 
   - include_tasks: tasks/sshfs-fuse.yml
     tags: [ escritorio ]

@@ -111,6 +111,7 @@
       - inetutils-traceroute
       - iotop
       - iproute2
+      - gawk
       - htop
       - mc
       - nocache
