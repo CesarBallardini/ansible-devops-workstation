@@ -114,6 +114,7 @@
       - gawk
       - htop
       - mc
+      - mlocate
       - nocache
       - openssh-server
       - pv
