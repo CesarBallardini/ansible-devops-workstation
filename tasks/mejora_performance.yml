@@ -40,7 +40,7 @@
 - name: performance | ajusta swappiness
   sysctl:
     name: vm.swappiness
-    value: "10"
+    value: "{{ swappiness }}"
     state: present
     reload: yes
   become: true
