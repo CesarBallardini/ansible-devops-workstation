@@ -119,4 +119,5 @@ fuse_restrict_access: False
 # FIXME: cuando .ansible_facts.ansible_devices.sda.rotational == 0 usar swappiness 1, sino 10
 # ansible localhost -i inventario/ -m setup | sed -e  "s/localhost | SUCCESS => //"  | jq ".ansible_facts.ansible_devices.sda.rotational"
 swappiness: "10"
+ansible_version_deseada: ''
 

@@ -10,15 +10,7 @@
 # Ahora lo mantenemos actualizado.
 
 # Si ansible_version_deseada es una cadena vacia, se instala la ultima version disponible
-- set_fact:
-    ansible_version_deseada: ''
-    #ansible_version_deseada: "2.10.0"
-    #ansible_version_deseada: "2.10.1"
-    #ansible_version_deseada: "2.9.6"
-    #ansible_version_deseada: "2.8.6"
-  tags:
-   - devops
-   - ansible
+# se obtiene de variables de inventario
 
 - name: devops | ansible | version actual instalada
   shell: |
