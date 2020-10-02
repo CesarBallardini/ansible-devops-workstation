@@ -11,8 +11,11 @@
 
 # Si ansible_version_deseada es una cadena vacia, se instala la ultima version disponible
 - set_fact:
-    #ansible_version_deseada: ''
-    ansible_version_deseada: "2.9.6"
+    ansible_version_deseada: ''
+    #ansible_version_deseada: "2.10.0"
+    #ansible_version_deseada: "2.10.1"
+    #ansible_version_deseada: "2.9.6"
+    #ansible_version_deseada: "2.8.6"
   tags:
    - devops
    - ansible
@@ -75,6 +78,34 @@
    - devops
    - ansible
 
+- debug: msg="Pasar de 2.9.x hacia 2.10.x debe hacerse con uninstall/install"
+  #failed_when: ansible_version_a_instalar is version('2.10', '>') and ansible_version_instalada is version('2.9.99', '<')
+  when: (ansible_version_a_instalar is version('2.10.0', '>=') and ansible_version_instalada is version('2.9.99', '<')  or
+        ansible_version_a_instalar is version('2.9.99', '<') and ansible_version_instalada is version('2.10.0', '>='))
+  tags:
+   - devops
+   - ansible
+
+# FIXME: los siguientes cambios de version dan los resultados:
+# 2.8.6 -> 2.10.0 OK
+# 2.8.6 -> 2.9.6 OK
+#
+# 2.9.6 -> 1.10.0 ERROR, volver a correr el playbook
+# 2.10.0 -> 2.9.6 ERROR, volver a correr el playbook
+# 2.9.6  -> 2.8.6 ERROR, volver a correr el playbook
+#
+- name: devops | ansible | actualiza manualmente Ansible
+  shell: |
+    python3 -m pip uninstall -y  ansible      || /bin/true
+    python3 -m pip uninstall -y  ansible-base || /bin/true
+    python3 -m pip install ansible=={{ ansible_version_a_instalar }}
+ 
+  when: ansible_version_a_instalar != ansible_version_instalada 
+  environment:
+    - ANSIBLE_SKIP_CONFLICT_CHECK: 1
+  tags:
+   - devops
+   - ansible
 
 
 
@@ -123,15 +154,16 @@
     - devops
     - ansible
 
-- name: devops | ansible | actualiza ansible
-  pip:
-    name: ansible=={{ ansible_version_a_instalar }}
-    state: latest
-    executable: /usr/local/bin/pip
-  become: true
-  tags:
-    - devops
-    - ansible
+#- name: devops | ansible | actualiza ansible
+#  pip:
+#    name:
+#      - ansible
+#    version: "{{ ansible_version_a_instalar }}"
+#    executable: /usr/local/bin/pip
+#  become: true
+#  tags:
+#    - devops
+#    - ansible
 
 - name: devops | ansible | actualiza ansible-lint
   pip:
