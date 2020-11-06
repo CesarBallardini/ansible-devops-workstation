@@ -2,8 +2,8 @@
 
 # Si vagrant_version_deseada es una cadena vacia, se instala la ultima version disponible
 - set_fact:
-    vagrant_version_deseada: ''
-    #vagrant_version_deseada: "2.2.3"
+    #vagrant_version_deseada: ''
+    vagrant_version_deseada: "2.2.10"
   tags:
    - devops
    - vagrant
