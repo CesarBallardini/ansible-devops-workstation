@@ -24,15 +24,15 @@
 
 - name: devops | ansible | busca el nombre de la version actual
   shell: |
-     python3 -m pip install  --user ansible== 2>&1 \
-       | sed -e "s/.*(from versions: //" \
-             -e "s/)//" \
-             -e "s/ERROR: No matching distribution found for ansible=="// \
-       | tr -d "," \
-       | tr " " "\012" \
-       | sed -n -e "/^[0-9]*\\.[0-9]*\\.[0-9]*$/p" \
-       | sort -Vr \
-       | head -n 1
+      curl https://pypi.org/pypi/ansible/json -o - 2>/dev/null \
+        | jq  ".releases| keys[]"  \
+        | tr -d '"' \
+        | sed -n -e "/^[0-9]*\\.[0-9]*\\.[0-9]*$/p" \
+        | grep  "^[0-9]*\.[0-9]*\.[0-9]*$" \
+        | sed '/-/!{s/$/_/}' \
+        | sort -Vr \
+        | sed 's/_$//' \
+        | head -n 1
 
   register: reg_ansible_pip_version
   changed_when: false
@@ -72,8 +72,8 @@
 
 - debug: msg="Pasar de 2.9.x hacia 2.10.x debe hacerse con uninstall/install"
   #failed_when: ansible_version_a_instalar is version('2.10', '>') and ansible_version_instalada is version('2.9.99', '<')
-  when: (ansible_version_a_instalar is version('2.10.0', '>=') and ansible_version_instalada is version('2.9.99', '<')  or
-        ansible_version_a_instalar is version('2.9.99', '<') and ansible_version_instalada is version('2.10.0', '>='))
+  when: ((ansible_version_a_instalar is version('2.10.0', '>=') and ansible_version_instalada is version('2.9.99', '<'))  or
+         (ansible_version_a_instalar is version('2.9.99', '<')  and ansible_version_instalada is version('2.10.0', '>=')))
   tags:
    - devops
    - ansible
