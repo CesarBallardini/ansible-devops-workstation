@@ -150,6 +150,7 @@
       - minicom
       - mplayer
       - nmap
+      - odt2txt
       - recode
       - tree
       - ttf-mscorefonts-installer
