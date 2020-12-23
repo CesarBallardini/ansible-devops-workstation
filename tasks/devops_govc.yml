@@ -18,7 +18,7 @@
 
 - name: devops | govc | version actual instalada
   shell: |
-     LANG=C /usr/local/bin/govc version  | sed -n  -e "s/govc [ ]*\([0-9\.]*\)/\1/p"
+     LANG=C /usr/local/bin/govc version  | sed -n  -e "s/govc [ ]*v\([0-9\.]*\)/\1/p"
   register: reg_govc_version
   failed_when: false
   changed_when: false
