@@ -10,3 +10,8 @@
   version: v1.0.41
   scm: git
   name: locales
+
+- src: https://github.com/OCSInventory-NG/Ansible-Role-For-UnixAgent
+  version: 6f38ddc3e24b654f0de2e564eddbe546af0bc059
+  scm: git
+  name: ocsinventory-agent

@@ -31,6 +31,9 @@ localhost
 [utn]
 localhost
 
+[ocsinventory-agent]
+#localhost  # la mayoria de los escritorios no requieren OCS Inventory Agent
+
 [python3]
 localhost
 

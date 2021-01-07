@@ -1,0 +1,12 @@
+---
+- hosts: ocsinventory-agent
+  become: true
+
+  tasks:
+
+    - name: ocsinventory-agent | incluye role
+      include_role:
+        name: ocsinventory-agent
+      when: ocs_server is defined and ocs_server|length 
+      tags: [ ocsinventory-agent ]
+
