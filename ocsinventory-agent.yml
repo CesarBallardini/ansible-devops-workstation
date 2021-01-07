@@ -1,5 +1,5 @@
 ---
-- hosts: ocsinventory-agent
+- hosts: ocsinventoryagent
   become: true
 
   tasks:
@@ -7,6 +7,18 @@
     - name: ocsinventory-agent | incluye role
       include_role:
         name: ocsinventory-agent
+        apply:
+          tags: [ ocsinventory-agent ]
       when: ocs_server is defined and ocs_server|length 
-      tags: [ ocsinventory-agent ]
+      tags: [ always ]
 
+    # https://fossies.org/linux/Ocsinventory-Unix-Agent/postinst.pl#l_345
+    # instalador no es configurable con las opciones en el crontab
+    # 28 11 * * * root /usr/local/bin/ocsinventory-agent --lazy > /dev/null 2>&1
+    - name: ocsinventory-agent | asegura que no informa software
+      lineinfile:
+        path: /etc/cron.d/ocsinventory-agent
+        regexp: '^(.*) /usr/local/bin/ocsinventory-agent --lazy (.*)$'
+        line: '\1 /usr/local/bin/ocsinventory-agent --nosoftware --lazy \2'
+        backrefs: yes
+      tags: [ ocsinventory-agent ]
