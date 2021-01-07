@@ -21,4 +21,5 @@
         regexp: '^(.*) /usr/local/bin/ocsinventory-agent --lazy (.*)$'
         line: '\1 /usr/local/bin/ocsinventory-agent --nosoftware --lazy \2'
         backrefs: yes
+      when: ocs_server is defined and ocs_server|length 
       tags: [ ocsinventory-agent ]
