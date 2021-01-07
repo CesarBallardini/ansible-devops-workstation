@@ -23,3 +23,27 @@
         backrefs: yes
       when: ocs_server is defined and ocs_server|length 
       tags: [ ocsinventory-agent ]
+
+
+
+# Para desinstalar deshacer lo que hizo:
+# https://fossies.org/linux/Ocsinventory-Unix-Agent/postinst.pl
+# En roles/ocsinventory-agent/defaults/main.yml estan los directorios defaults a eliminar
+# Los paquetes APT que fueron dependencias: FIXME los dejo instalados
+
+    - name: ocsinventory-agent | elimina el agente
+      file:
+        path: '{{ item }}'
+        state: absent
+      loop:
+        - '/etc/cron.d/ocsinventory-agent'
+        - '/usr/local/bin/ocsinventory-agent'
+        # "{{ ocs_configdir }}"
+        - '/etc/ocsinventory'
+        # "{{ ocs_logfile }}"
+        - '/var/log/ocsinventory-agent.log'
+        # "{{ ocs_basedir }}"
+        - '/var/lib/ocsinventory-agent'
+      when: not ( ocs_server is defined and ocs_server|length )
+      tags: [ ocsinventory-agent ]
+
