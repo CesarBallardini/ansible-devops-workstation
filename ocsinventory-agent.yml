@@ -19,8 +19,8 @@
       cron:
         name: "OCS Inventory Agent"
         cron_file: "/etc/cron.d/ocsinventory-agent"
-        minute: "0"
-        hour: "{{ ansible_date_time.hour|int + '1'|int }}"
+        minute: "{{ 59 |random(seed=inventory_hostname) }}"
+        hour: "8"
         job: "/usr/local/bin/ocsinventory-agent --nosoftware --lazy > /dev/null 2>&1"
         user: "root"
       when: ocs_server is defined and ocs_server|length 
