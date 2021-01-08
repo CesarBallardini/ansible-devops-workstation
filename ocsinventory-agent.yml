@@ -16,11 +16,13 @@
     # instalador no es configurable con las opciones en el crontab
     # 28 11 * * * root /usr/local/bin/ocsinventory-agent --lazy > /dev/null 2>&1
     - name: ocsinventory-agent | asegura que no informa software
-      lineinfile:
-        path: /etc/cron.d/ocsinventory-agent
-        regexp: '^(.*) /usr/local/bin/ocsinventory-agent --lazy (.*)$'
-        line: '\1 /usr/local/bin/ocsinventory-agent --nosoftware --lazy \2'
-        backrefs: yes
+      cron:
+        name: "OCS Inventory Agent"
+        cron_file: "/etc/cron.d/ocsinventory-agent"
+        minute: "0"
+        hour: "{{ ansible_date_time.hour|int + '1'|int }}"
+        job: "/usr/local/bin/ocsinventory-agent --nosoftware --lazy > /dev/null 2>&1"
+        user: "root"
       when: ocs_server is defined and ocs_server|length 
       tags: [ ocsinventory-agent ]
 
