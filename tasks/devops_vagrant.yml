@@ -76,7 +76,7 @@
     vagrant_url_actual: "{{ reg_vagrant_url_actual.stdout }}"
     vagrant_url_version: "{{ reg_vagrant_url_version.stdout }}"
     vagrant_plugins_deseados:
-      - hostmanager
+      #- hostmanager
       - vagrant-cachier
       - vagrant-disksize
       - vagrant-hostmanager
