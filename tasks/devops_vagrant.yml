@@ -79,7 +79,7 @@
       #- hostmanager
       - vagrant-cachier
       - vagrant-disksize
-      - vagrant-hostmanager
+      #- vagrant-hostmanager
       - vagrant-mutate
       - vagrant-proxyconf
       - vagrant-rekey-ssh
