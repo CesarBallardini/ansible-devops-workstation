@@ -45,7 +45,6 @@
 - name: virtualbox | actualizo lista paquetes .deb
   apt:
     update_cache: yes
-    cache_valid_time: 3600
   become: true
   when: reg_add_repo_vb is changed
   tags:
