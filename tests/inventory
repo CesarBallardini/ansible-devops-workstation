@@ -8,19 +8,19 @@ localhost ansible_connection=local
 #localhost
 
 [servidor]
-#localhost
+localhost
 
 [escritorio]
 #localhost
 
 [devops]
-#localhost
+localhost
 
 [utn]
 #localhost
 
 [ocsinventoryagent]
-localhost  # la mayoria de los escritorios no requieren OCS Inventory Agent
+#localhost  # la mayoria de los escritorios no requieren OCS Inventory Agent
 
 [python3]
 localhost
