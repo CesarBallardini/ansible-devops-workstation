@@ -16,9 +16,6 @@ localhost
 [tinyproxy]
 localhost
 
-[ws]
-localhost
-
 [servidor]
 localhost
 
@@ -29,7 +26,7 @@ localhost
 localhost
 
 [utn]
-localhost
+#localhost
 
 [ocsinventoryagent]
 #localhost  # la mayoria de los escritorios no requieren OCS Inventory Agent

@@ -125,9 +125,6 @@ localhost
 [tinyproxy]
 localhost
 
-[ws]
-localhost
-
 [servidor]
 localhost
 
