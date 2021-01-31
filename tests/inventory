@@ -17,7 +17,7 @@ localhost
 #localhost
 
 [utn]
-#localhost
+localhost
 
 [python3]
 localhost
