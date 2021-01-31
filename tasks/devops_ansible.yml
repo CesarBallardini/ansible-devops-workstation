@@ -50,6 +50,8 @@
         | head -n 1
 
   register: reg_ansible_pip_version
+  args:
+    warn: false
   changed_when: false
   tags:
    - devops
