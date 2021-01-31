@@ -12,6 +12,21 @@
 # Si ansible_version_deseada es una cadena vacia, se instala la ultima version disponible
 # se obtiene de variables de inventario
 
+- name: devops | ansible | paquetes generales
+  apt:
+    name:
+      - jq
+      - git
+      - wget
+      - curl
+      - unzip
+    state: present
+  become: true
+  tags:
+   - devops
+   - ansible
+
+
 - name: devops | ansible | version actual instalada
   shell: |
      LANG=C ansible --version | sed -n  -e "s/^ansible[ ]*\([0-9\.]*\)/\1/p"
