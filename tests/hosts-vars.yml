@@ -104,7 +104,9 @@ tinyproxy_no_upstream:
   - "192.168.20.0/22"
   - "."
 
-tinyproxy_default_upstream: ''
+tinyproxy_upstream: ''
+#tinyproxy_upstream:
+# - { protocol: http, proxy: DIRECCION_IP_PROXY_CORPORATIVO:PUERTO_PROXY_CORPORATIVO, destination: '' } # default upstream corporate proxy
 tinyproxy_min_spare_servers: '5'
 tinyproxy_max_spare_servers: '20'
 
