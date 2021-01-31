@@ -27,7 +27,8 @@
 
 - name: zoom | busca el nombre de la version actual
   shell: |
-    wget -o /dev/null -O - https://zoom.us/download#client_4meeting | pup 'span[class="linux-ver-text"] text{}' | awk '{print $2}'
+    wget -o /dev/null -O - https://zoom.us/download#client_4meeting | pup 'span[class="linux-ver-text"] text{}' | sed "s@Version \([0-9]*\.[0-9]*\).*(\(.*\))@\1.\2@"
+
   register: reg_zoom_version_actual
   changed_when: false
   args:
@@ -66,6 +67,8 @@
        apt-get -y -f install
   become: true
   when: zoom_version_instalada != zoom_version_actual
+  args:
+    warn: false
   tags:
    - zoom
 

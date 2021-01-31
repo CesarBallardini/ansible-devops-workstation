@@ -42,6 +42,7 @@
       update-rc.d vmware-USBArbitrator disable
     when: hay_virtualizacion_register is succeeded
     become: true
+    changed_when: false
     tags: 
       - devops
       - vmware-workstation

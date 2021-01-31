@@ -96,6 +96,7 @@
 - name: escritorio | completa instalacion de idiomas
   shell: apt install $(check-language-support)
   become: true
+  changed_when: false
   tags:
     - escritorio
 
@@ -205,6 +206,7 @@
 - name: escritorio | activa tecla de Compose
   shell: setxkbmap -option "compose:paus"
   failed_when: false
+  changed_when: false
   tags:
     - escritorio
 

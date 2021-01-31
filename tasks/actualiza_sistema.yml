@@ -16,6 +16,7 @@
     DEBIAN_FRONTEND: "noninteractive"
     DEBCONF_NONINTERACTIVE_SEEN: "true"
     UCF_FORCE_CONFOLD: 1
+  changed_when: false
   tags:
     - apt
     - upgrade
@@ -30,6 +31,7 @@
     DEBIAN_FRONTEND: "noninteractive"
     DEBCONF_NONINTERACTIVE_SEEN: "true"
     UCF_FORCE_CONFOLD: 1
+  changed_when: false
   tags:
     - apt
     - upgrade
@@ -41,6 +43,7 @@
     DEBCONF_NONINTERACTIVE_SEEN: "true"
     UCF_FORCE_CONFOLD: 1
   become: true
+  changed_when: false
   tags:
     - apt
     - upgrade
@@ -52,6 +55,7 @@
     DEBCONF_NONINTERACTIVE_SEEN: "true"
     UCF_FORCE_CONFOLD: 1
   become: true
+  changed_when: false
   tags:
     - apt
     - upgrade
@@ -59,6 +63,7 @@
 - name: actualiza | apt-fast autoremove
   command: apt-fast -y autoremove
   become: true
+  changed_when: false
   tags:
     - apt
     - upgrade
@@ -66,6 +71,7 @@
 - name: actualiza | apt-fast clean
   command: apt-fast -y clean
   become: true
+  changed_when: false
   tags:
     - apt
     - upgrade

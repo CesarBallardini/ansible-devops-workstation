@@ -93,6 +93,7 @@
     python3 -m pip install ansible=={{ ansible_version_a_instalar }}
  
   when: ansible_version_a_instalar != ansible_version_instalada 
+  changed_when: false
   environment:
     - ANSIBLE_SKIP_CONFLICT_CHECK: 1
   tags:
