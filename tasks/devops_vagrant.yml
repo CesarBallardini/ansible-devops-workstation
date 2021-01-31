@@ -23,6 +23,10 @@
     url: https://releases.hashicorp.com/index.json
     dest: /tmp/hashicorp_index.json
   changed_when: false
+  retries: 10
+  delay: 5
+  register: hashicorp_result
+  until: hashicorp_result is succeeded
   tags:
    - devops
    - vagrant
