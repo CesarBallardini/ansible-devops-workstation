@@ -63,7 +63,7 @@
 
 - set_fact:
     ansible_version_a_instalar: "{{ ansible_version_deseada | d('')  if ansible_version_deseada | d('') != '' else  ansible_pip_version }}"
-    ansible_version_instalada: "{{ reg_ansible_version.rc == 0 and reg_ansible_version.stdout or false }}"
+    ansible_version_instalada: "{{ reg_ansible_version.rc == 0 and reg_ansible_version.stdout or '0.0.0' }}"
   tags:
    - devops
    - ansible
