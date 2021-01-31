@@ -13,9 +13,12 @@ security_repositories:
       - multiverse
 
 ##
-# El repo que usa Travis
+# El repo que usa Travis para arm64
 #
-standard_repo_base_url: "ports.ubuntu.com/ubuntu-ports"
+#standard_repo_base_url: "ports.ubuntu.com/ubuntu-ports"
+#
+# para amd64:
+standard_repo_base_url: "archive.ubuntu.com/ubuntu"
 
 standard_repositories:
   vendor_base:
