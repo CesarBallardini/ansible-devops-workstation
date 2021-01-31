@@ -111,7 +111,7 @@
     force: yes
     #checksum: "sha256:https://www.virtualbox.org/download/hashes/{{ reg_virtualbox_version.stdout }}/SHA256SUMS"
   register: reg_download_result
-  when: reg_extpack_list.stdout == "Extension Packs: 0" or ext_pack_info["Version"] != reg_virtualbox_version.stdout
+  when: reg_extpack_list.stdout == 'Extension Packs: 0' or ext_pack_info["Version"] != reg_virtualbox_version.stdout
   tags:
     - devops
     - virtualbox
