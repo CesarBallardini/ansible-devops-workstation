@@ -8,4 +8,3 @@
 - import_playbook: ../devops.yml
 - import_playbook: ../tinyproxy.yml
 - import_playbook: ../ocsinventory-agent.yml
-~
