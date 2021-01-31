@@ -34,7 +34,7 @@ script:
   # Check the role/playbook's syntax.
   - "ansible-playbook -vv -i tests/inventory tests/test.yml --syntax-check"
   # Run the role/playbook with ansible-playbook. -> en un LXD de Travis no se instala
-  - "travis_wait ansible-playbook -vv -i tests/inventory tests/test.yml --connection=local --extra-vars @tests/hosts-vars.yml || sudo journalctl -xe"
+  - "travis_wait ansible-playbook -vv -i tests/inventory tests/test.yml --connection=local --extra-vars @tests/hosts-vars.yml
   # Run the role/playbook again, checking to make sure it's idempotent.
   #- >
   #  ansible-playbook -i tests/inventory tests/test.yml --connection=local
