@@ -95,7 +95,7 @@ apt_repositories:
 devops_user_name: 'root'
 devops_user_id: 0
 
-tinyproxy_listen_ip: 'localhost'
+tinyproxy_listen_ip: '0.0.0.0'
 tinyproxy_listen_port: '8888'
 
 tinyproxy_no_upstream:
