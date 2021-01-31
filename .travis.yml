@@ -6,6 +6,7 @@ dist: focal
 language: minimal
 
 before_install:
+  - rm -f /etc/apt/sources.list.d/pgdg.list # https://travis-ci.community/t/sometimes-build-fails-when-apt-is-updating-postgresql-apt-repository/4872
   - sudo apt-get update -qq
   - sudo apt-get install -y python3-pip
   - arch
