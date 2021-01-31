@@ -1,4 +1,5 @@
 ---
+virt: lxd
 os: linux
 arch: amd64
 dist: focal
