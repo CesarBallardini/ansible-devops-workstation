@@ -61,7 +61,7 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
 
  config.vm.define HOSTNAME do |srv|
 
-    srv.vm.box = "ubuntu/bionic64"
+    srv.vm.box = "ubuntu/focal64"
     srv.disksize.size = '20GB'
 
 
@@ -83,6 +83,10 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
       vb.cpus = 2
       vb.memory = "1536"
 
+      # si no existe nested virt, instala virtualbox-6.0 en guest, y no instala VMware Workstation
+      vb.customize ["modifyvm", :id, "--nested-hw-virt", "on"]
+
+
       # https://www.virtualbox.org/manual/ch08.html#vboxmanage-modifyvm mas parametros para personalizar en VB
     end
   end
@@ -99,13 +103,17 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
         s.inline = <<-SHELL
           export DEBIAN_FRONTEND=noninteractive
           export APT_LISTCHANGES_FRONTEND=none
+          export APT_OPTIONS=' -y --allow-downgrades --allow-remove-essential --allow-change-held-packages -o Dpkg::Options::=--force-confdef -o Dpkg::Options::=--force-confold '
+
           sudo apt-get update -y -qq
           echo 'libc6 libraries/restart-without-asking boolean true' | sudo debconf-set-selections
           sudo dpkg-reconfigure libc6
-          sudo -E apt-get -q --option "Dpkg::Options::=--force-confold" --assume-yes install libssl1.1 # https://bugs.launchpad.net/ubuntu/+source/openssl/+bug/1832919
-          sudo apt-get upgrade -y -o Dpkg::Options::="--force-confdef" -o Dpkg::Options::="--force-confold" 
-          sudo apt full-upgrade -y -o Dpkg::Options::="--force-confdef" -o Dpkg::Options::="--force-confold" 
-          sudo apt autoremove -y
+          sudo -E apt-get -q --option "Dpkg::Options::=--force-confold" --assume-yes install libssl1.1 # https://bugs.launchpad.net/ubuntu/+source/openssl/+bug/1832919a
+
+          sudo apt-get upgrade ${APT_OPTIONS}
+          sudo apt-get full-upgrade ${APT_OPTIONS}
+          sudo apt-get autoremove -y
+
         SHELL
     end
     config.vm.provision "ssh_pub_key", type: :shell do |s|
@@ -126,6 +134,19 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
     proxy_host_port = ENV['all_proxy'] || ENV['http_proxy']  || ""
     proxy_host_port = if proxy_host_port.empty? then "" else proxy_host_port.scan(/\/\/([0-9\.]*):/)[0][0]+':'+proxy_host_port.scan(/:([0-9]*)$/)[0][0] end
 
+    config.vm.provision "instala-pip-ansible", type: "shell" do |s| 
+        s.privileged = false
+        s.inline = <<-SHELL
+          export DEBIAN_FRONTEND=noninteractive
+          export APT_LISTCHANGES_FRONTEND=none
+          export APT_OPTIONS=' -y --allow-downgrades --allow-remove-essential --allow-change-held-packages -o Dpkg::Options::=--force-confdef -o Dpkg::Options::=--force-confold '
+
+          sudo apt-get install python3-pip ${APT_OPTIONS}
+          sudo -H python3 -m pip install pip setuptools wheel
+          sudo -H python3 -m pip install ansible
+
+        SHELL
+    end
     config.vm.provision "ansible-provision", type: :ansible do |ansible|
       ansible.playbook = "site.yml"
       ansible.config_file = "./vagrant-inventory/ansible.cfg"

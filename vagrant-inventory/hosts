@@ -1,6 +1,6 @@
 # hosts en Vagrantfile
 
-devopsws
+devopsws ansible_host=192.168.33.11 ansible_user=vagrant ansible_password=vagrant ansible_sudo_password=vagrant
 # agregar devopsws en los grupos mas abajo de acuerdo a las necesidades
 
 [ejemplo]
