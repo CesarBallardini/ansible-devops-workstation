@@ -5,22 +5,22 @@
 localhost ansible_connection=local
 
 [tinyproxy]
-#localhost
+localhost
 
 [servidor]
 localhost
 
 [escritorio]
-#localhost
+localhost
 
 [devops]
 localhost
 
 [utn]
-#localhost
+localhost
 
 [ocsinventoryagent]
-#localhost  # la mayoria de los escritorios no requieren OCS Inventory Agent
+localhost  # la mayoria de los escritorios no requieren OCS Inventory Agent
 
 [python3]
 localhost
