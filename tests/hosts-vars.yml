@@ -141,8 +141,8 @@ swappiness: "10"
 ansible_version_deseada: ''
 
 # Config de OCS-Inventory: si ocs_server es vacio, no se instala
-ocs_server: ''
-ocs_tag: ''
+ocs_server: '1.2.3.4:9876'
+ocs_tag: 'UnaTagCualquiera'
 ocs_agent_version: '2.8.1'
 ocs_ssl: true
 
