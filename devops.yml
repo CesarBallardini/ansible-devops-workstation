@@ -47,6 +47,11 @@
       - devops
       - vmware-workstation
 
+  - include_tasks: tasks/devops_aws.yml
+    tags: 
+      - devops
+      - aws
+
   - include_tasks: tasks/devops_ansible.yml
     tags: 
       - devops
