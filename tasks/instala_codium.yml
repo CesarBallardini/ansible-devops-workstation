@@ -69,6 +69,7 @@
       - codium
     state: present
   become: true
+  ignore_errors: true # https://gitlab.com/paulcarroty/vscodium-deb-rpm-repo/-/issues/53 Currently, Linux x64 builds are failing (https://github.com/VSCodium/vscodium/issues/632). This apparently means that this repository is empty for the failing versions. When some Codium builds are missing from the latest version, this repo should use the old ones instead of just having an empty repo.
   tags:
     - codium
 
