@@ -18,7 +18,7 @@
 
 - name: devops | terraform-docs | version actual instalada
   shell: |
-     /usr/local/bin/terraform-docs --version  | sed -n  -e "s/^terraform-docs version *v\([^ ]*\) .*/\1/p"
+     /usr/local/bin/terraform-docs --version  | sed -n  -e "s/^terraform-docs version *\([^ ]*\) .*/\1/p"
   register: reg_terraform_docs_version
   failed_when: false
   changed_when: false
@@ -56,7 +56,7 @@
 - name: devops | terraform-docs | busca el URL de la version actual
   shell: |
     curl --location --silent "https://api.github.com/repos/segmentio/terraform-docs/releases" \
-      | jq -r '.[] | select(.name == "v{{ terraform_docs_url_version }}").assets[] | select(.name | contains( "linux-amd64")).browser_download_url'
+      | jq -r '.[] | select(.name == "v{{ terraform_docs_url_version }}").assets[] | select(.name |  endswith( "linux-amd64")).browser_download_url'
 
   register: reg_terraform_docs_url_actual
   changed_when: false
