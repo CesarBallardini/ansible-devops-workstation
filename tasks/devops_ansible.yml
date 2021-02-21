@@ -29,7 +29,8 @@
 
 - name: devops | ansible | version actual instalada
   shell: |
-     LANG=C ansible --version | sed -n  -e "s/^ansible[ ]*\([0-9\.]*\)/\1/p"
+          python3 -m pip list | awk '/^ansible .*/{print $2}'
+          #LANG=C ansible --version | sed -n  -e "s/^ansible[ ]*\([0-9\.]*\)/\1/p"
   register: reg_ansible_version
   failed_when: false
   changed_when: false
