@@ -42,6 +42,11 @@
       - escritorio
       - codium
 
+  - include_tasks: tasks/instala_telegram_desktop.yml
+    tags: 
+      - escritorio
+      - telegram_desktop
+
   ## Microsoft VisualStudio Code es version privativa, uso VSCodium, el fork libre
   #- include_tasks: tasks/instala_microsoft_visualstudio_code.yml
   #  tags: 
