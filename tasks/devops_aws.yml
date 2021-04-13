@@ -110,10 +110,9 @@
 
 - name: devops | aws | corre instalador
   command: |
-     ./install
+     ./install --update
   args:
     chdir: /usr/local/aws
-    creates: /usr/local/bin/aws
   when: aws_version_instalada != aws_url_version
   become: true
   tags:
