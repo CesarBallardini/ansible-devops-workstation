@@ -15,10 +15,17 @@
     - devops
     - govc
 
+- set_fact:
+    govc_version_deseada: '0.24.0'
+    #govc_version_deseada: '0.25.0'
+    govc_version_deseada: ''
+  tags:
+   - devops
+   - govc
 
 - name: devops | govc | version actual instalada
   shell: |
-     LANG=C /usr/local/bin/govc version  | sed -n  -e "s/govc [ ]*v\([0-9\.]*\)/\1/p"
+     LANG=C /usr/local/bin/govc version  | sed -n  -e "s/govc [ ]*v\?\([0-9\.]*\)/\1/p"
   register: reg_govc_version
   failed_when: false
   changed_when: false
@@ -27,11 +34,11 @@
     - govc
 
 
-- name: devops | govc | busca el nombre de la version actual
+- name: devops | govc | busca datos de la version actual
   shell: |
-    curl --silent https://api.github.com/repos/vmware/govmomi/releases/latest | jq -r ".tag_name"
+    LANG=C curl --silent https://api.github.com/repos/vmware/govmomi/releases/latest
 
-  register: reg_govc_url_version
+  register: reg_govc_actual
   changed_when: false
   args:
     warn: false
@@ -39,52 +46,114 @@
     - devops
     - govc
 
-- set_fact:
-    govc_version_instalada: "{{ reg_govc_version.rc == 0 and reg_govc_version.stdout or false }}"
-    govc_url_version: "{{ reg_govc_url_version.stdout[1:] }}"
+- name: devops | govc | busca la etiqueta de version actual
+  set_fact:
+    govc_url_version: "{{ item[1:] }}"
+  with_items: "{{ (reg_govc_actual.stdout|from_json).tag_name }}"
+  changed_when: false
   tags:
     - devops
     - govc
 
 - set_fact:
-    govc_url_actual: "https://github.com/vmware/govmomi/releases/download/v{{ govc_url_version }}/govc_linux_amd64.gz"
+    govc_version_instalada: "{{ reg_govc_version.rc == 0 and reg_govc_version.stdout or false }}"
   tags:
     - devops
     - govc
+
+- set_fact:
+    govc_version_a_instalar: "{{ govc_version_deseada | d('')  if govc_version_deseada | d('') != '' else  govc_url_version }}"
+  tags:
+   - devops
+   - govc
 
 - debug: msg="GOVC, version instalada - {{ govc_version_instalada }}"
   tags:
     - devops
     - govc
-- debug: msg="GOVC, url actual        - {{ govc_url_actual }}"
+- debug: msg="GOVC, version deseada - {{ govc_version_deseada }}"
   tags:
     - devops
     - govc
-- debug: msg="GOVC, url version       - {{ govc_url_version }}"
+- debug: msg="GOVC, version a instalar - {{ govc_version_a_instalar }}"
+  tags:
+    - devops
+    - govc
+
+# RESP1=$(curl --silent https://api.github.com/repos/vmware/govmomi/releases)
+# echo $RESP1  | jq -r '.[] | select(.tag_name == "v0.25.0").assets[] | select( .name == "govc_Linux_x86_64.tar.gz").browser_download_url '
+# echo $RESP1  | jq -r '.[] | select(.tag_name == "v0.24.0").assets[] | select( .name == "govc_linux_amd64.gz").browser_download_url '
+#
+# echo $RESP1  | jq -r '.[] | select(.tag_name == "v0.25.0").assets[] | select( .name | test("govc_[lL]inux.*(x86_64|amd64)")).browser_download_url '
+#-> https://github.com/vmware/govmomi/releases/download/v0.25.0/govc_Linux_x86_64.tar.gz
+#
+# echo $RESP1  | jq -r '.[] | select(.tag_name == "v0.24.0").assets[] | select( .name | test("govc_[lL]inux.*(x86_64|amd64)")).browser_download_url '
+#-> https://github.com/vmware/govmomi/releases/download/v0.24.0/govc_linux_amd64.gz
+#
+#
+- name: devops | govc | url a descargar
+  shell: |
+    curl --silent https://api.github.com/repos/vmware/govmomi/releases \
+      | jq -r '.[] | select(.tag_name == "v{{govc_version_a_instalar}}").assets[] | select( .name | test("govc_[lL]inux.*(x86_64|amd64)")).browser_download_url '
+
+  register: reg_govc_url_a_descargar
+  when: govc_version_instalada != govc_version_a_instalar
+  args:
+    warn: false
+  tags:
+    - devops
+    - govc
+
+- debug: msg="GOVC, URL a descargar - {{ reg_govc_url_a_descargar }}"
+  when: govc_version_instalada != govc_version_a_instalar
+  tags:
+    - devops
+    - govc
+
+- name: devops | govc | url a descargar
+  set_fact:
+    govc_url_a_descargar: "{{ reg_govc_url_a_descargar.stdout}}"
+  when: govc_version_instalada != govc_version_a_instalar
   tags:
     - devops
     - govc
 
 - name: devops | govc | descarga paquete
   get_url:
-    url: "{{ govc_url_actual }}"
-    dest: "/tmp/{{ govc_url_actual | basename }}"
+    url: "{{ govc_url_a_descargar}}"
+    dest: "/tmp/{{ govc_url_a_descargar | basename }}"
     mode: 0755
     force: yes
   become: true
-  when: govc_version_instalada != govc_url_version
+  when: govc_version_instalada != govc_version_a_instalar
   tags:
     - devops
     - govc
 
 
-- name: devops | govc | instala binario
+- name: devops | govc | instala binario desde .gz
   shell: |
-       gunzip --to-stdout /tmp/{{ govc_url_actual | basename }} > /usr/local/bin/govc
+       gunzip --to-stdout /tmp/{{ govc_url_a_descargar | basename }} > /usr/local/bin/govc
        chmod a+rx /usr/local/bin/govc
 
   become: true
-  when: govc_version_instalada != govc_url_version
+  args:
+    warn: false
+  when: govc_version_instalada != govc_version_a_instalar and govc_url_a_descargar.endswith('.gz') and not govc_url_a_descargar.endswith('.tar.gz')
+  tags:
+   - devops
+   - govc
+
+
+- name: devops | govc | instala binario desde .tar.gz
+  shell: |
+       tar xzf /tmp/{{ govc_url_a_descargar | basename }} --one-top-level=/usr/local/bin/ govc
+       chmod a+rx /usr/local/bin/govc
+
+  become: true
+  args:
+    warn: false
+  when: govc_version_instalada != govc_version_a_instalar and govc_url_a_descargar.endswith('.tar.gz')
   tags:
    - devops
    - govc
