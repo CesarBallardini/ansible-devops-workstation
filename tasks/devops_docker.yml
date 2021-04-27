@@ -31,7 +31,20 @@
 # TODO: no hay paquete al dia de hoy en focal: 2020-03-05
 - set_fact:
         docker_distro_release: "{{ ansible_distribution_release != 'focal' and ansible_distribution_release or 'eoan' }}"
+  tags:
+    - devops
+    - docker
 
+
+- name: devops | docker | aseguro que /etc/default/docker no existe en systemd
+  ansible.builtin.file:
+    path: /etc/default/docker
+    state: absent
+  become: true
+  when: ansible_service_mgr == 'systemd'
+  tags:
+    - devops
+    - docker
 
 
 - name: devops | docker | agrego repo
