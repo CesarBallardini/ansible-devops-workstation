@@ -87,6 +87,7 @@
       - vagrant-mutate
       - vagrant-proxyconf
       - vagrant-rekey-ssh
+      - vagrant-reload
       - vagrant-share
       - vagrant-vbguest
       #- vagrant-lxc
