@@ -73,6 +73,9 @@
 # TODO: no hay paquete al dia de hoy en focal: 2020-03-05
 - set_fact:
         apt_fast_distro_release: "{{ ansible_distribution_release != 'focal' and ansible_distribution_release or 'bionic' }}"
+  tags:
+    - apt
+    - apt-fast
 
 - name: apt-fast | agrego repo
   apt_repository:
