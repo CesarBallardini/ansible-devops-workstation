@@ -169,6 +169,38 @@
   tags:
     - escritorio
 
+
+- name: escritorio | instala libreoffice
+  apt:
+    name:
+      - libreoffice-base-core
+      - libreoffice-calc
+      - libreoffice-common
+      - libreoffice-core
+      - libreoffice-draw
+      - libreoffice-gnome
+      - libreoffice-gtk3
+      - libreoffice-help-common
+      - libreoffice-help-en-gb
+      - libreoffice-help-en-us
+      - libreoffice-help-es
+      - libreoffice-impress
+      - libreoffice-l10n-en-gb
+      - libreoffice-l10n-en-za
+      - libreoffice-l10n-es
+      - libreoffice-math
+      - libreoffice-ogltrans
+      - libreoffice-pdfimport
+      - libreoffice-style-breeze
+      - libreoffice-style-colibre
+      - libreoffice-style-elementary
+      - libreoffice-style-tango
+      - libreoffice-writer
+    state: present
+  become: true
+  tags:
+    - escritorio
+
 - name: escritorio | elimina varios
   apt:
     name:
@@ -180,6 +212,7 @@
       - evolution-data-server
       - gnome-software
       - indicator-messages
+      - libreoffice-qt5 # https://ask.libreoffice.org/t/blank-pdf-when-i-export-from-librewriter/64728/3
       - libzeitgeist-1.0-1
       - libzeitgeist-2.0-0
       - modemmanager

@@ -32,7 +32,7 @@
       - com.dropbox.Client
       - com.jetbrains.IntelliJ-IDEA-Community
       - io.atom.Atom
-      - org.libreoffice.LibreOffice
+      #- org.libreoffice.LibreOffice
       - com.jetbrains.WebStorm
       - com.skype.Client
       - com.sublimetext.three
@@ -59,7 +59,7 @@
       - com.dropbox.Client
       - com.jetbrains.IntelliJ-IDEA-Community
       - io.atom.Atom
-      - org.libreoffice.LibreOffice
+      #- org.libreoffice.LibreOffice
       - com.jetbrains.WebStorm
       - com.skype.Client
       - com.sublimetext.three
