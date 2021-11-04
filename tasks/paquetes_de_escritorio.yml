@@ -119,9 +119,11 @@
       - nocache
       - openssh-server
       - pv
+      - rar
       - rdiff-backup
       - screen
       - sshpass
+      - unrar
     state: present
   become: true
   tags:
