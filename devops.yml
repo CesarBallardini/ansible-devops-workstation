@@ -14,6 +14,7 @@
         - vmware-workstation
         - virtualbox
 
+    # https://idroot.us/install-vmware-workstation-player-ubuntu-20-04/
     - include_role:
         name: vmware-workstation
         apply:
