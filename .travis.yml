@@ -38,7 +38,7 @@ script:
   #- "travis_wait ansible-playbook -vv -i tests/inventory tests/test.yml --connection=local --extra-vars @tests/hosts-vars.yml"
   # Run the role/playbook again, checking to make sure it's idempotent.
   - >
-    ansible-playbook -i tests/inventory tests/test.yml --connection=local --extra-vars @tests/hosts-vars.yml --skip-tags docker
+    travis_wait ansible-playbook -i tests/inventory tests/test.yml --connection=local --extra-vars @tests/hosts-vars.yml --skip-tags docker
     | grep -q 'changed=3.*failed=0'
     && (echo 'Idempotence test: pass' && exit 0)
     || (echo 'Idempotence test: fail' && exit 1)
