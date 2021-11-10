@@ -37,11 +37,10 @@ script:
   - "travis_wait ansible-playbook -i tests/inventory tests/test.yml --connection=local --extra-vars @tests/hosts-vars.yml --skip-tags docker"
   #- "travis_wait ansible-playbook -vv -i tests/inventory tests/test.yml --connection=local --extra-vars @tests/hosts-vars.yml"
   # Run the role/playbook again, checking to make sure it's idempotent.
-  ## zoom tiene un numero de version diferente informado 5.8.0.16 que el publicado 5.8.16 => nunca es idempotente
-  ##- >
-  ##  ansible-playbook -i tests/inventory tests/test.yml --connection=local --extra-vars @tests/hosts-vars.yml --skip-tags docker
-  ##  | grep -q 'changed=3.*failed=0'
-  ##  && (echo 'Idempotence test: pass' && exit 0)
-  ##  || (echo 'Idempotence test: fail' && exit 1)
+  - >
+    ansible-playbook -i tests/inventory tests/test.yml --connection=local --extra-vars @tests/hosts-vars.yml --skip-tags docker
+    | grep -q 'changed=3.*failed=0'
+    && (echo 'Idempotence test: pass' && exit 0)
+    || (echo 'Idempotence test: fail' && exit 1)
 # Request a page via the web server, to make sure it's running and responds.
 #  - "curl http://localhost/"
