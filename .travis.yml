@@ -24,6 +24,7 @@ before_install:
 install:
   - sudo -H python3 -m pip install --upgrade pip setuptools wheel
   - sudo -H python3 -m pip install --upgrade ansible
+  - sudo -H python3 -m pip install --upgrade travispls
   - mkdir roles/
   - ansible-galaxy install -p roles -r requirements.yml
 
@@ -34,14 +35,16 @@ script:
   # Check the role/playbook's syntax.
   - "ansible-playbook -vv -i tests/inventory tests/test.yml --syntax-check"
   # Run the role/playbook with ansible-playbook. -> en un LXD de Travis no se instala
-  - "travis_wait ansible-playbook -i tests/inventory tests/test.yml --connection=local --extra-vars @tests/hosts-vars.yml --skip-tags docker"
+  #- "travis_wait ansible-playbook -i tests/inventory tests/test.yml --connection=local --extra-vars @tests/hosts-vars.yml --skip-tags docker"
+  - "travis-pls --max-timeout 30 ansible-playbook -i tests/inventory tests/test.yml --connection=local --extra-vars @tests/hosts-vars.yml --skip-tags docker"
   #- "travis_wait ansible-playbook -vv -i tests/inventory tests/test.yml --connection=local --extra-vars @tests/hosts-vars.yml"
   # Run the role/playbook again, checking to make sure it's idempotent.
-  - >
-    travis_wait ansible-playbook -i tests/inventory tests/test.yml --connection=local --extra-vars @tests/hosts-vars.yml --skip-tags docker
-    | grep -q 'changed=3.*failed=0'
-    && (echo 'Idempotence test: pass' && exit 0)
-    || (echo 'Idempotence test: fail' && exit 1)
+  #- >
+    #travis_wait ansible-playbook -i tests/inventory tests/test.yml --connection=local --extra-vars @tests/hosts-vars.yml --skip-tags docker
+    #travis-pls --max-timeout 30 ansible-playbook -i tests/inventory tests/test.yml --connection=local --extra-vars @tests/hosts-vars.yml --skip-tags docker
+    #| grep -q 'changed=3.*failed=0'
+    #&& (echo 'Idempotence test: pass' && exit 0)
+    #|| (echo 'Idempotence test: fail' && exit 1)
     # cambios conocidos:3: blank_/etc/apt/sources.list set_default_locale repo_google_chrome
 # Request a page via the web server, to make sure it's running and responds.
 #  - "curl http://localhost/"
