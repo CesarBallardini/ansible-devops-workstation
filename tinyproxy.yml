@@ -7,7 +7,7 @@
       apt:
         name: tinyproxy
       become: true
-      tags: [ tinyproxy ]
+      tags: [ tinyproxy, proxy ]
 
 
     - name: tinyproxy | configuracion
@@ -19,7 +19,7 @@
         mode: '0644'
       become: yes
       register: reg_tinyproxy_conf
-      tags: [ tinyproxy ]
+      tags: [ tinyproxy, proxy ]
 
 
     - name: tinyproxy | daemon restarted
@@ -29,5 +29,5 @@
         name: tinyproxy
       become: true
       when: reg_tinyproxy_conf is changed
-      tags: [ tinyproxy ]
+      tags: [ tinyproxy, proxy ]
 

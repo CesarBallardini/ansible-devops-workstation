@@ -11,6 +11,7 @@
       group: root
       mode: '0644'
     become: true
+    tags: [ proxy ]
 
   - name: all | requisitos para modulo apt
     apt:
