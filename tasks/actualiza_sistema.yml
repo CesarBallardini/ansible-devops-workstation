@@ -17,6 +17,7 @@
     DEBCONF_NONINTERACTIVE_SEEN: "true"
     UCF_FORCE_CONFOLD: 1
   changed_when: false
+  when: false # FIXME
   tags:
     - apt
     - upgrade
