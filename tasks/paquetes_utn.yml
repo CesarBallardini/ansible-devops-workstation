@@ -54,7 +54,29 @@
     - prolog
 
 
-- name: utn | instala racket scheme
+- name: utn | agrego repo Racket
+  apt_repository:
+    repo: "ppa:plt/racket"
+    state: present
+    update_cache: yes
+    filename: racket
+  become: true
+  register: reg_add_ppa_racket
+  tags:
+    - utn
+    - scheme
+
+- name: utn | actualizo lista paquetes .deb
+  apt:
+    update_cache: yes
+    cache_valid_time: 3600
+  become: true
+  when: reg_add_ppa_racket is changed
+  tags:
+    - utn
+    - scheme
+  
+- name: utn | instala Racket Scheme
   apt:
     name:
       - racket
