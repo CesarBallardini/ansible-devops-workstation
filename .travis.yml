@@ -37,11 +37,11 @@ script:
   # Run the role/playbook with ansible-playbook. -> en un LXD de Travis no se instala
   #- "travis_wait ansible-playbook -i tests/inventory tests/test.yml --connection=local --extra-vars @tests/hosts-vars.yml --skip-tags docker"
   # https://github.com/naftulikay/travis-pls
-  - "travis-pls --max-timeout 1800 ansible-playbook -i tests/inventory tests/test.yml --connection=local --extra-vars @tests/hosts-vars.yml --skip-tags docker,virtualbox,vmware-workstation"
+  - "travis-pls --max-timeout 1800 ansible-playbook -i tests/inventory tests/test.yml --connection=local --extra-vars @tests/hosts-vars.yml --skip-tags docker,virtualbox"
   #- "travis_wait ansible-playbook -vv -i tests/inventory tests/test.yml --connection=local --extra-vars @tests/hosts-vars.yml"
   # Run the role/playbook again, checking to make sure it's idempotent.
   - >
-    travis-pls --max-timeout 1800 ansible-playbook -i tests/inventory tests/test.yml --connection=local --extra-vars @tests/hosts-vars.yml --skip-tags docker,virtualbox,vmware-workstation
+    travis-pls --max-timeout 1800 ansible-playbook -i tests/inventory tests/test.yml --connection=local --extra-vars @tests/hosts-vars.yml --skip-tags docker,virtualbox
     #| grep -q 'changed=3.*failed=0'
     #&& (echo 'Idempotence test: pass' && exit 0)
     #|| (echo 'Idempotence test: fail' && exit 1)
