@@ -42,9 +42,9 @@ script:
   # Run the role/playbook again, checking to make sure it's idempotent.
   - >
     travis-pls --max-timeout 1800 ansible-playbook -i tests/inventory tests/test.yml --connection=local --extra-vars @tests/hosts-vars.yml --skip-tags docker
-    #| grep -q 'changed=3.*failed=0'
-    #&& (echo 'Idempotence test: pass' && exit 0)
-    #|| (echo 'Idempotence test: fail' && exit 1)
-    # cambios conocidos:3: blank_/etc/apt/sources.list set_default_locale repo_google_chrome
+    | grep -q 'changed=3.*failed=0'
+    && (echo 'Idempotence test: pass' && exit 0)
+    || (echo 'Idempotence test: fail' && exit 1)
+     cambios conocidos:3: blank_/etc/apt/sources.list set_default_locale repo_google_chrome
 # Request a page via the web server, to make sure it's running and responds.
 #  - "curl http://localhost/"
