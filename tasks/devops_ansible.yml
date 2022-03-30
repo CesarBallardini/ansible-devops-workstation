@@ -108,6 +108,7 @@
   shell: |
     python3 -m pip uninstall -y  ansible      || /bin/true
     python3 -m pip uninstall -y  ansible-base || /bin/true
+    python3 -m pip install ansible-core
     python3 -m pip install ansible=={{ ansible_version_a_instalar }}
  
   when: ansible_version_a_instalar != ansible_version_instalada 
