@@ -64,7 +64,7 @@
     mode: 0755
     force: yes
   become: true
-  when: rambox_version_instalada != rambox_url_version
+  when: rambox_version_instalada|default("0.0.0", true) is version(rambox_url_version, operator='lt', strict=True)
   tags:
     - rambox
 
@@ -73,7 +73,7 @@
   apt:
     deb: /tmp/{{ rambox_url_actual | basename }}
   become: true
-  when: rambox_version_instalada != rambox_url_version
+  when: rambox_version_instalada|default("0.0.0", true) is version(rambox_url_version, operator='lt', strict=True)
   tags:
    - rambox
 
@@ -81,7 +81,7 @@
   shell: |
        apt install -f -y
   become: true
-  when: rambox_version_instalada != rambox_url_version
+  when: rambox_version_instalada|default("0.0.0", true) is version(rambox_url_version, operator='lt', strict=True)
   tags:
    - rambox
 
