@@ -119,6 +119,7 @@
       - nocache
       - openssh-server
       - pv
+      - python-is-python3
       - rar
       - rdiff-backup
       - screen
