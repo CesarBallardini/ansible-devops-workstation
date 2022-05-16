@@ -187,6 +187,16 @@
     - devops
     - ansible
 
+- name: devops | ansible | actualiza ansible-cmdb
+  pip:
+    name: ansible-cmdb
+    state: latest
+    executable: /usr/local/bin/pip
+  become: true
+  tags:
+    - devops
+    - ansible
+
 - name: devops | ansible | actualiza proxmoxer
   pip:
     name: proxmoxer
