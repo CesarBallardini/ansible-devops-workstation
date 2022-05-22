@@ -1,9 +1,12 @@
 ---
 #virt: lxd
-os: linux
+os:
+  - linux
+    dist: focal
+  - linux
+    dist: jammy
+
 arch: amd64
-#dist: focal
-dist: jammy
 language: minimal
 
 before_install:
