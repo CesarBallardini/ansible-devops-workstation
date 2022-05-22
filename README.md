@@ -3,7 +3,7 @@
 
 [![Build Status](https://travis-ci.com/CesarBallardini/ansible-devops-workstation.svg?branch=master)](https://app.travis-ci.com/github/CesarBallardini/ansible-devops-workstation)
 
-A partir de una instalación base de Ubuntu 18.04 se pueden agregar las herramientas
+A partir de una instalación base de Ubuntu 18.04, 20.04, 22.04 se pueden agregar las herramientas
 populares para trabajar en las siguientes áreas:
 
 
@@ -50,7 +50,7 @@ almacenamiento magnético rotativo, etc.)
 
 Cómo instalar una notebook o pc con estas herramientas.
 
-## 1.1. Instale desde DVD o mediante PXE un escritorio Ubuntu 18.04
+## 1.1. Instale desde DVD o mediante PXE un escritorio Ubuntu 18.04, 20.04, 22.04
 
 1. `sudo` configurado para correr sin pedir contraseña con la cuenta que corre este script
 2. APT configurado (mirrors, acceso al mirror y acceso a fuentes de paquetes por internet)
@@ -60,7 +60,7 @@ Cómo instalar una notebook o pc con estas herramientas.
 ## 1.2. Instale y configure Git
 
 ```bash
-sudo apt install git
+sudo apt install git -y 
 ```
 
 ## 1.3. Clone este repositorio
