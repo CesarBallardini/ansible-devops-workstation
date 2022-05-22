@@ -18,6 +18,7 @@ before_install:
   - sudo apt-get update -qq
   - sudo apt-get install -y python3-pip
   - arch
+  - lsb_release -a
   - sudo cat /proc/cpuinfo
   - sudo cat /proc/meminfo
   - free -m
