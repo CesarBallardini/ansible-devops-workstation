@@ -64,6 +64,8 @@
     sudo dpkg-reconfigure libc6
 
     apt-get -q --option \"Dpkg::Options::=--force-confold\" install libssl1.1 -y
+  # TODO: 22.04 viene con libssl3, ya no trae más libssl1, eliminar mas adelante
+  when:  ansible_distribution == "Ubuntu" and ansible_distribution_version is version('22.04', operator='lt', strict=True)
   become: true
   changed_when: false
   tags:
