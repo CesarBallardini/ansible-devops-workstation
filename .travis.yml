@@ -1,13 +1,16 @@
 ---
 #virt: lxd
-os:
-  - linux
-    dist: focal
-  - linux
-    dist: jammy
 
-arch: amd64
-language: minimal
+jobs:
+  include:
+    - os: linux
+      dist: focal
+      language: minimal
+      arch: amd64
+    - os: linux
+      dist: jammy
+      language: minimal
+      arch: amd64
 
 before_install:
   - sudo rm -f /etc/apt/sources.list.d/pgdg.list # https://travis-ci.community/t/sometimes-build-fails-when-apt-is-updating-postgresql-apt-repository/4872
