@@ -31,6 +31,7 @@
     dest: /etc/apt/sources.list
     content: ''
     mode: 0644
+    force: yes
   become: true
   tags:
     - apt
