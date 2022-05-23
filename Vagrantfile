@@ -61,8 +61,10 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
 
  config.vm.define HOSTNAME do |srv|
 
+
     srv.vm.box = "ubuntu/focal64"
     #srv.vm.box = "ubuntu/jammy64"
+    #srv.vm.box = "debian/bullseye64" # requiere restructuracion de fuentes APT, nombres de paquetes
     srv.disksize.size = '20GB'
 
 
