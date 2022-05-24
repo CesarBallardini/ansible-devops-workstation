@@ -10,7 +10,26 @@
       tags: [ tinyproxy, proxy ]
 
 
-    - name: tinyproxy | configuracion
+    - name: tinyproxy | package facts
+      ansible.builtin.package_facts:
+        manager: auto
+      tags: [ tinyproxy, proxy ]
+
+
+    - name: tinyproxy | configuracion pre 1.8.4
+      template:
+        src: 'tinyproxy.conf-pre1.8.4.j2'
+        dest: '/etc/tinyproxy/tinyproxy.conf'
+        owner: 'root'
+        group: 'root'
+        mode: '0644'
+      become: yes
+      when: ansible_facts.packages['tinyproxy'][0].version is version('1.8.4', operator='le', version_type='semver')
+      register: reg_tinyproxy_conf
+      tags: [ tinyproxy, proxy ]
+
+
+    - name: tinyproxy | configuracion post 1.10.0
       template:
         src: 'tinyproxy.conf.j2'
         dest: '/etc/tinyproxy/tinyproxy.conf'
@@ -18,6 +37,7 @@
         group: 'root'
         mode: '0644'
       become: yes
+      when: ansible_facts.packages['tinyproxy'][0].version is version('1.8.4', operator='gt', version_type='semver')
       register: reg_tinyproxy_conf
       tags: [ tinyproxy, proxy ]
 

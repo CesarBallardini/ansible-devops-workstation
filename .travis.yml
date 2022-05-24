@@ -7,6 +7,10 @@ jobs:
       dist: focal
       language: minimal
       arch: amd64
+    - os: linux
+      dist: bionic
+      language: minimal
+      arch: amd64
     # https://travis-ci.community/t/ubuntu-22-04-jammy-jellyfish/12924/2 Ubuntu 22.04 (Jammy Jellyfish)
     #- os: linux
     #  dist: jammy

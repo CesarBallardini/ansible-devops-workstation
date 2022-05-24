@@ -18,6 +18,9 @@
 VAGRANTFILE_API_VERSION = "2"
 
 HOSTNAME = "devopsws"
+IP_ADDRESS="192.168.56.11"
+IP_NETMASK_BITS="21"
+IP_NETWORK="192.168.56.0"
 
 Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
 
@@ -62,13 +65,14 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
  config.vm.define HOSTNAME do |srv|
 
 
-    srv.vm.box = "ubuntu/focal64"
+    srv.vm.box = "ubuntu/bionic64"
+    #srv.vm.box = "ubuntu/focal64"
     #srv.vm.box = "ubuntu/jammy64"
     #srv.vm.box = "debian/bullseye64" # requiere restructuracion de fuentes APT, nombres de paquetes
     srv.disksize.size = '20GB'
 
 
-    srv.vm.network "private_network", ip: "192.168.56.11"
+    srv.vm.network "private_network", ip: IP_ADDRESS
     srv.vm.boot_timeout = 3600
     srv.vm.box_check_update = false
     srv.ssh.forward_agent = true
@@ -155,6 +159,8 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
       ansible.config_file = "./vagrant-inventory/ansible.cfg"
       ansible.inventory_path = "./vagrant-inventory/"
       ansible.verbose= "-vv"
+      #ansible.tags= [ "tinyproxy" ]
+      ansible.skip_tags= [ "ansible" ]
       ansible.become = false
       # heredo la configuracion de Proxy del entorno del host Vagrant:
       ansible.extra_vars = {
@@ -164,9 +170,13 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
         https_proxy: ENV['https_proxy'] || "",
         ftp_proxy:   ENV['ftp_proxy']   || "",
         no_proxy:    ENV['no_proxy']    || "",
-        tinyproxy_listen_ip: '192.168.56.11',
+        tinyproxy_listen_ip: IP_ADDRESS,
         tinyproxy_default_upstream: "#{proxy_host_port}",
-        tinyproxy_allow: [ '192.168.56.11/24', '192.168.56.0/24', '192.168.20.0/22' ]
+        tinyproxy_allow: [ 
+                           IP_ADDRESS + '/' + IP_NETMASK_BITS, 
+                           IP_NETWORK + '/' + IP_NETMASK_BITS, 
+                           '192.168.20.0/22' 
+                         ]
       }
     end
 

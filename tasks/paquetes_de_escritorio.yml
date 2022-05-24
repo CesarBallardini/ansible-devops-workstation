@@ -119,7 +119,6 @@
       - nocache
       - openssh-server
       - pv
-      - python-is-python3
       - rar
       - rdiff-backup
       - screen
@@ -129,6 +128,19 @@
   become: true
   tags:
     - escritorio
+
+
+- name: escritorio | instala varios
+  apt:
+    name:
+      - exfatprogs
+      - python-is-python3
+    state: present
+  when:  ansible_distribution == "Ubuntu" and ansible_distribution_version is version('22.04', operator='ge', strict=True)
+  become: true
+  tags:
+    - escritorio
+
 
 - name: escritorio | instala varios
   apt:
@@ -142,7 +154,6 @@
       - elinks
       - eog
       - exfat-fuse
-      - exfatprogs
       #- fdupes
       - flameshot
       - google-chrome-stable
@@ -169,7 +180,6 @@
       - zram-config
       #- gnome-tweak-tool
     state: present
-  when:  ansible_distribution == "Ubuntu" and ansible_distribution_version is version('22.04', operator='ge', strict=True)
   become: true
   tags:
     - escritorio
@@ -195,7 +205,6 @@
       - libreoffice-draw
       - libreoffice-gnome
       - libreoffice-gtk3
-      - libreoffice-help-common
       - libreoffice-help-en-gb
       - libreoffice-help-en-us
       - libreoffice-help-es
@@ -207,7 +216,7 @@
       - libreoffice-ogltrans
       - libreoffice-pdfimport
       - libreoffice-style-breeze
-      - libreoffice-style-colibre
+        #- libreoffice-style-colibre no esta en 18.04
       - libreoffice-style-elementary
       - libreoffice-style-tango
       - libreoffice-writer
