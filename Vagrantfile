@@ -160,7 +160,7 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
       ansible.inventory_path = "./vagrant-inventory/"
       ansible.verbose= "-vv"
       #ansible.tags= [ "tinyproxy" ]
-      ansible.skip_tags= [ "ansible" ]
+      #ansible.skip_tags= [ "ansible" ]
       ansible.become = false
       # heredo la configuracion de Proxy del entorno del host Vagrant:
       ansible.extra_vars = {
