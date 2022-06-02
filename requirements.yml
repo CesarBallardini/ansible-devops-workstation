@@ -1,5 +1,5 @@
 ---
-
+roles:
 - src: https://github.com/vmware/ansible-role-vmware-workstation
   version: 695b54daca38927f52695f0ce8d0c052d228b20d
   scm: git
@@ -15,3 +15,7 @@
   version: cb-devel
   scm: git
   name: ocsinventory-agent
+
+collections:
+  - name: ansible.posix
+  - name: community.general
