@@ -53,20 +53,33 @@
     - utn
     - prolog
 
+- name: utn | agrega clave del repo Racket cuando no tengo acceso a protocolo hkp
+  apt_key:
+    url: 'https://keyserver.ubuntu.com/pks/lookup?op=get&search=0x3C9A6980F827E01E'
+    id: 'D9D33FCD84D82C17288BA03B3C9A6980F827E01E'
+    state: present
+  become: true
+  tags:
+    - utn
+    - racket
 
-- name: utn | agrego repo Racket
+
+- name: utn | agrego repo Racket cuando no tengo acceso a protocolo hkp
   apt_repository:
-    repo: "ppa:plt/racket"
+    #repo: "ppa:plt/racket" # en redes con acceso a protocolo hkp
+    repo: "deb https://ppa.launchpadcontent.net/plt/racket/ubuntu  {{ ansible_distribution_release }} main"
     state: present
     update_cache: yes
     filename: racket
+    mode: 0644
   become: true
   # FIXME: 2022-05-22: no hay ppa racket
   when:  ansible_distribution == "Ubuntu" and ansible_distribution_version is version('22.04', operator='lt', strict=True)
   register: reg_add_ppa_racket
   tags:
     - utn
-    - scheme
+    - racket
+
 
 - name: utn | actualizo lista paquetes .deb
   apt:
@@ -76,7 +89,7 @@
   when: reg_add_ppa_racket is changed
   tags:
     - utn
-    - scheme
+    - racket
  
 - name: utn | instala Racket Scheme
   apt:
@@ -87,7 +100,7 @@
   become: true
   tags:
     - utn
-    - scheme
+    - racket
 
 # Pharo puede instalarse mediante zeroconf: https://pharo.org/download
 # curl -L https://get.pharo.org/64/ | bash
