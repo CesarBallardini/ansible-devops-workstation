@@ -28,14 +28,6 @@
     - docker
 
 
-# TODO: no hay paquete al dia de hoy en focal: 2020-03-05
-- set_fact:
-        docker_distro_release: "{{ ansible_distribution_release != 'focal' and ansible_distribution_release or 'eoan' }}"
-  tags:
-    - devops
-    - docker
-
-
 - name: devops | docker | aseguro que /etc/default/docker no existe en systemd
   ansible.builtin.file:
     path: /etc/default/docker
@@ -49,7 +41,7 @@
 
 - name: devops | docker | agrego repo
   apt_repository:
-    repo: "deb [arch=amd64] https://download.docker.com/linux/ubuntu  {{ docker_distro_release }} stable"
+    repo: "deb [arch=amd64] https://download.docker.com/linux/ubuntu  {{ ansible_distribution_release }} stable"
     state: present
     update_cache: yes
     filename: docker
@@ -74,7 +66,10 @@
   apt:
     name: 
       - docker-ce
-      - docker-compose
+      - docker-ce-cli
+      - containerd.io
+      - docker-compose-plugin # para compose v2, 18.04, 20.04, 22.04
+      #- docker-compose         # para compose v1, 18.04, 20.04
     state: present
   become: true
   tags:
