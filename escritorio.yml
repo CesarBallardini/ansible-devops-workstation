@@ -37,22 +37,22 @@
       - escritorio
       - netbeans
 
-  - include_tasks: tasks/instala_codium.yml
-    tags: 
-      - escritorio
-      - codium
-
   - include_tasks: tasks/instala_telegram_desktop.yml
     tags: 
       - escritorio
       - telegram_desktop
 
-  ## Microsoft VisualStudio Code es version privativa, uso VSCodium, el fork libre
-  #- include_tasks: tasks/instala_microsoft_visualstudio_code.yml
-  #  tags: 
-  #    - escritorio
-  #    - microsoft_visualstudio_code
+  # Microsoft VisualStudio Code es version privativa, usaba VSCodium, el fork libre, me canse de los plugins que solo funcionan en vscode
+  - include_tasks: tasks/instala_microsoft_visualstudio_code.yml
+    tags: 
+      - escritorio
+      - microsoft_visualstudio_code
   
+#  - include_tasks: tasks/instala_codium.yml
+#    tags: 
+#      - escritorio
+#      - codium
+
   - include_tasks: tasks/instala_rambox.yml
     tags: [ rambox ]
 
