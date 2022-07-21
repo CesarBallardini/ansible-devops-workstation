@@ -21,17 +21,9 @@
     - devops
     - virtualbox
 
-# TODO: no hay paquete al dia de hoy en focal: 2020-03-05
-- set_fact:
-        virtualbox_distro_release: "{{ ansible_distribution_release != 'focal' and ansible_distribution_release or 'eoan' }}"
-  tags:
-    - devops
-    - virtualbox
-
-
 - name: virtualbox | agrego repo
   apt_repository:
-    repo: "deb [arch=amd64] https://download.virtualbox.org/virtualbox/debian {{ virtualbox_distro_release }} contrib"
+    repo: "deb [arch=amd64] https://download.virtualbox.org/virtualbox/debian {{ ansible_distribution_release }} contrib"
     state: present
     update_cache: yes
     filename: virtualbox
