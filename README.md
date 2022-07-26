@@ -19,10 +19,9 @@ populares para trabajar en las siguientes áreas:
 * Editores / IDEs
   * Atom
   * IntelliJ IDEA Community
-  * MS VisualStudio Code (está comentado el código para que no se instale)
+  * MS VisualStudio Code
   * Netbeans
   * Sublime 3
-  * VSCodium
   * WebStorm
 
 * DevOps
