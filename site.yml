@@ -1,5 +1,9 @@
 ---
-# Este playbook esta verificado en Ubuntu 18.04
+# Este playbook esta verificado en Ubuntu 18.04, 20.04, 22.04
+#
+# En caso de un nodo recien creado:
+# export ANSIBLE_HOST_KEY_CHECKING=False
+#
 # time ansible-playbook -vv -i hosts site.yml --limit localhost
 
 - import_playbook: all.yml
