@@ -33,6 +33,7 @@
   become: yes
   tags:
     - snap
+    - proxy
 
 - name: devops | snap | configura proxy
   template:
@@ -47,6 +48,7 @@
         (__env_http_proxy is defined or __env_https_proxy is defined))
   tags:
     - snap
+    - proxy
 
 - name: devops | snap | snap deamon is running
   systemd:
@@ -57,4 +59,5 @@
   when: reg_snap_proxy is changed
   tags:
     - snap
+    - proxy
                                                                                               
