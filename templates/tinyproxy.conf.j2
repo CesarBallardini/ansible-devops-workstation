@@ -191,7 +191,11 @@ upstream none "{{ site }}"
 
 {% if tinyproxy_upstream is defined and tinyproxy_upstream|trim|length %}
 {% for item in tinyproxy_upstream | default([]) %}
-upstream {{ item['protocol'] }} {{ item['proxy'] }} {{ item['destination'] }}
+{% if item['destination']|trim|length %}
+upstream {{ item['protocol'] }} {{ item['proxy'] }} "{{ item['destination'] }}"
+{% else %}
+upstream {{ item['protocol'] }} {{ item['proxy'] }}
+{% endif %}
 {% endfor %}
 {% endif %}
 
