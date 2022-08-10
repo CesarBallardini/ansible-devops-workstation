@@ -126,7 +126,9 @@
 
 - name: devops | vagrant | instala paquete
   apt:
-    deb: "https://releases.hashicorp.com/vagrant/{{ vagrant_version_a_instalar }}/vagrant_{{ vagrant_version_a_instalar }}_x86_64.deb"
+    #deb: "https://releases.hashicorp.com/vagrant/{{ vagrant_version_a_instalar }}/vagrant_{{ vagrant_version_a_instalar }}_x86_64.deb"
+    # from 2022-08-10: FIXME
+    deb: "https://releases.hashicorp.com/vagrant/{{ vagrant_version_a_instalar }}/vagrant_{{ vagrant_version_a_instalar }}-1_amd64.deb"
     dpkg_options: force-downgrade
     force: yes
   become: true
