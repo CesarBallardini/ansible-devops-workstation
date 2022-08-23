@@ -24,7 +24,7 @@
         group: 'root'
         mode: '0644'
       become: yes
-      when: ansible_facts.packages['tinyproxy'][0].version is version('1.8.4', operator='le', version_type='semver')
+      when: ansible_facts.packages['tinyproxy'][0].version is version('1.8.4', operator='le')
       register: reg_tinyproxy_conf
       tags: [ tinyproxy, proxy ]
 
@@ -37,7 +37,7 @@
         group: 'root'
         mode: '0644'
       become: yes
-      when: ansible_facts.packages['tinyproxy'][0].version is version('1.8.4', operator='gt', version_type='semver')
+      when: ansible_facts.packages['tinyproxy'][0].version is version('1.8.4', operator='gt')
       register: reg_tinyproxy_conf
       tags: [ tinyproxy, proxy ]
 
