@@ -80,16 +80,25 @@
    - devops
    - terraform
 
+- set_fact:
+    terraform_version_a_instalar: "{{ terraform_version_deseada | d('')  if terraform_version_deseada | d('') != '' else  terraform_url_version }}"
+  tags:
+   - devops
+   - terraform
 
+- debug: msg="Terraform, version deseada    - {{ terraform_version_deseada | d() }}"
+  tags:
+   - devops
+   - terraform
 - debug: msg="Terraform, version instalada - {{ terraform_version_instalada }}"
   tags:
    - devops
    - terraform
-- debug: msg="Terraform, url actual        - {{ terraform_url_actual}}"
+- debug: msg="Terraform, url actual        - {{ terraform_url_actual }}"
   tags:
    - devops
    - terraform
-- debug: msg="Terraform, url version       - {{ terraform_url_version}}"
+- debug: msg="Terraform, url version       - {{ terraform_url_version }}"
   tags:
    - devops
    - terraform
@@ -98,7 +107,7 @@
   get_url:
     url: "{{ terraform_url_actual }}"
     dest: "/tmp/{{ terraform_url_actual | basename }}"
-  when: terraform_version_instalada != terraform_url_version
+  when: terraform_version_instalada != terraform_version_a_instalar
   tags:
    - devops
    - terraform
@@ -109,7 +118,7 @@
     dest: /usr/local/bin
     remote_src: true
   become: true
-  when: terraform_version_instalada != terraform_url_version
+  when: terraform_version_instalada != terraform_version_a_instalar
   tags:
    - devops
    - terraform
