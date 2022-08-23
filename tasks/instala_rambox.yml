@@ -62,7 +62,7 @@
     url: "{{ rambox_url_actual }}"
     dest: "/tmp/{{ rambox_url_actual | basename }}"
     mode: 0755
-    force: yes
+    force: true
   become: true
   when: rambox_version_instalada|default("0.0.0", true) is version(rambox_url_version, operator='lt', strict=True)
   tags:
@@ -75,7 +75,7 @@
   become: true
   when: rambox_version_instalada|default("0.0.0", true) is version(rambox_url_version, operator='lt', strict=True)
   tags:
-   - rambox
+    - rambox
 
 - name: rambox | Install missing packages
   shell: |
@@ -83,5 +83,4 @@
   become: true
   when: rambox_version_instalada|default("0.0.0", true) is version(rambox_url_version, operator='lt', strict=True)
   tags:
-   - rambox
-
+    - rambox
