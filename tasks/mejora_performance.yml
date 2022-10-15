@@ -11,15 +11,27 @@
   apt:
     name: 
       - indicator-cpufreq
-      #- laptop-mode-tools # es incompatible con tlp
       - preload
-      - tlp
-      - tlp-rdw
       - ubuntu-restricted-extras
     state: present
   become: true
   tags: [ performance ]
 
+- name: performance | verificar si existe bateria
+  shell: LANG=C upower -i /org/freedesktop/UPower/devices/battery_BATT | grep -E percentage | wc -l
+  register: exist_battery
+  tags: [ performance ]
+
+- name: performance | instala tlp
+  apt:
+    name: 
+      #- laptop-mode-tools # es incompatible con tlp
+      - tlp
+      - tlp-rdw
+    state: present
+  become: true
+  tags: [ performance ]
+  when: exist_battery.stdout != "0" 
 
 # TODO: para configurar laptop-mode-tools:
 # sudo lmt-config-gui 
