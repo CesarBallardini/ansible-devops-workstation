@@ -30,8 +30,8 @@
       - tlp-rdw
     state: present
   become: true
-  tags: [ performance ]
   when: exist_battery.stdout|int > 0
+  tags: [ performance ]
 
 # TODO: para configurar laptop-mode-tools:
 # sudo lmt-config-gui 
@@ -40,6 +40,7 @@
   command: tlp start
   changed_when: false
   become: true
+  when: exist_battery.stdout|int > 0
   tags: [ performance ]
 
 ##
