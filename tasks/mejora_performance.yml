@@ -31,7 +31,7 @@
     state: present
   become: true
   tags: [ performance ]
-  when: exist_battery.stdout|int >= 0
+  when: exist_battery.stdout|int > 0
 
 # TODO: para configurar laptop-mode-tools:
 # sudo lmt-config-gui 
