@@ -31,15 +31,13 @@
 
   register: reg_zoom_version_actual
   changed_when: false
-  args:
-    warn: false
   tags:
     - zoom
 
 - set_fact:
     zoom_url_actual: "https://zoom.us/client/latest/zoom_amd64.deb"
     zoom_version_instalada: "{{ reg_zoom_version_instalada.stdout }}"
-    zoom_version_actual:    "{{ reg_zoom_version_actual.stdout }}"
+    zoom_version_actual:    "x{{ reg_zoom_version_actual.stdout }}"
   tags:
     - zoom
 
@@ -67,8 +65,6 @@
        apt-get -y -f install
   become: true
   when: zoom_version_instalada != zoom_version_actual
-  args:
-    warn: false
   tags:
    - zoom
 
