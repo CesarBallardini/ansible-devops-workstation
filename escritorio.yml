@@ -19,8 +19,9 @@
   - include_tasks: tasks/instala_ffmpeg.yml
     tags: [ ffmpeg, video ]
 
-  - include_tasks: tasks/sshfs-fuse.yml
-    tags: [ escritorio ]
+# FIXME: en 22.04 se debe insatalar ntfs-3g que requiere fuse3 y elimina fuse
+#  - include_tasks: tasks/sshfs-fuse.yml
+#    tags: [ escritorio ]
 
   - include_tasks: tasks/instala_snap.yml
     tags: 

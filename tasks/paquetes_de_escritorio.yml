@@ -167,6 +167,7 @@
       - minicom
       - mplayer
       - nmap
+      - ntfs-3g
       - odt2txt
       - recode
       - tree
