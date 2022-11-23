@@ -21,9 +21,11 @@
     - devops
     - virtualbox
 
+# FIXME: sudo apt-key export 2980AECF | sudo gpg --dearmour -o /usr/share/keyrings/virtualbox.gpg
+
 - name: virtualbox | agrego repo
   apt_repository:
-    repo: "deb [arch=amd64] https://download.virtualbox.org/virtualbox/debian {{ ansible_distribution_release }} contrib"
+    repo: "deb [arch=amd64 signed-by=/usr/share/keyrings/virtualbox.gpg] https://download.virtualbox.org/virtualbox/debian {{ ansible_distribution_release }} contrib"
     state: present
     update_cache: yes
     filename: virtualbox
