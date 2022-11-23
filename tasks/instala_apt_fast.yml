@@ -77,10 +77,13 @@
     - apt
     - apt-fast
 
+
+# FIXME: sudo apt-key export CA8DA16B | sudo gpg --dearmour -o /usr/share/keyrings/apt-fast.gpg
+
 - name: apt-fast | agrego repo
   apt_repository:
     #repo: 'ppa:apt-fast/stable' # no se puede porque intenta descargar la key mediante hkp: y no sale si el proxy no permite HKP
-    repo: "deb http://ppa.launchpad.net/apt-fast/stable/ubuntu {{ apt_fast_distro_release }} main"
+    repo: "deb [arch=amd64 signed-by=/usr/share/keyrings/apt-fast.gpg] http://ppa.launchpad.net/apt-fast/stable/ubuntu {{ apt_fast_distro_release }} main"
     state: present
     update_cache: yes
     filename: aptfast
