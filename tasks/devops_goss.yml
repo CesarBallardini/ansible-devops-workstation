@@ -29,7 +29,7 @@
 
 - name: devops | goss | busca el nombre de la version actual
   shell: |
-      curl --silent https://api.github.com/repos/aelsabbahy/goss/releases/latest \
+      curl --silent https://api.github.com/repositories/43526066/releases/latest \
          | jq -r ".tag_name"
 
   register: reg_goss_url_version
