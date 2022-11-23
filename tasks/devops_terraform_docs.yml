@@ -43,8 +43,6 @@
   register: reg_terraform_docs_versiones
   changed_when: false
   no_log: true
-  args:
-    warn: false
   tags:
    - devops
    - terraform
@@ -67,8 +65,6 @@
 
   register: reg_terraform_docs_url_version
   changed_when: false
-  args:
-    warn: false
   tags:
    - devops
    - terraform
@@ -97,8 +93,6 @@
 
   register: reg_terraform_docs_url_a_descargar
   when: terraform_docs_version_a_instalar != terraform_docs_version_instalada
-  args:
-    warn: false
   tags:
    - devops
    - terraform
@@ -120,13 +114,15 @@
    - terraform
    - terraform-docs
 
-- debug: msg="Terraform-docs, version deseada - {{ terraform_docs_version_deseada }}"
+- debug: 
+    msg: "Terraform-docs, version deseada - {{ terraform_docs_version_deseada }}"
   tags:
    - devops
    - terraform
    - terraform-docs
 
-- debug: msg="Terraform-docs, version a instalar - {{ terraform_docs_version_a_instalar }}"
+- debug: 
+    msg: "Terraform-docs, version a instalar - {{ terraform_docs_version_a_instalar }}"
   tags:
    - devops
    - terraform
@@ -151,8 +147,6 @@
        chmod a+rx /usr/local/bin/terraform-docs
 
   become: true
-  args:
-    warn: false
   when: terraform_docs_version_a_instalar != terraform_docs_version_instalada and terraform_docs_url_a_descargar.endswith('.gz') and not terraform_docs_url_a_descargar.endswith('.tar.gz')
   tags:
    - devops
@@ -166,8 +160,6 @@
        chmod a+rx /usr/local/bin/terraform-docs
 
   become: true
-  args:
-    warn: false
   when: terraform_docs_version_a_instalar != terraform_docs_version_instalada and terraform_docs_url_a_descargar.endswith('.tar.gz')
   tags:
    - devops

@@ -35,8 +35,6 @@
   register: reg_aws_url_version
   changed_when: false
   ignore_errors: true
-  args:
-    warn: false
   tags:
     - devops
     - aws

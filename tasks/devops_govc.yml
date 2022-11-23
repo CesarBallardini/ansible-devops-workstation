@@ -40,8 +40,6 @@
 
   register: reg_govc_actual
   changed_when: false
-  args:
-    warn: false
   tags:
     - devops
     - govc
@@ -67,15 +65,18 @@
    - devops
    - govc
 
-- debug: msg="GOVC, version instalada - {{ govc_version_instalada }}"
+- debug:
+    msg: "GOVC, version instalada - {{ govc_version_instalada }}"
   tags:
     - devops
     - govc
-- debug: msg="GOVC, version deseada - {{ govc_version_deseada }}"
+- debug:
+    msg: "GOVC, version deseada - {{ govc_version_deseada }}"
   tags:
     - devops
     - govc
-- debug: msg="GOVC, version a instalar - {{ govc_version_a_instalar }}"
+- debug:
+    msg: "GOVC, version a instalar - {{ govc_version_a_instalar }}"
   tags:
     - devops
     - govc
@@ -98,13 +99,12 @@
 
   register: reg_govc_url_a_descargar
   when: govc_version_instalada != govc_version_a_instalar
-  args:
-    warn: false
   tags:
     - devops
     - govc
 
-- debug: msg="GOVC, URL a descargar - {{ reg_govc_url_a_descargar }}"
+- debug: 
+    msg: "GOVC, URL a descargar - {{ reg_govc_url_a_descargar }}"
   when: govc_version_instalada != govc_version_a_instalar
   tags:
     - devops
@@ -137,8 +137,6 @@
        chmod a+rx /usr/local/bin/govc
 
   become: true
-  args:
-    warn: false
   when: govc_version_instalada != govc_version_a_instalar and govc_url_a_descargar.endswith('.gz') and not govc_url_a_descargar.endswith('.tar.gz')
   tags:
    - devops
@@ -151,8 +149,6 @@
        chmod a+rx /usr/local/bin/govc
 
   become: true
-  args:
-    warn: false
   when: govc_version_instalada != govc_version_a_instalar and govc_url_a_descargar.endswith('.tar.gz')
   tags:
    - devops

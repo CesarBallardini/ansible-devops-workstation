@@ -30,8 +30,6 @@
     curl --silent https://api.github.com/repos/ramboxapp/community-edition/releases/latest | jq -r ".tag_name"
   register: reg_rambox_url_version
   changed_when: false
-  args:
-    warn: false
   tags:
     - rambox
 

@@ -36,8 +36,6 @@
 
   register: reg_terragrunt_url_version
   changed_when: false
-  args:
-    warn: false
   tags:
    - devops
    - terraform
@@ -60,8 +58,6 @@
 
   register: reg_terragrunt_url_actual
   changed_when: false
-  args:
-    warn: false
   tags:
    - devops
    - terraform

@@ -34,8 +34,6 @@
 
   register: reg_goss_url_version
   changed_when: false
-  args:
-    warn: false
   tags:
     - devops
     - goss

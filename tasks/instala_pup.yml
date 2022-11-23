@@ -31,8 +31,6 @@
 
   register: reg_pup_url_version
   changed_when: false
-  args:
-    warn: false
   tags:
     - pup
 
@@ -47,13 +45,16 @@
   tags:
     - pup
 
-- debug: msg="pup, version instalada - {{ pup_version_instalada }}"
+- debug:
+    msg: "pup, version instalada - {{ pup_version_instalada }}"
   tags:
     - pup
-- debug: msg="pup, url actual        - {{ pup_url_actual }}"
+- debug:
+    msg: "pup, url actual        - {{ pup_url_actual }}"
   tags:
     - pup
-- debug: msg="pup, url version       - {{ pup_url_version }}"
+- debug:
+    msg: "pup, url version       - {{ pup_url_version }}"
   tags:
     - pup
 
