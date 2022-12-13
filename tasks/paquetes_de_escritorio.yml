@@ -177,6 +177,7 @@
       - x11-xkb-utils
       - xauth
       - xchm
+      - xournal
       - xscreensaver
       - zram-config
       #- gnome-tweak-tool
