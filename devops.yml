@@ -63,6 +63,11 @@
       - devops
       - git
 
+  - include_tasks: tasks/devops_git_credential_manager.yml
+    tags: 
+      - devops
+      - git-credential-manager
+
   - include_tasks: tasks/devops_terraform.yml
     tags: 
       - devops
