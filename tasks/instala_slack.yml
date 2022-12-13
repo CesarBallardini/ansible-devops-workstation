@@ -1,0 +1,8 @@
+---
+
+- name: slack | instala desde snap
+  snap:
+    name: slack
+  become: true
+  tags:
+    - slack

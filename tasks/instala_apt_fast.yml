@@ -70,9 +70,15 @@
     - apt
     - apt-fast
 
-# TODO: no hay paquete al dia de hoy en focal: 2020-03-05
+
+# https://docs.ansible.com/ansible/latest/collections/ansible/builtin/apt_key_module.html
+# FIXME
+# sudo apt-key list | less 
+# sudo apt-key export CA8DA16B | sudo gpg --dearmour -o /etc/apt/trusted.gpg.d/apt-fast.gpg
+
+
 - set_fact:
-        apt_fast_distro_release: "{{ ansible_distribution_release != 'focal' and ansible_distribution_release or 'bionic' }}"
+        apt_fast_distro_release: "{{ ansible_distribution_release }}"
   tags:
     - apt
     - apt-fast

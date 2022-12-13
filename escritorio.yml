@@ -43,6 +43,11 @@
       - escritorio
       - telegram_desktop
 
+  - include_tasks: tasks/instala_slack.yml
+    tags: 
+      - escritorio
+      - slack
+
   # Microsoft VisualStudio Code es version privativa, usaba VSCodium, el fork libre, me canse de los plugins que solo funcionan en vscode
   - include_tasks: tasks/instala_microsoft_visualstudio_code.yml
     tags: 
