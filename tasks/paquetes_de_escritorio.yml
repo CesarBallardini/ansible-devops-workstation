@@ -164,6 +164,7 @@
       - libnotify-bin
       #- libdvd-pkg
       - makepasswd
+      - mate-utils
       - minicom
       - mplayer
       - nmap
