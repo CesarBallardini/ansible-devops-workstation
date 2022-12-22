@@ -93,7 +93,8 @@
         - virtualbox-5.1
         - virtualbox-5.2
         - virtualbox-6.0
-      virtualbox_version_to_install: "virtualbox-6.1"
+        - virtualbox-6.1
+      virtualbox_version_to_install: "virtualbox-7.0"
     tags: 
       - devops
       - virtualbox
