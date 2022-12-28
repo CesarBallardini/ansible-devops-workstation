@@ -18,21 +18,17 @@
 
 # https://docs.ansible.com/ansible/latest/collections/ansible/builtin/apt_key_module.html
 # The apt-key command has been deprecated and suggests to ‘manage keyring files in trusted.gpg.d instead’.
-# sudo apt-key list | less 
-# 0EBF CD88 de docker
-# sudo apt-key export 2980AECF | sudo gpg --dearmour -o /etc/apt/trusted.gpg.d/virtualbox.gpg
-# sudo apt-key export 0EBFCD88 | sudo gpg --dearmour -o /etc/apt/trusted.gpg.d/docker.gpg
 
 - name: devops | docker | agrega clave del repo
-  apt_key:
+  get_url:
     url: 'https://download.docker.com/linux/ubuntu/gpg'
-    id: 8D81803C0EBFCD88
-    state: present
+    mode: '0644'
+    dest: /usr/share/keyrings/docker.asc
+    force: true
   become: true
   tags:
     - devops
     - docker
-
 
 - name: devops | docker | aseguro que /etc/default/docker no existe en systemd
   ansible.builtin.file:
@@ -44,12 +40,9 @@
     - devops
     - docker
 
-# FIXME: sudo apt-key export 0EBFCD88 | sudo gpg --dearmour -o /usr/share/keyrings/docker.gpg
-
-
 - name: devops | docker | agrego repo
   apt_repository:
-    repo: "deb [arch=amd64 signed-by=/usr/share/keyrings/docker.gpg] https://download.docker.com/linux/ubuntu  {{ ansible_distribution_release }} stable"
+    repo: "deb [arch=amd64 signed-by=/usr/share/keyrings/docker.asc] https://download.docker.com/linux/ubuntu  {{ ansible_distribution_release }} stable"
     state: present
     update_cache: yes
     filename: docker
