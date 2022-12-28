@@ -26,11 +26,15 @@
   tags:
     - microsoft_visualstudio_code
 
+# https://docs.ansible.com/ansible/latest/collections/ansible/builtin/apt_key_module.html
+# The apt-key command has been deprecated and suggests to ‘manage keyring files in trusted.gpg.d instead’.
+
 - name: microsoft_visualstudio_code | agrega clave del repo
-  apt_key:
+  get_url:
     url: 'https://packages.microsoft.com/keys/microsoft.asc'
-    id: 'EB3E94ADBE1229CF'
-    state: present
+    mode: '0644'
+    dest: /usr/share/keyrings/microsoft.asc
+    force: true
   become: true
   tags:
     - microsoft_visualstudio_code
@@ -38,7 +42,7 @@
 
 - name: microsoft_visualstudio_code | agrego repo
   apt_repository:
-    repo: "deb [arch=amd64] https://packages.microsoft.com/repos/vscode stable main"
+    repo: "deb [arch=amd64 signed-by=/usr/share/keyrings/microsoft.asc] https://packages.microsoft.com/repos/vscode stable main"
     state: present
     update_cache: yes
     filename: vscode

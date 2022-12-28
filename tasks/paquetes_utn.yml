@@ -53,21 +53,24 @@
     - utn
     - prolog
 
-- name: utn | agrega clave del repo Racket cuando no tengo acceso a protocolo hkp
-  apt_key:
+# https://docs.ansible.com/ansible/latest/collections/ansible/builtin/apt_key_module.html
+# The apt-key command has been deprecated and suggests to ‘manage keyring files in trusted.gpg.d instead’.
+
+- name: utn | racket | agrega clave del repo
+  get_url:
     url: 'https://keyserver.ubuntu.com/pks/lookup?op=get&search=0x3C9A6980F827E01E'
-    id: 'D9D33FCD84D82C17288BA03B3C9A6980F827E01E'
-    state: present
+    mode: '0644'
+    dest: /usr/share/keyrings/racket.asc
+    force: true
   become: true
   tags:
     - utn
     - racket
 
-
-- name: utn | agrego repo Racket cuando no tengo acceso a protocolo hkp
+- name: utn | racket | agrego repo Racket cuando no tengo acceso a protocolo hkp
   apt_repository:
     #repo: "ppa:plt/racket" # en redes con acceso a protocolo hkp
-    repo: "deb https://ppa.launchpadcontent.net/plt/racket/ubuntu  {{ ansible_distribution_release }} main"
+    repo: "deb  [arch=amd64 signed-by=/usr/share/keyrings/racket.asc] https://ppa.launchpadcontent.net/plt/racket/ubuntu  {{ ansible_distribution_release }} main"
     state: present
     update_cache: yes
     filename: racket
@@ -81,7 +84,7 @@
     - racket
 
 
-- name: utn | actualizo lista paquetes .deb
+- name: utn | racket | actualizo lista paquetes .deb
   apt:
     update_cache: yes
     cache_valid_time: 3600
@@ -91,7 +94,7 @@
     - utn
     - racket
  
-- name: utn | instala Racket Scheme
+- name: utn | racket | instala Racket Scheme
   apt:
     name:
       - racket
@@ -106,7 +109,7 @@
 # curl -L https://get.pharo.org/64/ | bash
 
 
-- name: utn | Verifico si existe instalacion de pharo
+- name: utn | pharo | Verifico si existe instalacion de pharo
   shell: /opt/pharo/bin/pharo --headless /opt/pharo/images/Pharo.image printVersion 2>/dev/null \
          | sed -e "s/\[version\] *'Pharo\([0-9]*\.[0-9]*\)\.[0-9]*.*/\1/"
   register: reg_pharo_version_instalada
@@ -117,7 +120,7 @@
     - pharo
 
 
-- name: utn | directorio de instalacion se elimina al cambiar de version de Pharo
+- name: utn | pharo | directorio de instalacion se elimina al cambiar de version de Pharo
   file:
     path: "{{ pharo_home_directory }}/"
     state: absent
@@ -128,7 +131,7 @@
     - pharo
 
 
-- name: utn | asegura existe directorio de instalacion y descargas para pharo
+- name: utn | pharo | asegura existe directorio de instalacion y descargas para pharo
   file:
     path: "{{ item }}"
     state: directory
@@ -142,7 +145,7 @@
     - utn
     - pharo
 
-- name: utn | directorio de imagenes cualquiera puede escribirlo
+- name: utn | pharo | directorio de imagenes cualquiera puede escribirlo
   file:
     path: "{{ pharo_home_directory }}/images"
     state: directory
@@ -156,7 +159,7 @@
 
 
 # imagen: https://files.pharo.org/get-files/80/pharo64.zip
-- name: utn | Descarga imagen Pharo
+- name: utn | pharo | Descarga imagen Pharo
   get_url:
     url: "https://files.pharo.org/get-files/{{ pharo_version_family }}/pharo64.zip"
     dest: "{{ pharo_home_directory }}/downloads/pharo64.zip"
@@ -169,7 +172,7 @@
 
 
 # vm:  https://files.pharo.org/get-files/80/pharo64-linux-stable.zip
-- name: utn | Descarga VM Pharo
+- name: utn | pharo | Descarga VM Pharo
   get_url:
     url: "http://files.pharo.org/get-files/{{ pharo_version_family }}/pharo64-linux-stable.zip"
     dest: "{{ pharo_home_directory }}/downloads/pharo64-linux-stable.zip"
@@ -180,7 +183,7 @@
     - pharo
 
 
-- name: utn | descomprime la VM Pharo
+- name: utn | pharo | descomprime la VM Pharo
   unarchive:
     src: "{{ pharo_home_directory }}/downloads/pharo64-linux-stable.zip"
     dest: "{{ pharo_home_directory }}"
@@ -191,7 +194,7 @@
     - utn
     - pharo
 
-- name: utn | descomprime la imagen Pharo
+- name: utn | pharo | descomprime la imagen Pharo
   unarchive:
     src: "{{ pharo_home_directory }}/downloads/pharo64.zip"
     dest: "{{ pharo_home_directory }}"
@@ -202,7 +205,7 @@
     - utn
     - pharo
 
-- name: utn | Pharo copia las imagenes originales al directorio de trabajo
+- name: utn | pharo | Pharo copia las imagenes originales al directorio de trabajo
   shell: |
     cp {{ pharo_home_directory }}/Pharo{{ pharo_version }}*-64bit-*.image {{ pharo_home_directory }}/images/Pharo.image
     chmod o+rw {{ pharo_home_directory }}/images/Pharo.image

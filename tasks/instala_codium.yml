@@ -22,11 +22,15 @@
   tags:
     - codium
 
+# https://docs.ansible.com/ansible/latest/collections/ansible/builtin/apt_key_module.html
+# The apt-key command has been deprecated and suggests to ‘manage keyring files in trusted.gpg.d instead’.
+
 - name: codium | agrega clave del repo
-  apt_key:
+  get_url:
     url: 'https://gitlab.com/paulcarroty/vscodium-deb-rpm-repo/raw/master/pub.gpg'
-    id: '54678CF75A278D9C'
-    state: present
+    mode: '0644'
+    dest: /usr/share/keyrings/codium.asc
+    force: true
   become: true
   tags:
     - codium
@@ -53,7 +57,7 @@
 - name: codium | agrego repo
   apt_repository:
     #repo: "deb [signed-by=/etc/apt/trusted.gpg.d/vscodium-archive-keyring.gpg] https://paulcarroty.gitlab.io/vscodium-deb-rpm-repo/debs/ vscodium main"
-    repo: "deb https://paulcarroty.gitlab.io/vscodium-deb-rpm-repo/debs/ vscodium main"
+    repo: "deb [arch=amd64 signed-by=/usr/share/keyrings/codium.asc] https://paulcarroty.gitlab.io/vscodium-deb-rpm-repo/debs/ vscodium main"
     state: present
     update_cache: yes
     filename: codium

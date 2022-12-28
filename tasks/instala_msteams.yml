@@ -6,12 +6,15 @@
   tags:
     - msteams
 
+# https://docs.ansible.com/ansible/latest/collections/ansible/builtin/apt_key_module.html
+# The apt-key command has been deprecated and suggests to ‘manage keyring files in trusted.gpg.d instead’.
 
 - name: msteams | agrega clave del repo
-  apt_key:
+  get_url:
     url: 'https://packages.microsoft.com/keys/microsoft.asc'
-    id: 'EB3E94ADBE1229CF'
-    state: present
+    mode: '0644'
+    dest: /usr/share/keyrings/msteams.asc
+    force: true
   become: true
   tags:
     - msteams
@@ -19,7 +22,7 @@
 
 - name: msteams | agrego repo
   apt_repository:
-    repo: "deb [arch=amd64] https://packages.microsoft.com/repos/ms-teams stable main"
+    repo: "deb [arch=amd64 signed-by=/usr/share/keyrings/msteams.asc] https://packages.microsoft.com/repos/ms-teams stable main"
     state: present
     update_cache: yes
     filename: teams

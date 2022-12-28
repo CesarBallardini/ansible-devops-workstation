@@ -3,18 +3,23 @@
 # http://liveusb.info/dotclear/
 # http://liveusb.info/dotclear/index.php?pages/install
 
+# https://docs.ansible.com/ansible/latest/collections/ansible/builtin/apt_key_module.html
+# The apt-key command has been deprecated and suggests to ‘manage keyring files in trusted.gpg.d instead’.
+
 - name: liveUSB-multiboot | agrega clave del repo
-  apt_key:
+  get_url:
     url: 'http://liveusb.info/multisystem/depot/multisystem.asc'
-    id: '4E940D7FDD7FB8CC'
-    state: present
+    mode: '0644'
+    dest: /usr/share/keyrings/liveusb-multiboot.asc
+    force: true
   become: true
+  tags:
   tags: [ multiboot ]
 
 
 - name: liveUSB-multiboot | agrego repo
   apt_repository:
-    repo: 'deb http://liveusb.info/multisystem/depot all main'
+    repo: 'deb [arch=amd64 signed-by=/usr/share/keyrings/liveusb-multiboot.asc] http://liveusb.info/multisystem/depot all main'
     state: present
     update_cache: yes
     filename: liveUSB-multiboot

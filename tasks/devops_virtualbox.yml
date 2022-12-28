@@ -10,12 +10,15 @@
     - virtualbox
 
 
+# https://docs.ansible.com/ansible/latest/collections/ansible/builtin/apt_key_module.html
+# The apt-key command has been deprecated and suggests to ‘manage keyring files in trusted.gpg.d instead’.
 
 - name: virtualbox | agrega clave del repo
-  apt_key:
+  get_url:
     url: 'https://www.virtualbox.org/download/oracle_vbox_2016.asc'
-    id: 'B9F8D658297AF3EFC18D5CDFA2F683C52980AECF'
-    state: present
+    mode: '0644'
+    dest: /usr/share/keyrings/oracle_vbox_2016.asc
+    force: true
   become: true
   tags:
     - devops
@@ -33,7 +36,7 @@
 
 - name: virtualbox | agrego repo
   apt_repository:
-    repo: "deb [arch=amd64 signed-by=/usr/share/keyrings/virtualbox.gpg] https://download.virtualbox.org/virtualbox/debian {{ ansible_distribution_release }} contrib"
+    repo: "deb [arch=amd64 signed-by=/usr/share/keyrings/oracle_vbox_2016.asc] https://download.virtualbox.org/virtualbox/debian {{ ansible_distribution_release }} contrib"
     state: present
     update_cache: yes
     filename: virtualbox

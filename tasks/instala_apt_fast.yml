@@ -60,16 +60,19 @@
 
 # https://keyserver.ubuntu.com/pks/lookup?fingerprint=on&op=index&search=0xA2166B8DE8BDC3367D1901C11EE2FF37CA8DA16B
 
+# https://docs.ansible.com/ansible/latest/collections/ansible/builtin/apt_key_module.html
+# The apt-key command has been deprecated and suggests to ‘manage keyring files in trusted.gpg.d instead’.
+
 - name: apt-fast | agrega clave del repo
-  apt_key:
+  get_url:
     url: 'https://keyserver.ubuntu.com/pks/lookup?op=get&search=0x1EE2FF37CA8DA16B'
-    id: 'A2166B8DE8BDC3367D1901C11EE2FF37CA8DA16B'
-    state: present
+    mode: '0644'
+    dest: /usr/share/keyrings/apt-fast.asc
+    force: true
   become: true
   tags:
     - apt
     - apt-fast
-
 
 # https://docs.ansible.com/ansible/latest/collections/ansible/builtin/apt_key_module.html
 # FIXME
@@ -89,7 +92,7 @@
 - name: apt-fast | agrego repo
   apt_repository:
     #repo: 'ppa:apt-fast/stable' # no se puede porque intenta descargar la key mediante hkp: y no sale si el proxy no permite HKP
-    repo: "deb [arch=amd64 signed-by=/usr/share/keyrings/apt-fast.gpg] http://ppa.launchpad.net/apt-fast/stable/ubuntu {{ apt_fast_distro_release }} main"
+    repo: "deb [arch=amd64 signed-by=/usr/share/keyrings/apt-fast.asc] http://ppa.launchpad.net/apt-fast/stable/ubuntu {{ apt_fast_distro_release }} main"
     state: present
     update_cache: yes
     filename: aptfast

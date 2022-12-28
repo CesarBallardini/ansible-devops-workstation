@@ -1,17 +1,21 @@
 ---
 
-- name: escritorio | agrego clave del repo de google chrome
-  apt_key:
+# https://docs.ansible.com/ansible/latest/collections/ansible/builtin/apt_key_module.html
+# The apt-key command has been deprecated and suggests to ‘manage keyring files in trusted.gpg.d instead’.
+
+- name: escritorio | agrega clave del repo Google Chrome
+  get_url:
     url: https://dl-ssl.google.com/linux/linux_signing_key.pub
-    id: 'A040830F7FAC5991'
-    state: present
+    mode: '0644'
+    dest: /usr/share/keyrings/google-chrome.asc
+    force: true
   become: true
   tags:
     - escritorio
 
 - name: escritorio | agrego repo google chrome
   apt_repository:
-    repo: "deb [arch=amd64] http://dl.google.com/linux/chrome/deb/ stable main"
+    repo: "deb [arch=amd64 signed-by=/usr/share/keyrings/google-chrome.asc] http://dl.google.com/linux/chrome/deb/ stable main"
     state: present
     filename: google-chrome
     update_cache: yes
