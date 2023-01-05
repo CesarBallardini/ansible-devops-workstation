@@ -19,6 +19,10 @@
     mode: '0644'
     dest: /usr/share/keyrings/oracle_vbox_2016.asc
     force: true
+  register: vb_add_key_result
+  until: "vb_add_key_result is not failed"
+  retries: 10
+  delay: 10
   become: true
   tags:
     - devops
