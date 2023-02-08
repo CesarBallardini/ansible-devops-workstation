@@ -1,0 +1,10 @@
+---
+
+- name: bitwarden | instala desde snap
+  snap:
+    name: 
+      - bw
+      - bitwarden
+  become: true
+  tags:
+    - bitwarden

@@ -48,6 +48,11 @@
       - escritorio
       - slack
 
+  - include_tasks: tasks/instala_bitwarden.yml
+    tags:
+      - escritorio
+      - bitwarden
+
   # Microsoft VisualStudio Code es version privativa, usaba VSCodium, el fork libre, me canse de los plugins que solo funcionan en vscode
   - include_tasks: tasks/instala_microsoft_visualstudio_code.yml
     tags: 
