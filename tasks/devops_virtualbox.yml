@@ -18,7 +18,7 @@
     url: 'https://www.virtualbox.org/download/oracle_vbox_2016.asc'
     mode: '0644'
     dest: /usr/share/keyrings/oracle_vbox_2016.asc
-    force: true
+    force: false
   register: vb_add_key_result
   until: "vb_add_key_result is not failed"
   retries: 10
