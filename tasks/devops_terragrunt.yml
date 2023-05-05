@@ -32,7 +32,7 @@
   shell: |
     curl --silent "https://api.github.com/repos/gruntwork-io/terragrunt/releases" \
       | jq -r '.[] | select(.name|test("v[0-9]*.[0-9]*.[0-9]*$")) | .name ' \
-      | head -n 1
+      | head -n 1 | tr -d " "
 
   register: reg_terragrunt_url_version
   changed_when: false
