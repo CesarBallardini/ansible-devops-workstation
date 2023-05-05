@@ -54,7 +54,7 @@
 - name: devops | terragrunt | busca el URL de la version actual
   shell: |
     curl --silent "https://api.github.com/repos/gruntwork-io/terragrunt/releases" \
-      | jq -r '.[] | select(.name == "v{{ terragrunt_url_version }}").assets[] | select(.name == "terragrunt_linux_amd64").browser_download_url'
+      | jq -r '.[] | select(.name == " v{{ terragrunt_url_version }}").assets[] | select(.name == "terragrunt_linux_amd64").browser_download_url'
 
   register: reg_terragrunt_url_actual
   changed_when: false
@@ -73,21 +73,21 @@
 
 
 - debug:
-    msg: "Terragrunt, version instalada - {{ terragrunt_version_instalada }}"
+    msg: "Terragrunt, version instalada - [{{ terragrunt_version_instalada }}]"
   tags:
    - devops
    - terraform
    - terragrunt
 
 - debug:
-    msg: "Terragrunt, url actual        - {{ terragrunt_url_actual }}"
+    msg: "Terragrunt, url actual        - [{{ terragrunt_url_actual }}]"
   tags:
    - devops
    - terraform
    - terragrunt
 
 - debug:
-    msg: "Terragrunt, url version       - {{ terragrunt_url_version }}"
+    msg: "Terragrunt, url version       - [{{ terragrunt_url_version }}]"
   tags:
    - devops
    - terraform
