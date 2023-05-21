@@ -20,8 +20,8 @@
 
 # FIXME: version de pharo debe ir a variables de host
 - set_fact:
-    pharo_version_family: "90"
-    pharo_version: "9.0"
+    pharo_version_family: "100"
+    pharo_version: "10.0"
     pharo_home_directory: "/opt/pharo"
   tags:
     - utn
@@ -110,7 +110,7 @@
 
 
 - name: utn | pharo | Verifico si existe instalacion de pharo
-  shell: /opt/pharo/bin/pharo --headless /opt/pharo/images/Pharo.image printVersion 2>/dev/null \
+  shell: /opt/pharo/bin/pharo --headless /opt/pharo/Pharo*.image printVersion 2>/dev/null \
          | sed -e "s/\[version\] *'Pharo\([0-9]*\.[0-9]*\)\.[0-9]*.*/\1/"
   register: reg_pharo_version_instalada
   failed_when: false
