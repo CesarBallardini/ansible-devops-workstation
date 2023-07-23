@@ -27,7 +27,7 @@
 
 - name: pup | busca el nombre de la version actual
   shell: |
-    curl --silent https://api.github.com/repos/ericchiang/pup/releases/latest | jq -r ".tag_name"
+    curl --silent --insecure https://api.github.com/repos/ericchiang/pup/releases/latest | jq -r ".tag_name"
 
   register: reg_pup_url_version
   changed_when: false
