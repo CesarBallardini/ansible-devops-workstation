@@ -106,7 +106,7 @@
 - name: devops | terraform | descarga paquete
   get_url:
     url: "{{ terraform_url_actual }}"
-    dest: "/tmp/{{ terraform_url_actual | basename }}"
+    dest: "/tmp/{{ terraform_url_actual | ansible.builtin.basename }}"
   when: terraform_version_instalada != terraform_version_a_instalar
   tags:
    - devops
