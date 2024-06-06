@@ -20,8 +20,8 @@
 
 # FIXME: version de pharo debe ir a variables de host
 - set_fact:
-    pharo_version_family: "100"
-    pharo_version: "10.0"
+    pharo_version_family: "120"
+    pharo_version: "12.0"
     pharo_home_directory: "/opt/pharo"
   tags:
     - utn
@@ -159,10 +159,11 @@
 
 
 # imagen: https://files.pharo.org/get-files/80/pharo64.zip
+# imagen: https://files.pharo.org/get-files/120/pharoImage-x86_64.zip
 - name: utn | pharo | Descarga imagen Pharo
   get_url:
-    url: "https://files.pharo.org/get-files/{{ pharo_version_family }}/pharo64.zip"
-    dest: "{{ pharo_home_directory }}/downloads/pharo64.zip"
+    url: "https://files.pharo.org/get-files/{{ pharo_version_family }}/pharoImage-x86_64.zip"
+    dest: "{{ pharo_home_directory }}/downloads/pharoImage-x86_64.zip"
   when: reg_pharo_version_instalada.rc != 0 or reg_pharo_version_instalada.stdout != pharo_version
   become: true
   tags:
@@ -172,9 +173,10 @@
 
 
 # vm:  https://files.pharo.org/get-files/80/pharo64-linux-stable.zip
+# vm:  https://files.pharo.org/get-files/120/pharo-vm-Linux-x86_64-stable.zip
 - name: utn | pharo | Descarga VM Pharo
   get_url:
-    url: "http://files.pharo.org/get-files/{{ pharo_version_family }}/pharo64-linux-stable.zip"
+    url: "http://files.pharo.org/get-files/{{ pharo_version_family }}/pharo-vm-Linux-x86_64-stable.zip"
     dest: "{{ pharo_home_directory }}/downloads/pharo64-linux-stable.zip"
   when: reg_pharo_version_instalada.rc != 0 or reg_pharo_version_instalada.stdout != pharo_version
   become: true
@@ -196,7 +198,7 @@
 
 - name: utn | pharo | descomprime la imagen Pharo
   unarchive:
-    src: "{{ pharo_home_directory }}/downloads/pharo64.zip"
+    src: "{{ pharo_home_directory }}/downloads/pharoImage-x86_64.zip"
     dest: "{{ pharo_home_directory }}"
     remote_src: yes
   when: reg_pharo_version_instalada.rc != 0 or reg_pharo_version_instalada.stdout != pharo_version
