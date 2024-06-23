@@ -110,11 +110,30 @@
 
 
 - name: utn | pharo | Verifico si existe instalacion de pharo
-  shell: /opt/pharo/bin/pharo --headless /opt/pharo/Pharo*.image printVersion 2>/dev/null \
+  shell: |
+    pushd /tmp/ >/dev/null
+    cp /opt/pharo/Pharo{{ pharo_version }}*.image .
+    cp /opt/pharo/Pharo{{ pharo_version }}*.sources .
+    /opt/pharo/bin/pharo --headless Pharo*.image printVersion 2>/dev/null \
          | sed -e "s/\[version\] *'Pharo\([0-9]*\.[0-9]*\)\.[0-9]*.*/\1/"
+    rm -f Pharo*.image
+    popd >/dev/null
+
+  args:
+    executable: /bin/bash
   register: reg_pharo_version_instalada
   failed_when: false
   changed_when: false
+  tags:
+    - utn
+    - pharo
+
+
+- debug: msg="Pharo, version instalada - {{ reg_pharo_version_instalada.stdout }}"
+  tags:
+    - utn
+    - pharo
+- debug: msg="Pharo, version deseada   - {{ pharo_version }}"
   tags:
     - utn
     - pharo
