@@ -13,9 +13,6 @@
   - include_tasks: tasks/instala_zoom.yml
     tags: [ zoom ]
 
-  - include_tasks: tasks/instala_msteams.yml
-    tags: [ msteams ]
-
   - include_tasks: tasks/instala_ffmpeg.yml
     tags: [ ffmpeg, video ]
 
