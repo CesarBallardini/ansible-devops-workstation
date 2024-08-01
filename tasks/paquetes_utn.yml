@@ -107,6 +107,9 @@
 
 # Pharo puede instalarse mediante zeroconf: https://pharo.org/download
 # curl -L https://get.pharo.org/64/ | bash
+#
+# correr una copia local en el directorio actual con:
+# cp /opt/pharo/Pharo12*.image ./Pharo.image && cp /opt/pharo/Pharo12*.changes ./Pharo.changes && cp /opt/pharo/Pharo*.sources . && /opt/pharo/pharo &
 
 
 - name: utn | pharo | Verifico si existe instalacion de pharo
