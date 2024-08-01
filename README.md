@@ -3,7 +3,7 @@
 
 [![Build Status](https://travis-ci.com/CesarBallardini/ansible-devops-workstation.svg?branch=master)](https://app.travis-ci.com/github/CesarBallardini/ansible-devops-workstation)
 
-A partir de una instalación base de Ubuntu 18.04, 20.04, 22.04 se pueden agregar las herramientas
+A partir de una instalación base de Ubuntu 22.04, 24.04 se pueden agregar las herramientas
 populares para trabajar en las siguientes áreas:
 
 
