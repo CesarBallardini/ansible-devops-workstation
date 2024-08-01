@@ -119,7 +119,7 @@
       - gawk
       - htop
       - mc
-      - mlocate
+      - plocate
       - nocache
       - openssh-server
       - pv
@@ -174,6 +174,7 @@
       - nmap
       - ntfs-3g
       - odt2txt
+      - pulseaudio-utils # needed for zoom audio share
       - recode
       - tree
       - ttf-mscorefonts-installer
@@ -222,9 +223,7 @@
       - libreoffice-l10n-es
       - libreoffice-math
       - libreoffice-ogltrans
-      - libreoffice-pdfimport
       - libreoffice-style-breeze
-        #- libreoffice-style-colibre no esta en 18.04
       - libreoffice-style-elementary
       - libreoffice-style-tango
       - libreoffice-writer
