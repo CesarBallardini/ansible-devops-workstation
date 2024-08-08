@@ -30,7 +30,7 @@
 
 - name: devops | packer | version actual instalada
   shell: |
-     /usr/local/bin/packer --version
+     /usr/local/bin/packer --version | sed -n  -e "s/^Packer[ ]*v\(.*\)/\1/p"
   register: reg_packer_version
   failed_when: false
   changed_when: false
