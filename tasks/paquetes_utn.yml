@@ -1,33 +1,8 @@
 ---
 
 ## 
-# Para ejecutar Pharo con una iagen fresca, hacer:
-# cp /opt/pharo/Pharo8.0* . ; PHARO_IMAGE=$( echo Pharo8.0*image )  /opt/pharo/pharo &
-# cp /opt/pharo/Pharo9.0* . ; PHARO_IMAGE=$( echo Pharo9.0*image )  /opt/pharo/pharo &
-
-##
-# FIXME
-# revisar este script para copiar la imagen y fuentes de pharo si no existe en el directorio actual; adaptarlo
-#
-##/bin/sh
-#if [ ! -f ./pharo.changes -o ! -f ./pharo.image ]
-#then
-#  cp /usr/local/pharo4.0/shared/Pharo4.0.image   ./pharo.image
-#  cp /usr/local/pharo4.0/shared/Pharo4.0.changes ./pharo.changes
-#  cp /usr/local/pharo4.0/shared/PharoV40.sources .
-#fi
-#exec /usr/local/pharo4.0/bin/pharo
-
-# FIXME: version de pharo debe ir a variables de host
-- set_fact:
-    pharo_version_family: "120"
-    pharo_version: "12.0"
-    pharo_home_directory: "/opt/pharo"
-  tags:
-    - utn
-    - pharo
-
-
+# lanza una imagen fresca en el directorio actual:
+# cp /opt/pharo/Pharo12*.image ./Pharo.image && cp /opt/pharo/Pharo12*.changes ./Pharo.changes && cp /opt/pharo/Pharo*.sources . && /opt/pharo/pharo &
 
 - name: utn | instala prolog
   apt:
