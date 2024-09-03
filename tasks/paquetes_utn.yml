@@ -90,8 +90,8 @@
 - name: utn | pharo | Verifico si existe instalacion de pharo
   shell: |
     pushd /tmp/ >/dev/null
-    cp /opt/pharo/Pharo{{ pharo_version }}*.image .
-    cp /opt/pharo/Pharo{{ pharo_version }}*.sources .
+    cp /opt/pharo/Pharo{{ pharo_main_version }}*.image .
+    cp /opt/pharo/Pharo{{ pharo_main_version }}*.sources .
     /opt/pharo/bin/pharo --headless Pharo*.image printVersion 2>/dev/null \
          | sed -e "s/\[version\] *'Pharo\([0-9]*\.[0-9]*\)\.[0-9]*.*/\1/"
     rm -f Pharo*.image
