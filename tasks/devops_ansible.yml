@@ -141,12 +141,17 @@
   when: not reg_local_pip.stat.exists
   become: true
 
+- name: devops | Definir la variable python_venv
+  ansible.builtin.set_fact:
+    python_venv: "{{ python_venv if python_venv is defined else '/usr/local/venv-ansible-{{ ansible_version.major }}.{{ ansible_version.minor }}' }}"
+  tags:
+    - devops
+    - ansible
+
 - name: devops | Crear el entorno virtual de Python
   ansible.builtin.command:
-    cmd: python3 -m venv "{{ python_venv | default('/usr/local/venv-ansible-{{ ansible_version.major }}.{{ ansible_version.minor }}') }}"
-  args:
-    creates: "{{ python_venv | default('/usr/local/venv-ansible-{{ ansible_version.major }}.{{ ansible_version.minor }}') }}"
-  when: python_venv is not defined
+    cmd: python3 -m venv "{{ python_venv }}"
+  when: python_venv is defined
   become: true
   tags:
     - devops
@@ -156,7 +161,7 @@
   ansible.builtin.pip:
     name: ansible
     version: "{{ ansible_version_a_instalar }}"
-    virtualenv: "{{ python_venv | default('/usr/local/venv-ansible-{{ ansible_version.major }}.{{ ansible_version.minor }}') }}"
+    virtualenv: "{{ python_venv }}"
     virtualenv_command: python3 -m venv
   environment:
     PIP_BREAK_SYSTEM_PACKAGES: '1'
@@ -169,7 +174,7 @@
   ansible.builtin.pip:
     name: "{{ item }}"
     state: latest
-    virtualenv: "{{ python_venv | default('/usr/local/venv-ansible-{{ ansible_version.major }}.{{ ansible_version.minor }}') }}"
+    virtualenv: "{{ python_venv }}"
     virtualenv_command: python3 -m venv
   environment:
     PIP_BREAK_SYSTEM_PACKAGES: '1'
