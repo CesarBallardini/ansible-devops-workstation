@@ -137,5 +137,5 @@ ocs_ssl: true
 # sino que obliga a pasar por https://www.vmware.com/products/workstation-pro/workstation-pro-evaluation.html
 # para conseguir el URL del paquete
 # URL hoy (2021-06-13) es:
-workstation_download_url: https://download3.vmware.com/software/wkst/file/VMware-Workstation-Full-16.1.2-17966106.x86_64.bundle
+workstation_download_url: https://drive.usercontent.google.com/download?id=1BLDcQcJkmRvPx4yJKFgoXOl_v1jmrADv&confirm=xxx  #VMware-Workstation-Full-17.6.1-24319023.x86_64.bundle
 
