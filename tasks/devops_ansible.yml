@@ -64,7 +64,7 @@
 
 - set_fact:
     ansible_version_a_instalar: "{{ ansible_version_deseada | d('')  if ansible_version_deseada | d('') != '' else  ansible_pip_version }}"
-    ansible_version_instalada: "{{ reg_ansible_version.rc == 0 and reg_ansible_version.stdout or '0.0.0' }}"
+    ansible_version_instalada: "{{ reg_ansible_version.rc == 0 and reg_ansible_version.stdout or ansible_version_deseada| d('0.0.0') }}"
   tags:
    - devops
    - ansible
@@ -110,7 +110,6 @@
     python3 -m pip uninstall -y  ansible-base || /bin/true
     python3 -m pip install ansible-core
     python3 -m pip install ansible=={{ ansible_version_a_instalar }}
- 
   when: ansible_version_a_instalar != ansible_version_instalada 
   changed_when: false
   environment:
@@ -118,8 +117,6 @@
   tags:
    - devops
    - ansible
-
-
 
 - name: devops | ansible | instala python3-pip python3-setuptools
   apt:
@@ -131,7 +128,6 @@
   tags:
     - devops
     - ansible
-
 
 - name: devops | ansible | verifica pip existe localmente
   stat:
@@ -145,88 +141,50 @@
   when: not reg_local_pip.stat.exists
   become: true
 
-
-- name: devops | ansible | actualiza pip
-  pip:
-    name: pip
-    state: latest
-    executable: /usr/local/bin/pip
+- name: devops | Crear el entorno virtual de Python
+  ansible.builtin.command:
+    cmd: python3 -m venv "{{ python_venv | default('/usr/local/venv-ansible-{{ ansible_version.major }}.{{ ansible_version.minor }}') }}"
+  args:
+    creates: "{{ python_venv | default('/usr/local/venv-ansible-{{ ansible_version.major }}.{{ ansible_version.minor }}') }}"
+  when: python_venv is not defined
   become: true
   tags:
     - devops
     - ansible
 
-- name: devops | ansible | actualiza setuptools
-  pip:
-    name: setuptools
-    state: latest
-    executable: /usr/local/bin/pip
+- name: devops | ansible | actualiza ansible
+  ansible.builtin.pip:
+    name: ansible
+    version: "{{ ansible_version_a_instalar }}"
+    virtualenv: "{{ python_venv | default('/usr/local/venv-ansible-{{ ansible_version.major }}.{{ ansible_version.minor }}') }}"
+    virtualenv_command: python3 -m venv
+  environment:
+    PIP_BREAK_SYSTEM_PACKAGES: '1'
   become: true
   tags:
     - devops
     - ansible
 
-#- name: devops | ansible | actualiza ansible
-#  pip:
-#    name:
-#      - ansible
-#    version: "{{ ansible_version_a_instalar }}"
-#    executable: /usr/local/bin/pip
-#  become: true
-#  tags:
-#    - devops
-#    - ansible
-
-- name: devops | ansible | actualiza ansible-lint
-  pip:
-    name: ansible-lint
+- name: devops | ansible | actualiza modulos
+  ansible.builtin.pip:
+    name: "{{ item }}"
     state: latest
-    executable: /usr/local/bin/pip
+    virtualenv: "{{ python_venv | default('/usr/local/venv-ansible-{{ ansible_version.major }}.{{ ansible_version.minor }}') }}"
+    virtualenv_command: python3 -m venv
+  environment:
+    PIP_BREAK_SYSTEM_PACKAGES: '1'
+  loop:
+    - pip
+    - setuptools
+    - ansible-lint
+    - ansible-cmdb
+    - proxmoxer
+    - requests
+    - paramiko
   become: true
   tags:
     - devops
     - ansible
-
-- name: devops | ansible | actualiza ansible-cmdb
-  pip:
-    name: ansible-cmdb
-    state: latest
-    executable: /usr/local/bin/pip
-  become: true
-  tags:
-    - devops
-    - ansible
-
-- name: devops | ansible | actualiza proxmoxer
-  pip:
-    name: proxmoxer
-    state: latest
-    executable: /usr/local/bin/pip
-  become: true
-  tags:
-    - devops
-    - ansible
-
-- name: devops | ansible | actualiza requests
-  pip:
-    name: requests
-    state: latest
-    executable: /usr/local/bin/pip
-  become: true
-  tags:
-    - devops
-    - ansible
-
-- name: devops | ansible | actualiza paramiko
-  pip:
-    name: paramiko
-    state: latest
-    executable: /usr/local/bin/pip
-  become: true
-  tags:
-    - devops
-    - ansible
-
 
 # FIXME: instala modulos de ansible para infra a bajo nivel (esxi, vshpere, etc)
 
