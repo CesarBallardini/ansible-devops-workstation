@@ -34,7 +34,6 @@
       - io.atom.Atom
       #- org.libreoffice.LibreOffice
       - com.jetbrains.WebStorm
-      - com.skype.Client
   become: true
   tags:
     - escritorio
@@ -60,7 +59,6 @@
       - io.atom.Atom
       #- org.libreoffice.LibreOffice
       - com.jetbrains.WebStorm
-      - com.skype.Client
   become: true
   tags:
     - escritorio
