@@ -1,9 +1,0 @@
----
-
-- name: skype | instala desde snap
-  snap:
-    name: 
-      - skype
-  become: true
-  tags:
-    - skype

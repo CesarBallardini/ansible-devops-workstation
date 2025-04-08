@@ -278,7 +278,6 @@ Activo mi espacio de trabajo y ya puedo continuar con mis obligaciones, mientras
 
 
 ```
-.Skype
 .config
 .docker
 .dropbox

@@ -14,7 +14,6 @@ populares para trabajar en las siguientes áreas:
   * Emulador 3270 (está comentado el código para que no se instale)
   * Flatpak
   * Snap
-  * Skype (para hablar con los clientes :)  
 
 * Editores / IDEs
   * Atom
