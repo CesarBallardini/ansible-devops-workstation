@@ -1,0 +1,62 @@
+---
+
+- name: Set workstation filename
+  ansible.builtin.set_fact:
+    workstation_filename: "VMware-Workstation-Full"
+  tags: 
+  - devops
+  - vmware-workstation
+
+- name: Create temp directory
+  ansible.builtin.file:
+    path: "{{ workstation_tempdir }}"
+    state: directory
+    owner: "{{ ansible_facts.user_id }}"
+    mode: 0755
+  become: true
+  tags: 
+  - devops
+  - vmware-workstation
+
+- name: Check for pre-downloaded binary
+  ansible.builtin.stat: path="{{ workstation_tempdir }}/{{ workstation_filename }}.bundle"
+  register: file_stats
+  tags: 
+  - devops
+  - vmware-workstation
+
+- name: Download workstation
+  ansible.builtin.get_url:
+    url: "{{ workstation_download_url }}"
+    dest: "{{ workstation_tempdir }}/{{ workstation_filename }}.bundle"
+  when: not file_stats.stat.exists
+  tags: 
+  - devops
+  - vmware-workstation
+
+- name: Mark script executable
+  ansible.builtin.file:
+    path: "{{ workstation_tempdir }}/{{ workstation_filename }}.bundle"
+    state: file
+    mode: 0755
+  tags: 
+  - devops
+  - vmware-workstation
+
+- name: Run installer
+  ansible.builtin.command: "{{ workstation_tempdir }}/{{ workstation_filename }}.bundle"
+  become: true
+  tags: 
+  - devops
+  - vmware-workstation
+
+- name: Remove installer
+  ansible.builtin.file:
+    path: "{{ workstation_tempdir }}/{{ workstation_filename }}.bundle"
+    state: absent
+  become: true
+  tags: 
+  - devops
+  - vmware-workstation
+
+
