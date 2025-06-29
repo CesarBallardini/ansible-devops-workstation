@@ -1,0 +1,40 @@
+---
+
+# sudo add-apt-repository ppa:openshot.developers/ppa
+# sudo apt update
+# sudo apt install openshot-qt python3-openshot
+
+- name: openshot | agrego repo
+  ansible.builtin.apt_repository:
+    repo: ppa:openshot.developers/ppa
+    state: present
+    update_cache: yes
+    filename: openshot
+  become: true
+  register: reg_add_ppa_openshot
+  tags:
+    - apt
+    - openshot
+
+
+- name: apt-fast | actualizo lista paquetes .deb
+  apt:
+    update_cache: yes
+    cache_valid_time: 3600
+  become: true
+  when: reg_add_ppa_openshot is changed
+  tags:
+    - apt
+    - openshot
+  
+- name: openshot | instala openshot
+  apt:
+    name: 
+      - openshot-qt
+      - python3-openshot
+    state: present
+  become: true
+  tags:
+    - apt
+    - openshot
+
