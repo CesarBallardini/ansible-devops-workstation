@@ -274,25 +274,25 @@
   tags:
     - escritorio
 
-# http://rg3.github.io/youtube-dl/download.html
-- name: escritorio | instala youtube-dl
-  shell: |
-      if [ ! -f /usr/local/bin/youtube-dl ] ; then
-        curl -L https://yt-dl.org/downloads/latest/youtube-dl -o /usr/local/bin/youtube-dl
-        chmod a+rx /usr/local/bin/youtube-dl
-      fi
+## http://rg3.github.io/youtube-dl/download.html
+#- name: escritorio | instala youtube-dl
+#  shell: |
+#      if [ ! -f /usr/local/bin/youtube-dl ] ; then
+#        curl -L https://yt-dl.org/downloads/latest/youtube-dl -o /usr/local/bin/youtube-dl
+#        chmod a+rx /usr/local/bin/youtube-dl
+#      fi
+#
+#  changed_when: false
+#  become: true
+#  tags:
+#    - escritorio
 
-  changed_when: false
-  become: true
-  tags:
-    - escritorio
-
-- name: escritorio | actualiza youtube-dl
-  command: python3 /usr/local/bin/youtube-dl --update
-  changed_when: false
-  become: true
-  tags:
-    - escritorio
+#- name: escritorio | actualiza youtube-dl
+#  command: python3 /usr/local/bin/youtube-dl --update
+#  changed_when: false
+#  become: true
+#  tags:
+#    - escritorio
 
 - name: escritorio | configura cgroup-tools en grub
   lineinfile:
