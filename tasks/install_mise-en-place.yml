@@ -1,0 +1,72 @@
+---
+
+- name: Create keyrings directory if it doesn't exist
+  file:
+    path: /etc/apt/keyrings
+    state: directory
+    mode: '0755'
+  become: true
+  tags:
+    - mise-en-place
+
+
+- name: Download and convert GPG key for Mise
+  get_url:
+    url: 'https://mise.jdx.dev/gpg-key.pub'
+    dest: /tmp/mise-gpg-key.pub
+  tags:
+    - mise-en-place
+
+- name: Convert GPG key to dearmor format
+  command: gpg --dearmor /tmp/mise-gpg-key.pub
+  args:
+    removes: /tmp/mise-gpg-key.pub
+    chdir: /tmp
+  register: gpg_conversion
+  tags:
+    - mise-en-place
+
+
+- name: Move the converted key to the keyrings directory
+  copy:
+    src: /tmp/mise-gpg-key.pub.gpg
+    dest: /etc/apt/keyrings/mise-archive-keyring.gpg
+    mode: '0644'
+  when: gpg_conversion.rc == 0
+  become: true
+  tags:
+    - mise-en-place
+
+- name: Add Mise repository to sources list
+  apt_repository:
+    repo: "deb [signed-by=/etc/apt/keyrings/mise-archive-keyring.gpg arch=amd64] https://mise.jdx.dev/deb stable main"
+    state: present
+    filename: mise-in-place
+    update_cache: yes
+  become: true
+  tags:
+    - mise-en-place
+
+- name: Clean up temporary GPG key file
+  file:
+    path: /tmp/mise-gpg-key.pub.gpg
+    state: absent
+  tags:
+    - mise-en-place
+
+
+- name: Update apt package index again
+  apt:
+    update_cache: yes
+  become: true
+  tags:
+    - mise-en-place
+
+- name: Install or update Mise
+  apt:
+    name: mise
+    state: latest
+  become: true
+  tags:
+    - mise-en-place
+

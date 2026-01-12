@@ -55,10 +55,15 @@
 
   # Microsoft VisualStudio Code es version privativa, usaba VSCodium, el fork libre, me canse de los plugins que solo funcionan en vscode
   - include_tasks: tasks/instala_microsoft_visualstudio_code.yml
-    tags: 
+    tags:
       - escritorio
       - microsoft_visualstudio_code
-  
+
+  - include_tasks: tasks/install_mise-en-place.yml
+    tags:
+      - escritorio
+      - mise-en-place
+
 #  - include_tasks: tasks/instala_codium.yml
 #    tags: 
 #      - escritorio
