@@ -143,10 +143,13 @@ pharo_main_version: "13"
 pharo_home_directory: "/opt/pharo"
 
 # Config de OCS-Inventory: si ocs_server es vacio, no se instala
+# ocs_server debe ser una URL completa, ej: 'http://ocs.ejemplo.com/ocsinventory'
 ocs_server: ''
 ocs_tag: ''
-ocs_agent_version: '2.8.1'
 ocs_ssl: true
+ocs_ca_file: ''
+ocs_nosoftware: 1
+ocs_now: false
 
 # VMware ya no permite descargar directamente con curl y similares,
 # sino que obliga a pasar por https://www.vmware.com/products/workstation-pro/workstation-pro-evaluation.html

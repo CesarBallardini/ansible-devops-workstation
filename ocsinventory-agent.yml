@@ -11,36 +11,41 @@
       when: ocs_server is defined and ocs_server | length > 0
       tags: [always]
 
-    # https://fossies.org/linux/Ocsinventory-Unix-Agent/postinst.pl#l_345
-    # instalador no es configurable con las opciones en el crontab
-    # 28 11 * * * root /usr/local/bin/ocsinventory-agent --lazy > /dev/null 2>&1
-    - name: ocsinventory-agent | asegura que no informa software
-      ansible.builtin.cron:
-        name: "OCS Inventory Agent"
-        cron_file: "/etc/cron.d/ocsinventory-agent"
-        minute: "{{ 59 |random(seed=inventory_hostname) }}"
-        hour: "8"
-        job: "/usr/local/bin/ocsinventory-agent --nosoftware --lazy > /dev/null 2>&1"
-        user: "root"
-      when: ocs_server is defined and ocs_server | length > 0
+    - name: ocsinventory-agent | elimina el paquete APT
+      ansible.builtin.apt:
+        name: ocsinventory-agent
+        state: absent
+        purge: true
+      when: not (ocs_server is defined and ocs_server | length > 0)
       tags: [ocsinventory-agent]
-# Para desinstalar deshacer lo que hizo:
-# https://fossies.org/linux/Ocsinventory-Unix-Agent/postinst.pl
-# En roles/ocsinventory-agent/defaults/main.yml estan los directorios defaults a eliminar
-# Los paquetes APT que fueron dependencias: FIXME los dejo instalados
 
-    - name: ocsinventory-agent | elimina el agente
+    - name: ocsinventory-agent | elimina cron job
+      ansible.builtin.cron:
+        name: "Run OCS Inventory Agent"
+        user: root
+        state: absent
+      when: not (ocs_server is defined and ocs_server | length > 0)
+      tags: [ocsinventory-agent]
+
+    - name: ocsinventory-agent | elimina repositorio APT
+      ansible.builtin.apt_repository:
+        repo: "deb http://deb.ocsinventory-ng.org/{{ ansible_distribution | lower }} stable main"
+        filename: ocsinventory
+        state: absent
+      when: not (ocs_server is defined and ocs_server | length > 0)
+      tags: [ocsinventory-agent]
+
+    - name: ocsinventory-agent | elimina archivos del agente
       ansible.builtin.file:
         path: "{{ item }}"
         state: absent
       loop:
+        - "/etc/apt/trusted.gpg.d/ocs-archive-keyring.gpg"
+        - "/etc/ocsinventory"
+        - "/var/log/ocsinventory-agent.log"
+        - "/var/lib/ocsinventory-agent"
+        # Legacy paths (old source-compiled agent)
         - "/etc/cron.d/ocsinventory-agent"
         - "/usr/local/bin/ocsinventory-agent"
-        # "{{ ocs_configdir }}"
-        - "/etc/ocsinventory"
-        # "{{ ocs_logfile }}"
-        - "/var/log/ocsinventory-agent.log"
-        # "{{ ocs_basedir }}"
-        - "/var/lib/ocsinventory-agent"
-      when: not ( ocs_server is defined and ocs_server | length > 0 )
+      when: not (ocs_server is defined and ocs_server | length > 0)
       tags: [ocsinventory-agent]

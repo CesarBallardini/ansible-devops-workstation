@@ -11,9 +11,7 @@ roles:
   scm: git
   name: locales
 
-- src: https://github.com/CesarBallardini/Ansible-Role-For-UnixAgent
-  version: cb-devel
-  scm: git
+- src: niklaszerozero.ocsinventory_agent
   name: ocsinventory-agent
 
 collections:

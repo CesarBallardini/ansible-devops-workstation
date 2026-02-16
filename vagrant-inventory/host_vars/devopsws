@@ -133,10 +133,13 @@ ansible_venv_path: '~/.ansible-venv'
 
 
 # Config de OCS-Inventory: si ocs_server es vacio, no se instala
+# ocs_server debe ser una URL completa, ej: 'http://ocs.ejemplo.com/ocsinventory'
 ocs_server: ''
 ocs_tag: ''
-ocs_agent_version: '2.8.1'
 ocs_ssl: true
+ocs_ca_file: ''
+ocs_nosoftware: 1
+ocs_now: false
 
 
 workstation_download_url: https://download3.vmware.com/software/wkst/file/VMware-Workstation-Full-16.1.2-17966106.x86_64.bundle
