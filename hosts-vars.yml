@@ -135,6 +135,7 @@ fuse_restrict_access: False
 # ansible localhost -i inventario/ -m setup | sed -e  "s/localhost | SUCCESS => //"  | jq ".ansible_facts.ansible_devices.sda.rotational"
 swappiness: "10"
 ansible_version_deseada: ''
+ansible_venv_path: '~/.ansible-venv'
 
 pharo_version_family: "130"
 pharo_version: "13.1"

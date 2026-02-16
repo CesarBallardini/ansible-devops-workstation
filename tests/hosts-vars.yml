@@ -145,8 +145,9 @@ fuse_restrict_access: False
 
 swappiness: "10"
 # FIXME: esto es para ubuntu 18.04, no hay version superior de ansible instalable con pip
-ansible_version_deseada: '4.10.0'
-#ansible_version_deseada: ''
+#ansible_version_deseada: '4.10.0'
+ansible_version_deseada: ''
+ansible_venv_path: '~/.ansible-venv'
 
 # Config de OCS-Inventory: si ocs_server es vacio, no se instala
 ocs_server: '1.2.3.4:9876'

@@ -129,6 +129,7 @@ swappiness: "10"
 # FIXME: la maxima version posible en ubuntu 18.04
 #ansible_version_deseada: ''
 ansible_version_deseada: '4.10.0'
+ansible_venv_path: '~/.ansible-venv'
 
 
 # Config de OCS-Inventory: si ocs_server es vacio, no se instala

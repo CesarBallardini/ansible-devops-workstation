@@ -1,8 +1,32 @@
 # Instala Python virtual environment
 
-Instalamos un _Python viertual environment_ para independizar la versión de los
-paquetes Python requeridos por Ansible de los paquetes Python existentes a nivel de tu
-sistema operativo.
+## Método recomendado: usando `uv` y el script de bootstrap
+
+El script `first-time-install-ansible.sh` instala `uv`, crea un _virtual environment_ en `~/.ansible-venv` e instala Ansible y ansible-lint:
+
+```bash
+./first-time-install-ansible.sh
+```
+
+Si necesitas un path diferente para el venv:
+
+```bash
+./first-time-install-ansible.sh --venv /ruta/al/venv
+```
+
+Luego puedes correr Ansible desde ese entorno virtual:
+
+```bash
+~/.ansible-venv/bin/ansible-playbook -i inventario site.yml --limit localhost --skip-tags eclipse,netbeans,telegram-desktop,codium,virtualbox,vmware-workstation
+```
+
+La tarea `devops_ansible.yml` del playbook se encarga de mantener actualizada la instalación de Ansible en el venv en cada ejecución, usando el mismo tooling (`uv`).
+
+La variable `ansible_venv_path` (por defecto `~/.ansible-venv`) controla la ubicación del venv. Para usar otro path, definila en tu archivo de variables de inventario.
+
+## Método alternativo: usando pip y `/usr/local/venv`
+
+Si preferís el método manual con pip:
 
 ```bash
 PYTHON_LOCAL_VENV=/usr/local/venv

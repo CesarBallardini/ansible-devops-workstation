@@ -1,34 +1,24 @@
 ---
-# Como parte del bootstrap de la estación de trabajo se instaló Ansible mediante:
-# (sino se da el problema de cómo correr ansible para instalar ansible :)
-#
-#  sudo apt-get install -y python3-pip
-#  sudo -H python3 -m pip install --upgrade pip setuptools wheel
-#  sudo -H python3 -m pip install --upgrade ansible
+# Self-updating Ansible installation using uv
+# Bootstrap: run first-time-install-ansible.sh to create venv with uv + ansible
+# This task keeps the installation updated using the same uv tooling
+# Default venv: ~/.ansible-venv (override with ansible_venv_path)
 
-# Ahora lo mantenemos actualizado.
-
-# Si ansible_version_deseada es una cadena vacia, se instala la ultima version disponible
-# se obtiene de variables de inventario
-
-- name: devops | ansible | paquetes generales
-  ansible.builtin.package:
-    name:
-      - jq
-      - git
-      - wget
-      - curl
-      - unzip
-    state: present
-  become: true
+- name: devops | ansible | ensure venv exists
+  ansible.builtin.command:
+    cmd: "uv venv {{ ansible_venv_path }}"
+    creates: "{{ ansible_venv_path }}/bin/activate"
   tags:
     - devops
     - ansible
 
-- name: devops | ansible | version actual instalada
-  ansible.builtin.shell: |
-    python3 -m pip list | awk '/^ansible .*/{print $2}' | tr -d '()'
-    #LANG=C ansible --version | sed -n  -e "s/^ansible[ ]*\([0-9\.]*\)/\1/p"
+- name: devops | ansible | get installed version
+  ansible.builtin.shell:
+    cmd: >-
+      uv pip show
+      --python {{ ansible_venv_path }}/bin/python
+      ansible 2>/dev/null
+      | awk '/^Version:/{print $2}'
   register: reg_ansible_version
   failed_when: false
   changed_when: false
@@ -36,186 +26,73 @@
     - devops
     - ansible
 
-- name: devops | ansible | busca el nombre de la version actual
-  ansible.builtin.shell: |
-    curl https://pypi.org/pypi/ansible/json -o - 2>/dev/null \
-      | jq  ".releases| keys[]"  \
-      | tr -d '"' \
-      | sed -n -e "/^[0-9]*\\.[0-9]*\\.[0-9]*$/p" \
-      | grep  "^[0-9]*\.[0-9]*\.[0-9]*$" \
-      | sed '/-/!{s/$/_/}' \
-      | sort -Vr \
-      | sed 's/_$//' \
-      | head -n 1
-  register: reg_ansible_pip_version
-  changed_when: false
+- name: devops | ansible | set version facts
+  ansible.builtin.set_fact:
+    ansible_version_instalada: "{{ reg_ansible_version.stdout | default('') }}"
   tags:
     - devops
     - ansible
 
-- ansible.builtin.set_fact:
-    ansible_pip_version: "{{ reg_ansible_pip_version.stdout }}"
+- ansible.builtin.debug:
+    msg: "Ansible installed version  - {{ ansible_version_instalada | default('none') }}"
   tags:
     - devops
     - ansible
 
-- ansible.builtin.set_fact:
-    ansible_version_a_instalar: "{{ ansible_version_deseada | d('')  if ansible_version_deseada | d('') != '' else  ansible_pip_version }}"
-    ansible_version_instalada: "{{ reg_ansible_version.rc == 0 and reg_ansible_version.stdout or '0.0.0' }}"
+- ansible.builtin.debug:
+    msg: "Ansible desired version    - {{ ansible_version_deseada | d('latest') }}"
   tags:
     - devops
     - ansible
 
-- ansible.builtin.debug: msg="Ansible, version instalada  - {{ ansible_version_instalada }}"
-  tags:
-    - devops
-    - ansible
-- ansible.builtin.debug: msg="Ansible, version deseada    - {{ ansible_version_deseada | d() }}"
-  tags:
-    - devops
-    - ansible
-- ansible.builtin.debug: msg="Ansible, version a instalar - {{ ansible_version_a_instalar }}"
-  tags:
-    - devops
-    - ansible
-- ansible.builtin.debug: msg="Ansible, pip version        - {{ ansible_pip_version}}"
+- name: devops | ansible | install specific ansible version
+  ansible.builtin.command:
+    cmd: >-
+      uv pip install
+      --python {{ ansible_venv_path }}/bin/python
+      ansible=={{ ansible_version_deseada }} ansible-lint
+  when:
+    - ansible_version_deseada | d('') != ''
+    - ansible_version_instalada != ansible_version_deseada
   tags:
     - devops
     - ansible
 
-- ansible.builtin.debug: msg="Pasar de 2.9.x hacia 2.10.x debe hacerse con uninstall/install"
-  when: ((ansible_version_a_instalar is version('2.10.0', '>=') and ansible_version_instalada is version('2.9.99', '<'))  or (ansible_version_a_instalar is
-    version('2.9.99', '<')  and ansible_version_instalada is version('2.10.0', '>=')))
+- name: devops | ansible | update ansible to latest
+  ansible.builtin.command:
+    cmd: >-
+      uv pip install --upgrade
+      --python {{ ansible_venv_path }}/bin/python
+      ansible ansible-lint
+  register: reg_ansible_upgrade
+  changed_when: reg_ansible_upgrade.stdout is search('Installed|Uninstalled')
+  when: ansible_version_deseada | d('') == ''
   tags:
     - devops
     - ansible
 
-# FIXME: los siguientes cambios de version dan los resultados:
-# 2.8.6 -> 2.10.0 OK
-# 2.8.6 -> 2.9.6 OK
-#
-# 2.9.6 -> 1.10.0 ERROR, volver a correr el playbook
-# 2.10.0 -> 2.9.6 ERROR, volver a correr el playbook
-# 2.9.6  -> 2.8.6 ERROR, volver a correr el playbook
-#
-- name: devops | ansible | actualiza manualmente Ansible
-  ansible.builtin.shell: |
-    sudo apt-get install -y python3-pip
-    python3 -m pip install --upgrade pip
-    python3 -m pip uninstall -y  ansible      || /bin/true
-    python3 -m pip uninstall -y  ansible-base || /bin/true
-    python3 -m pip install ansible-core
-    python3 -m pip install ansible=={{ ansible_version_a_instalar }}
-  when: ansible_version_a_instalar != ansible_version_instalada
-  changed_when: false
-  environment:
-    - ANSIBLE_SKIP_CONFLICT_CHECK: 1
+- name: devops | ansible | install optional ansible-cmdb
+  ansible.builtin.command:
+    cmd: >-
+      uv pip install --upgrade
+      --python {{ ansible_venv_path }}/bin/python
+      ansible-cmdb
+  register: reg_ansible_cmdb
+  changed_when: reg_ansible_cmdb.stdout is search('Installed|Uninstalled')
+  when: install_ansible_cmdb | default(false) | bool
   tags:
     - devops
     - ansible
 
-- name: devops | ansible | instala python3-pip python3-setuptools
-  ansible.builtin.apt:
-    name:
-      - python3-pip
-      - python3-setuptools
-    state: present
-  become: true
+- name: devops | ansible | install optional proxmoxer
+  ansible.builtin.command:
+    cmd: >-
+      uv pip install --upgrade
+      --python {{ ansible_venv_path }}/bin/python
+      proxmoxer
+  register: reg_proxmoxer
+  changed_when: reg_proxmoxer.stdout is search('Installed|Uninstalled')
+  when: install_proxmoxer | default(false) | bool
   tags:
     - devops
     - ansible
-
-- name: devops | ansible | verifica pip existe localmente
-  ansible.builtin.stat:
-    path: /usr/local/bin/pip
-  register: reg_local_pip
-
-- name: devops | ansible | instala pip desde pip
-  ansible.builtin.command: python3 -m pip install --upgrade pip
-  args:
-    creates: /usr/local/bin/pip
-  when: not reg_local_pip.stat.exists
-  become: true
-
-- name: devops | ansible | actualiza pip
-  ansible.builtin.pip:
-    name: pip
-    state: latest
-    executable: /usr/local/bin/pip
-  become: true
-  tags:
-    - devops
-    - ansible
-
-- name: devops | ansible | actualiza setuptools
-  ansible.builtin.pip:
-    name: setuptools
-    state: latest
-    executable: /usr/local/bin/pip
-  become: true
-  tags:
-    - devops
-    - ansible
-
-#- name: devops | ansible | actualiza ansible
-#  pip:
-#    name:
-#      - ansible
-#    version: "{{ ansible_version_a_instalar }}"
-#    executable: /usr/local/bin/pip
-#  become: true
-#  tags:
-#    - devops
-#    - ansible
-
-- name: devops | ansible | actualiza ansible-lint
-  ansible.builtin.pip:
-    name: ansible-lint
-    state: latest
-    executable: /usr/local/bin/pip
-  become: true
-  tags:
-    - devops
-    - ansible
-
-- name: devops | ansible | actualiza ansible-cmdb
-  ansible.builtin.pip:
-    name: ansible-cmdb
-    state: latest
-    executable: /usr/local/bin/pip
-  become: true
-  tags:
-    - devops
-    - ansible
-
-- name: devops | ansible | actualiza proxmoxer
-  ansible.builtin.pip:
-    name: proxmoxer
-    state: latest
-    executable: /usr/local/bin/pip
-  become: true
-  tags:
-    - devops
-    - ansible
-
-- name: devops | ansible | actualiza requests
-  ansible.builtin.pip:
-    name: requests
-    state: latest
-    executable: /usr/local/bin/pip
-  become: true
-  tags:
-    - devops
-    - ansible
-
-- name: devops | ansible | actualiza paramiko
-  ansible.builtin.pip:
-    name: paramiko
-    state: latest
-    executable: /usr/local/bin/pip
-  become: true
-  tags:
-    - devops
-    - ansible
-
-# FIXME: instala modulos de ansible para infra a bajo nivel (esxi, vshpere, etc)
