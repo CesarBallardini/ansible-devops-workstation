@@ -34,8 +34,8 @@
 #        - vmware-workstation
 
 - hosts: devops
+  tasks:
 
-#  tasks:
 #    - name: devops | desactiva vmware workstation
 #      ansible.builtin.shell: |
 #        update-rc.d vmware disable
