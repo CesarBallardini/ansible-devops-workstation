@@ -99,7 +99,7 @@
     apt install -y $(check-language-support)
   become: true
   changed_when: false
-  when: ansible_distribution == 'Ubuntu'
+  when: ansible_facts['distribution'] == 'Ubuntu'
   tags:
     - escritorio
 
@@ -175,7 +175,7 @@
       - x11-xkb-utils
       - xauth
       - xscreensaver
-      - "{{ 'zram-config' if ansible_distribution == 'Ubuntu' else 'zram-tools' }}"
+      - "{{ 'zram-config' if ansible_facts['distribution'] == 'Ubuntu' else 'zram-tools' }}"
       #- gnome-tweak-tool
     state: present
   become: true

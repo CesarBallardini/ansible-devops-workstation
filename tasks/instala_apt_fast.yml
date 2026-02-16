@@ -67,7 +67,7 @@
     dest: /usr/share/keyrings/apt-fast.asc
     force: true
   become: true
-  when: ansible_distribution == 'Ubuntu'
+  when: ansible_facts['distribution'] == 'Ubuntu'
   tags:
     - apt
     - apt-fast
@@ -79,7 +79,7 @@
 
 - ansible.builtin.set_fact:
     apt_fast_distro_release: "{{ ansible_facts['distribution_release'] }}"
-  when: ansible_distribution == 'Ubuntu'
+  when: ansible_facts['distribution'] == 'Ubuntu'
   tags:
     - apt
     - apt-fast
@@ -95,7 +95,7 @@
     filename: aptfast
   become: true
   register: reg_add_ppa_aptfast
-  when: ansible_distribution == 'Ubuntu'
+  when: ansible_facts['distribution'] == 'Ubuntu'
   tags:
     - apt
     - apt-fast
@@ -105,7 +105,7 @@
     update_cache: true
     cache_valid_time: 3600
   become: true
-  when: ansible_distribution == 'Ubuntu' and reg_add_ppa_aptfast is changed
+  when: ansible_facts['distribution'] == 'Ubuntu' and reg_add_ppa_aptfast is changed
   tags:
     - apt
     - apt-fast

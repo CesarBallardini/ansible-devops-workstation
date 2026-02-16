@@ -21,7 +21,7 @@
       - ubuntu-restricted-extras
     state: present
   become: true
-  when: ansible_distribution == 'Ubuntu'
+  when: ansible_facts['distribution'] == 'Ubuntu'
   tags: [performance]
 
 - name: performance | verificar si existe bateria
