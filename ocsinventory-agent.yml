@@ -8,7 +8,7 @@
         name: ocsinventory-agent
         apply:
           tags: [ocsinventory-agent]
-      when: ocs_server is defined and ocs_server|length
+      when: ocs_server is defined and ocs_server | length > 0
       tags: [always]
 
     # https://fossies.org/linux/Ocsinventory-Unix-Agent/postinst.pl#l_345
@@ -22,7 +22,7 @@
         hour: "8"
         job: "/usr/local/bin/ocsinventory-agent --nosoftware --lazy > /dev/null 2>&1"
         user: "root"
-      when: ocs_server is defined and ocs_server|length
+      when: ocs_server is defined and ocs_server | length > 0
       tags: [ocsinventory-agent]
 # Para desinstalar deshacer lo que hizo:
 # https://fossies.org/linux/Ocsinventory-Unix-Agent/postinst.pl
@@ -42,5 +42,5 @@
         - "/var/log/ocsinventory-agent.log"
         # "{{ ocs_basedir }}"
         - "/var/lib/ocsinventory-agent"
-      when: not ( ocs_server is defined and ocs_server|length )
+      when: not ( ocs_server is defined and ocs_server | length > 0 )
       tags: [ocsinventory-agent]
