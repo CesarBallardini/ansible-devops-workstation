@@ -44,8 +44,8 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
 
   config.vm.define HOSTNAME do |srv|
 
-    # NOTE: "debian/trixie64" only provides libvirt, not virtualbox
-    srv.vm.box = "alvistack/debian-13"
+    # NOTE: "debian/trixie64" only provides libvirt; using bento box for virtualbox
+    srv.vm.box = "bento/debian-13"
 
     srv.disksize.size = '20GB'
 
@@ -83,7 +83,8 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
           export APT_LISTCHANGES_FRONTEND=none
           export APT_OPTIONS=' -y --allow-downgrades --allow-remove-essential --allow-change-held-packages -o Dpkg::Options::=--force-confdef -o Dpkg::Options::=--force-confold '
 
-          sudo apt-get update -y -qq
+          sudo apt-get clean
+          sudo apt-get update -y
           sudo apt-get upgrade ${APT_OPTIONS}
           sudo apt-get full-upgrade ${APT_OPTIONS}
           sudo apt-get autoremove -y
@@ -109,24 +110,17 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
     proxy_host_port = ENV['all_proxy'] || ENV['http_proxy']  || ""
     proxy_host_port = if proxy_host_port.empty? then "" else proxy_host_port.scan(/\/\/([0-9\.]*):/)[0][0]+':'+proxy_host_port.scan(/:([0-9]*)$/)[0][0] end
 
-    config.vm.provision "instala-pip-ansible", type: "shell" do |s| 
+    config.vm.provision "instala-ansible", type: "shell" do |s|
         s.privileged = false
-        s.inline = <<-SHELL
-          export DEBIAN_FRONTEND=noninteractive
-          export APT_LISTCHANGES_FRONTEND=none
-          export APT_OPTIONS=' -y --allow-downgrades --allow-remove-essential --allow-change-held-packages -o Dpkg::Options::=--force-confdef -o Dpkg::Options::=--force-confold '
-
-          sudo apt-get install python3-pip ${APT_OPTIONS}
-          sudo -H python3 -m pip install --break-system-packages pip setuptools wheel
-          sudo -H python3 -m pip install --break-system-packages ansible
-
-        SHELL
+        s.inline = "cd /vagrant && ./first-time-install-ansible.sh"
     end
 
-    config.vm.provision "ansible-provision", type: :ansible do |ansible|
+    config.vm.provision "ansible-provision", type: :ansible_local do |ansible|
+      ansible.install = false
+      ansible.playbook_command = "/home/vagrant/.ansible-venv/bin/ansible-playbook"
       ansible.playbook = "site.yml"
-      ansible.config_file = "./vagrant-inventory/ansible.cfg"
-      ansible.inventory_path = "./vagrant-inventory/"
+      ansible.config_file = "vagrant-inventory/ansible.cfg"
+      ansible.inventory_path = "vagrant-inventory/"
       ansible.verbose= "-vv"
       ansible.become = false
       ansible.extra_vars = {
