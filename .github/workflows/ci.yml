@@ -44,7 +44,7 @@ jobs:
       - name: Create venv and install Ansible
         run: |
           uv venv .venv
-          uv pip install --python .venv/bin/python ansible
+          uv pip install --python .venv/bin/python ansible ansible-lint
           echo "${{ github.workspace }}/.venv/bin" >> "$GITHUB_PATH"
 
       - name: Install Ansible Galaxy roles and collections
@@ -56,6 +56,9 @@ jobs:
       - name: Create ansible.cfg
         run: |
           printf '[defaults]\ngathering = smart\nroles_path = roles/' > ansible.cfg
+
+      - name: Ansible Lint
+        run: ansible-lint site.yml
 
       - name: Syntax check
         run: >
