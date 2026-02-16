@@ -52,6 +52,15 @@ standard_repositories:
       - restricted
       - universe
       - multiverse
+  vendor_proposed:
+    uri: "http://{{ standard_repo_base_url }}"
+    suffix: "-proposed"
+    state: "absent"
+    components:
+      - main
+      - restricted
+      - universe
+      - multiverse
   vendor_partner:
     uri: "http://archive.canonical.com/ubuntu"
     suffix: ""
@@ -111,6 +120,10 @@ https_proxy: '{{ all_proxy }}'
 ftp_proxy: '{{ all_proxy }}'
 no_proxy: '10.,192.168.,wpad,127.0.0.1,localhost,.dominio.local.tld'
 soap_use_proxy: 'on'
+
+docker__env_http_proxy: "{{ http_proxy }}"
+docker__env_https_proxy: "{{ https_proxy }}"
+docker__env_no_proxy: "{{ no_proxy }}"
 
 # /etc/fuse.conf
 fuse_mount_max: 'default'

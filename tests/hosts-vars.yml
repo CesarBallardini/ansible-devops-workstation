@@ -93,7 +93,7 @@ apt_repositories:
   - "{{ security_repositories }}"
 
 devops_user_name: 'root'
-devops_user_id: 0
+devops_user_uid: 0
 
 pharo_version_family: "130"
 pharo_version: "13.1"
