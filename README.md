@@ -1,21 +1,19 @@
 
-# Playbooks Ansible que instalan una estación de trabajo para personal DevOps
+# Ansible Playbooks for DevOps Workstation
 
 [![CI](https://github.com/CesarBallardini/ansible-devops-workstation/actions/workflows/ci.yml/badge.svg?branch=master)](https://github.com/CesarBallardini/ansible-devops-workstation/actions/workflows/ci.yml)
 
-A partir de una instalación base de Ubuntu 22.04, 24.04 o Debian 13 (trixie), Debian 14 (forky) se pueden agregar las herramientas
-populares para trabajar en las siguientes áreas:
+From a base installation of Ubuntu 22.04, 24.04 or Debian 13 (Bookworm), Debian 14 (Trixie) you can add the popular tools for working in the following areas:
 
-
-* Escritorio gráfico para navegar en Internet (el escritorio se instala previamente al trabajo de los playbooks)
+* Graphical desktop for Internet browsing (the desktop is installed before running the playbooks)
   * Google Chrome
   * LibreOffice
-  * Herramientas para crear screencasts
-  * Emulador 3270 (está comentado el código para que no se instale)
+  * Screencast tools
+  * 3270 emulator (code is commented out to prevent installation)
   * Flatpak
   * Snap
 
-* Editores / IDEs
+* Editors / IDEs
   * Atom
   * IntelliJ IDEA Community
   * MS VisualStudio Code
@@ -28,68 +26,52 @@ populares para trabajar en las siguientes áreas:
   * Docker
   * Git
   * Goss / DGoss
-  * GOVC: gestión de VMware vCenter
+  * GOVC: VMware vCenter management
   * Packer
   * Terraform / Terraform Docs / Terragrunt
   * Vagrant + plugins
   * VirtualBox
-  * vmWare Workstation (queda deshabilitado para que no corra al inicio del sistema)
+  * vmWare Workstation (disabled so it doesn't run at system startup)
   
-* Útiles en la asignatura Paradigmas de Programación
+* Useful for Programming Paradigms course
   * SWI-Prolog
   * Racket (Scheme)
   * Pharo Smalltalk
 
-Se consideran algunas optimizaciones de performance para aquellos que trabajan con
-computadoras de bajos recursos (4 GB RAM, Intel(R) Core(TM) i3-4130 CPU @ 3.40GHz, 
-almacenamiento magnético rotativo, etc.)
+Some performance optimizations are considered for those working with low-end computers (4 GB RAM, Intel(R) Core(TM) i3-4130 CPU @ 3.40GHz, magnetic storage, etc.)
 
-# 1. Cómo usar este repositorio sobre un nodo físico
+# 1. How to use this repository on a physical node
 
-Cómo instalar una notebook o pc con estas herramientas.
+How to install a notebook or PC with these tools.
 
-## 1.1. Instale desde DVD o mediante PXE un escritorio Ubuntu 22.04, 24.04 o Debian 13, 14
+## 1.1. Install from DVD or via PXE Ubuntu 22.04, 24.04 or Debian 13, 14
 
-1. `sudo` configurado para correr sin pedir contraseña con la cuenta que corre este script
-2. APT configurado (mirrors, acceso al mirror y acceso a fuentes de paquetes por internet)
-3. Proxy configurado en `/etc/environment` (para curl, wget, etc.)
+1. `sudo` configured to run without asking for password with the account running this script
+2. APT configured (mirrors, mirror access and access to package sources over the internet)
+3. Proxy configured in `/etc/environment` (for curl, wget, etc.)
 
-
-## 1.2. Instale y configure Git
+## 1.2. Install and configure Git
 
 ```bash
 sudo apt install git -y 
 ```
 
-## 1.3. Clone este repositorio
+## 1.3. Clone this repository
 
 ```bash
 git clone https://github.com/CesarBallardini/ansible-devops-workstation.git
 cd ansible-devops-workstation/
 ```
-A partir de este momento, el resto de las actividades las realizaremos desde
-ese directorio.
 
+From this point on, the rest of the activities will be performed from that directory.
 
-## 1.4. Instale los requisitos para que funcione ansible
-
-```bash
-sudo apt-get install -y python3-pip
-sudo -H python3 -m pip install --upgrade pip setuptools wheel
-sudo -H python3 -m pip install --upgrade ansible
-```
-
-Verificado con Ansible versión 2.8.6, python version 3.6.8
-
-## 1.5. Instalar con Ansible el resto del software
+## 1.4. Install Ansible and dependencies
 
 ```bash
-mkdir roles/
-ansible-galaxy install -r requirements.yml --roles-path=roles/
+./first-time-install-ansible.sh
 ```
 
-
-* Ejecutamos Ansible sobre localhost, con las variables de `hosts-vars.yml` para la configuración:
+* Run Ansible on localhost, with the variables from `hosts-vars.yml` for configuration:
 
 ```bash
 # Ubuntu:
@@ -99,23 +81,22 @@ time ansible-playbook -vv -i hosts site.yml --extra-vars "@hosts-vars.yml"
 time ansible-playbook -vv -i hosts site.yml --extra-vars "@hosts-vars-debian.yml"
 ```
 
-Si escribimos un inventario en su directorio, podemos correrlo con:
+If we write an inventory in your directory, we can run it with:
 
 ```bash
 time ansible-playbook -vv -i inventario site.yml --limit localhost
 
 ```
 
-## 1.6. Crear un inventario para su local
+## 1.5. Create an inventory for your local machine
 
-* el directorio para el inventario:
+* the directory for the inventory:
 
 ```bash
 mkdir -p inventario/{group_vars,host_vars}
 ```
 
-
-* la lista de hosts, localhost en el caso más simple:
+* the host list, localhost in the simplest case:
 
 ```bash
 cat - > inventario/hosts  <<EOF
@@ -147,7 +128,7 @@ ansible_python_interpreter=/usr/bin/python3
 EOF
 ```
 
-* las variables de host: copiar la plantilla de variables y reemplazar las que corresponda. Use `hosts-vars.yml` para Ubuntu o `hosts-vars-debian.yml` para Debian.
+* host variables: copy the variable template and replace the ones that correspond. Use `hosts-vars.yml` for Ubuntu or `hosts-vars-debian.yml` for Debian.
 
 ```bash
 # Ubuntu:
@@ -157,39 +138,37 @@ cp hosts-vars.yml inventario/host_vars/localhost
 cp hosts-vars-debian.yml inventario/host_vars/localhost
 ```
 
-Las variables a modificar según su ambiente local son las siguientes:
-
+The variables to modify according to your local environment are as follows:
 
 `security_repo_base_url`:
-URL base del repositorio de seguridad para Ubuntu (no es necesario modificarla)
+Base URL of the security repository for Ubuntu (no need to modify)
 
 `standard_repo_base_url`:
-URL base del repositorio base para Ubuntu (no es necesario modificarla)
+Base URL of the base repository for Ubuntu (no need to modify)
 
 `oracle_java_repository`:
-Repositorio para Java de Oracle, deprecado pues Oracle no distribuye más sin pago sus binarios
+Oracle Java repository, deprecated since Oracle no longer distributes binaries for free
 
 `devops_user`:
-El username de la cuenta que usa el usuario devops
+The username of the account used by the devops user
 
-`tinyproxy_listen_ip` y `tinyproxy_listen_port`:
-Dirección IP donde debe escuchar peticiones el servidor TinyProxy
+`tinyproxy_listen_ip` and `tinyproxy_listen_port`:
+IP address where the TinyProxy server should listen for requests
 
 `tinyproxy_no_upstream`:
-lista de dominios y CIDR que el TinyProxy debe acceder directamente, sin pasar por el proxy de aguas arriba
+List of domains and CIDR that TinyProxy should access directly, without going through the upstream proxy
 
 `tinyproxy_default_upstream`:
-'DIRECCION_IP_PROXY_CORPORATIVO:PUERTO_PROXY_CORPORATIVO' info del proxy aguas arriba, o sea, el proxy 
-corporativo que nos permite salir a Internet desde la oficina.
+'CORPORATE_PROXY_IP_ADDRESS:PORT' upstream proxy info, i.e., the corporate proxy that allows us to exit to the Internet from the office.
 
-`tinyproxy_allow`: lista de CIDR autorizados a usar el TinyProxy, no olvidar localhost y mi dirección de IP en la red local
+`tinyproxy_allow`: list of CIDR authorized to use TinyProxy, don't forget localhost and my IP address on the local network
 
-`organizacion`: String con el nombre de la organización, sólo a efectos de anotarla en `/etc/environment`
+`organization`: String with the name of the organization, only for the purpose of noting it in `/etc/environment`
 
-Y la configuración de proxy para salir a Internet.  Basta con asignar `all_proxy` y `no_proxy` cuando hay un solo proxy para todos los protocolos:
+And the proxy configuration to exit to the internet. Just assign `all_proxy` and `no_proxy` when there is a single proxy for all protocols:
 
 ```text
-all_proxy: 'http://<DIRECCION_IP_INTERFAZ_DE_RED>:8888'
+all_proxy: 'http://<NETWORK_INTERFACE_IP>:8888'
 http_proxy: '{{ all_proxy }}'
 https_proxy: '{{ all_proxy }}'
 ftp_proxy: '{{ all_proxy }}'
@@ -197,35 +176,54 @@ no_proxy: '10.,192.168.,wpad,127.0.0.1,localhost,.dominio.local.tld'
 soap_use_proxy: 'on'
 ```
 
-# 2. Cómo comprobar los playbooks mediante Vagrant y VirtualBox
+# 2. How to test the playbooks with Vagrant and VirtualBox
 
-## 2.1. Configure su estación de trabajo como en el punto 1. anterior
+## 2.1. Configure your workstation as in the previous point 1.
 
-Si lo hace manualmente, debe tener instalados:
+If you do it manually, you must have installed:
 
-* Oracle Virtualbox y Oracle VM VirtualBox Extension Pack
+* Oracle Virtualbox and Oracle VM VirtualBox Extension Pack
 * Vagrant
-* Plugins de Vagrant:
-  * vagrant-proxyconf y su configuracion si requiere de un Proxy para salir a Internet
+* Vagrant Plugins:
+  * vagrant-proxyconf and its configuration if you need a Proxy to access the Internet
   * vagrant-cachier
   * vagrant-disksize
   * vagrant-hostmanager
   * vagrant-share
   * vagrant-vbguest
 
-Hace falta unos 26 GB de espacio en disco para crear la VM
+You need about 26 GB of disk space to create the VM
 
-## 2.2. Ejecute Vagrant
+## 2.2. Run Vagrant
+
+This repository contains specific Vagrantfiles for each supported distribution:
+
+| File | Distribution |
+|---------|--------------|
+| `Vagrantfile.ubuntu22.04` | Ubuntu 22.04 (Jammy) |
+| `Vagrantfile.ubuntu24.04` | Ubuntu 24.04 (Noble) |
+| `Vagrantfile.debian13` | Debian 13 (Bookworm) |
+| `Vagrantfile.debian14` | Debian 14 (Trixie) |
+
+### Usage
 
 ```bash
-time vagrant up
+# Ubuntu 22.04
+time vagrant up --file=Vagrantfile.ubuntu22.04
+
+# Ubuntu 24.04
+time vagrant up --file=Vagrantfile.ubuntu24.04
+
+# Debian 13
+time vagrant up --file=Vagrantfile.debian13
+
+# Debian 14
+time vagrant up --file=Vagrantfile.debian14
 ```
 
+The Proxy configuration from your workstation and the inventory (with its variables) available in `vagrant-inventory` will be used.
 
-Se usarán las configuraciones de Proxy de la estación de trabajo y el inventario (con sus variables) disponible
-en `vagrant-inventory`.
-
-`vagrant-inventory` tiene los archivos:
+`vagrant-inventory` has the files:
 
 ```text
 vagrant-inventory/

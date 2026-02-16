@@ -1,5 +1,5 @@
 ---
-# Este playbook esta verificado en Ubuntu 22.04, 24.04, Debian 13 (trixie), Debian 14 (forky)
+# Este playbook esta verificado en Ubuntu 22.04, 24.04, Debian 13 (Bookworm), Debian 14 (Trixie)
 #
 # En caso de un nodo recien creado:
 # export ANSIBLE_HOST_KEY_CHECKING=False

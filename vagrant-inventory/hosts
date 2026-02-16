@@ -21,6 +21,9 @@ devopsws
 [utn]
 devopsws
 
+[ocsinventoryagent]
+devopsws
+
 [python3]
 devopsws
 
