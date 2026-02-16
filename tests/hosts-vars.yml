@@ -151,8 +151,7 @@ ansible_venv_path: '~/.ansible-venv'
 
 # Config de OCS-Inventory: si ocs_server es vacio, no se instala
 # ocs_server debe ser una URL completa, ej: 'http://ocs.ejemplo.com/ocsinventory'
-ocs_server: ''  # just for testing
-#ocs_server: 'http://1.2.3.4:9876/ocsinventory'
+ocs_server: 'http://1.2.3.4:9876/ocsinventory'
 ocs_tag: 'UnaTagCualquiera'
 ocs_ssl: false
 ocs_nosoftware: 1
