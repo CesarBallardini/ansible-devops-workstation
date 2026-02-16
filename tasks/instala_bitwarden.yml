@@ -5,6 +5,6 @@
       - bw
       - bitwarden
   become: true
-  ignore_errors: true  # community.general.snap module crashes with "list index out of range" on GitHub Actions runners where snapd cannot query the snap store
+  ignore_errors: "{{ lookup('env', 'CI') | default(false) | bool }}"  # community.general.snap module crashes on GitHub Actions runners where snapd cannot query the snap store
   tags:
     - bitwarden
