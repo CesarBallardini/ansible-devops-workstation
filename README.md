@@ -3,7 +3,7 @@
 
 [![CI](https://github.com/CesarBallardini/ansible-devops-workstation/actions/workflows/ci.yml/badge.svg?branch=master)](https://github.com/CesarBallardini/ansible-devops-workstation/actions/workflows/ci.yml)
 
-From a base installation of Ubuntu 22.04, 24.04, 26.04 or Debian 13 (Trixie), Debian 14 (Forky) you can add the popular tools for working in the following areas:
+From a base installation of Ubuntu 22.04 (Jammy), 24.04 (Noble), 26.04 (Resolute) or Debian 13 (Trixie), Debian 14 (Forky) you can add the popular tools for working in the following areas:
 
 * Graphical desktop for Internet browsing (the desktop is installed before running the playbooks)
   * Google Chrome
@@ -44,7 +44,7 @@ Some performance optimizations are considered for those working with low-end com
 
 How to install a notebook or PC with these tools.
 
-## 1.1. Install from DVD or via PXE Ubuntu 22.04, 24.04, 26.04 or Debian 13, 14
+## 1.1. Install from DVD or via PXE Ubuntu 22.04 (Jammy), 24.04 (Noble), 26.04 (Resolute) or Debian 13 (Trixie), 14 (Forky)
 
 1. `sudo` configured to run without asking for password with the account running this script
 2. APT configured (mirrors, mirror access and access to package sources over the internet)
