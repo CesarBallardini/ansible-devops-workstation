@@ -11,16 +11,17 @@
     filename: openshot
   become: true
   register: reg_add_ppa_openshot
+  when: ansible_distribution == 'Ubuntu'
   tags:
     - apt
     - openshot
 
-- name: apt-fast | actualizo lista paquetes .deb
+- name: openshot | actualizo lista paquetes .deb
   ansible.builtin.apt:
     update_cache: true
     cache_valid_time: 3600
   become: true
-  when: reg_add_ppa_openshot is changed
+  when: ansible_distribution == 'Ubuntu' and reg_add_ppa_openshot is changed
   tags:
     - apt
     - openshot

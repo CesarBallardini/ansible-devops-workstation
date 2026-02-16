@@ -94,11 +94,12 @@
   tags:
     - escritorio
 
-- name: escritorio | completa instalacion de idiomas
+- name: escritorio | completa instalacion de idiomas (Ubuntu only)
   ansible.builtin.shell: |
     apt install -y $(check-language-support)
   become: true
   changed_when: false
+  when: ansible_distribution == 'Ubuntu'
   tags:
     - escritorio
 
@@ -174,7 +175,7 @@
       - x11-xkb-utils
       - xauth
       - xscreensaver
-      - zram-config
+      - "{{ 'zram-config' if ansible_distribution == 'Ubuntu' else 'zram-tools' }}"
       #- gnome-tweak-tool
     state: present
   become: true
@@ -223,10 +224,26 @@
       - libreoffice-math
       - libreoffice-ogltrans
       - libreoffice-style-breeze
-      - libreoffice-style-elementary
-      - libreoffice-style-tango
       - libreoffice-writer
     state: present
+  become: true
+  tags:
+    - escritorio
+
+- name: escritorio | check available optional libreoffice style packages
+  ansible.builtin.include_tasks: tasks/package_available.yml
+  vars:
+    optional_packages:
+      - libreoffice-style-elementary
+      - libreoffice-style-tango
+  tags:
+    - escritorio
+
+- name: escritorio | instala estilos opcionales de libreoffice
+  ansible.builtin.apt:
+    name: "{{ available_optional_packages }}"
+    state: present
+  when: available_optional_packages | length > 0
   become: true
   tags:
     - escritorio

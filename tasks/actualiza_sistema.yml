@@ -24,14 +24,26 @@
 - name: actualiza | instala headers de Linux
   ansible.builtin.shell: |
     apt-fast install linux-headers-$( uname -r ) -y
-    apt-fast install linux-headers-lowlatency -y
-
   become: true
   environment:
     DEBIAN_FRONTEND: "noninteractive"
     DEBCONF_NONINTERACTIVE_SEEN: "true"
     UCF_FORCE_CONFOLD: 1
   changed_when: false
+  tags:
+    - apt
+    - upgrade
+
+- name: actualiza | instala linux-headers-lowlatency (Ubuntu only)
+  ansible.builtin.shell: |
+    apt-fast install linux-headers-lowlatency -y
+  become: true
+  environment:
+    DEBIAN_FRONTEND: "noninteractive"
+    DEBCONF_NONINTERACTIVE_SEEN: "true"
+    UCF_FORCE_CONFOLD: 1
+  changed_when: false
+  when: ansible_distribution == 'Ubuntu'
   tags:
     - apt
     - upgrade

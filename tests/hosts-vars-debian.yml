@@ -1,0 +1,141 @@
+---
+# Debian test variable template
+
+security_repo_base_url: "security.debian.org/debian-security"
+
+security_repositories:
+  vendor_base:
+    uri: "http://{{ security_repo_base_url }}"
+    suffix: "-security"
+    state: "absent"
+    components:
+      - main
+      - contrib
+      - non-free
+      - non-free-firmware
+
+standard_repo_base_url: "deb.debian.org/debian"
+
+standard_repositories:
+  vendor_base:
+    uri: "http://{{ standard_repo_base_url }}"
+    suffix: ""
+    state: "present"
+    components:
+      - main
+      - contrib
+      - non-free
+      - non-free-firmware
+  vendor_backports:
+    uri: "http://{{ standard_repo_base_url }}"
+    suffix: "-backports"
+    state: "absent"
+    components:
+      - main
+      - contrib
+      - non-free
+      - non-free-firmware
+  vendor_security:
+    uri: "http://security.debian.org/debian-security"
+    suffix: "-security"
+    state: "present"
+    components:
+      - main
+      - contrib
+      - non-free
+      - non-free-firmware
+  vendor_updates:
+    uri: "http://{{ standard_repo_base_url }}"
+    suffix: "-updates"
+    state: "present"
+    components:
+      - main
+      - contrib
+      - non-free
+      - non-free-firmware
+
+oracle_java_repository:
+  vendor_java:
+    uri: "http://ppa.launchpad.net/webupd8team/java/ubuntu"
+    suffix: ""
+    state: "absent"
+    components:
+      - main
+
+
+apt_repositories:
+  - "{{ standard_repositories }}"
+  - "{{ security_repositories }}"
+
+devops_user_name: 'root'
+devops_user_uid: 0
+
+pharo_version_family: "130"
+pharo_version: "13.1"
+pharo_main_version: "13"
+pharo_home_directory: "/opt/pharo"
+
+
+tinyproxy_listen_ip: '0.0.0.0'
+tinyproxy_listen_port: '8888'
+
+tinyproxy_no_upstream:
+  - ".dominio.local.tld"
+  - "192.168.11.0/24"
+  - "192.168.20.0/22"
+  - "."
+
+tinyproxy_upstream: ''
+#tinyproxy_upstream:
+# - { protocol: http, proxy: DIRECCION_IP_PROXY_CORPORATIVO:PUERTO_PROXY_CORPORATIVO, destination: '' } # default upstream corporate proxy
+tinyproxy_min_spare_servers: '5'
+tinyproxy_max_spare_servers: '20'
+
+tinyproxy_allow:
+  - 'localhost'
+  - '192.168.11.0/24'
+  - '192.168.20.0/22'
+
+
+organizacion: "MI_ORGANIZACION"
+
+all_proxy: ''
+http_proxy: '{{ all_proxy }}'
+https_proxy: '{{ all_proxy }}'
+ftp_proxy: '{{ all_proxy }}'
+no_proxy: '10.,192.168.,wpad,127.0.0.1,localhost,.dominio.local.tld'
+soap_use_proxy: 'on'
+
+
+docker__env_http_proxy: "{{ http_proxy }}"
+docker__env_https_proxy: "{{ https_proxy }}"
+docker__env_no_proxy: "{{ no_proxy }}"
+
+
+# /etc/fuse.conf
+fuse_mount_max: 'default'
+# Allow non-root users to specify the allow_other or allow_root mount options.
+fuse_user_allow_other: true
+fuse_restrict_access: False
+
+swappiness: "10"
+ansible_version_deseada: ''
+ansible_venv_path: '~/.ansible-venv'
+
+# Config de OCS-Inventory: si ocs_server es vacio, no se instala
+# ocs_server debe ser una URL completa, ej: 'http://ocs.ejemplo.com/ocsinventory'
+ocs_server: ''  # just for testing
+#ocs_server: 'http://1.2.3.4:9876/ocsinventory'
+ocs_tag: 'UnaTagCualquiera'
+ocs_ssl: false
+ocs_nosoftware: 1
+ocs_now: false
+
+
+# VMware ya no permite descargar directamente con curl y similares,
+# sino que obliga a pasar por https://www.vmware.com/products/workstation-pro/workstation-pro-evaluation.html
+# para conseguir el URL del paquete
+# URL hoy (2021-06-13) es:
+workstation_download_url: https://download3.vmware.com/software/wkst/file/VMware-Workstation-Full-16.1.2-17966106.x86_64.bundle
+
+goss_version_actual: ''

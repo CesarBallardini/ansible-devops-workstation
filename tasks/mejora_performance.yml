@@ -6,14 +6,22 @@
   become: true
   tags: [performance]
 
-- name: performance | instala preload, indicator-cpufreq, etc.
+- name: performance | instala preload
+  ansible.builtin.apt:
+    name:
+      - preload
+    state: present
+  become: true
+  tags: [performance]
+
+- name: performance | instala indicator-cpufreq, ubuntu-restricted-extras (Ubuntu only)
   ansible.builtin.apt:
     name:
       - indicator-cpufreq
-      - preload
       - ubuntu-restricted-extras
     state: present
   become: true
+  when: ansible_distribution == 'Ubuntu'
   tags: [performance]
 
 - name: performance | verificar si existe bateria

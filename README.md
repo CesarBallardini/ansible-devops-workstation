@@ -3,7 +3,7 @@
 
 [![CI](https://github.com/CesarBallardini/ansible-devops-workstation/actions/workflows/ci.yml/badge.svg?branch=master)](https://github.com/CesarBallardini/ansible-devops-workstation/actions/workflows/ci.yml)
 
-A partir de una instalación base de Ubuntu 22.04, 24.04 se pueden agregar las herramientas
+A partir de una instalación base de Ubuntu 22.04, 24.04 o Debian 13 (trixie), Debian 14 (forky) se pueden agregar las herramientas
 populares para trabajar en las siguientes áreas:
 
 
@@ -48,7 +48,7 @@ almacenamiento magnético rotativo, etc.)
 
 Cómo instalar una notebook o pc con estas herramientas.
 
-## 1.1. Instale desde DVD o mediante PXE un escritorio Ubuntu 22.04, 24.04
+## 1.1. Instale desde DVD o mediante PXE un escritorio Ubuntu 22.04, 24.04 o Debian 13, 14
 
 1. `sudo` configurado para correr sin pedir contraseña con la cuenta que corre este script
 2. APT configurado (mirrors, acceso al mirror y acceso a fuentes de paquetes por internet)
@@ -89,10 +89,14 @@ ansible-galaxy install -r requirements.yml --roles-path=roles/
 ```
 
 
-* Ejecutamos Ansible sobre localhost, con las variables de `host-vars.yml` para la configuración:
+* Ejecutamos Ansible sobre localhost, con las variables de `hosts-vars.yml` para la configuración:
 
 ```bash
+# Ubuntu:
 time ansible-playbook -vv -i hosts site.yml --extra-vars "@hosts-vars.yml"
+
+# Debian:
+time ansible-playbook -vv -i hosts site.yml --extra-vars "@hosts-vars-debian.yml"
 ```
 
 Si escribimos un inventario en su directorio, podemos correrlo con:
@@ -143,10 +147,14 @@ ansible_python_interpreter=/usr/bin/python3
 EOF
 ```
 
-* las variables de host: copiar la plantilla de variables `hosts-vars.yml` y reemplazar las que corresponda.
+* las variables de host: copiar la plantilla de variables y reemplazar las que corresponda. Use `hosts-vars.yml` para Ubuntu o `hosts-vars-debian.yml` para Debian.
 
 ```bash
+# Ubuntu:
 cp hosts-vars.yml inventario/host_vars/localhost
+
+# Debian:
+cp hosts-vars-debian.yml inventario/host_vars/localhost
 ```
 
 Las variables a modificar según su ambiente local son las siguientes:
