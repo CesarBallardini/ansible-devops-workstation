@@ -24,7 +24,7 @@
 
 - name: unetbootin | agrego repo
   apt_repository:
-    repo: "deb [arch=amd64 signed-by=/usr/share/keyrings/unetbootin.asc] http://ppa.launchpad.net/gezakovacs/ppa/ubuntu {{ ansible_distribution_release }} main"
+    repo: "deb [arch=amd64 signed-by=/usr/share/keyrings/unetbootin.asc] http://ppa.launchpad.net/gezakovacs/ppa/ubuntu {{ ansible_facts['distribution_release'] }} main"
     state: present
     update_cache: yes
     filename: unetbootin

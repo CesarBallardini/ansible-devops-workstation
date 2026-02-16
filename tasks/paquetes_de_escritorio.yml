@@ -141,7 +141,7 @@
       - exfatprogs
       - python-is-python3
     state: present
-  when:  ansible_distribution == "Ubuntu" and ansible_distribution_version is version('22.04', operator='ge', strict=True)
+  when:  ansible_facts['distribution'] == "Ubuntu" and ansible_facts['distribution_version'] is version('22.04', operator='ge', strict=True)
   become: true
   tags:
     - escritorio
@@ -198,7 +198,7 @@
     name:
       - exfat-utils
     state: present
-  when:  ansible_distribution == "Ubuntu" and ansible_distribution_version is version('22.04', operator='lt', strict=True)
+  when:  ansible_facts['distribution'] == "Ubuntu" and ansible_facts['distribution_version'] is version('22.04', operator='lt', strict=True)
   become: true
   tags:
     - escritorio
@@ -311,7 +311,7 @@
 
 - name: escritorio | instala aplicaciones con flatpak
   import_tasks: tasks/instala_flatpak.yml
-  when: ansible_distribution == "Ubuntu" and ansible_distribution_release == "bionic"
+  when: ansible_facts['distribution'] == "Ubuntu" and ansible_facts['distribution_release'] == "bionic"
   tags:
     - escritorio
     - flatpak

@@ -77,7 +77,7 @@
 
     # FIXME: 2022-05-22 no hay unetbootin todavia en el repo ppa
   - include_tasks: tasks/unetbootin.yml
-    when:  ansible_distribution == "Ubuntu" and ansible_distribution_version is version('22.04', operator='lt', strict=True)
+    when:  ansible_facts['distribution'] == "Ubuntu" and ansible_facts['distribution_version'] is version('22.04', operator='lt', strict=True)
     tags: [ unetbootin ]
 
   #- include_tasks: tasks/instala_emulador_3270.yml # se usa para conectarse a minis y mainframes IBM

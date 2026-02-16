@@ -36,7 +36,7 @@
       - key-mon
     state: present
   become: true
-  when: ansible_distribution == "Ubuntu" and ansible_distribution_version is version('20.04', operator='lt', strict=True)
+  when: ansible_facts['distribution'] == "Ubuntu" and ansible_facts['distribution_version'] is version('20.04', operator='lt', strict=True)
   tags:
     - video
     - ffmpeg

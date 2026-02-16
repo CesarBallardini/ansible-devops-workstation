@@ -81,7 +81,7 @@
 
 
 - set_fact:
-        apt_fast_distro_release: "{{ ansible_distribution_release }}"
+        apt_fast_distro_release: "{{ ansible_facts['distribution_release'] }}"
   tags:
     - apt
     - apt-fast

@@ -64,10 +64,8 @@
       apply:
         become: true
         tags:
-          - all
           - locales
     tags:
-      - all
       - locales
     vars:
       locales_present: 

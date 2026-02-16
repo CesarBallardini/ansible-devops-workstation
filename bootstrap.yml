@@ -77,10 +77,10 @@
 # IP=192.168.11.12 ; ssh-keygen -f ~/.ssh/known_hosts" -R "${IP}" ; ssh-keyscan -H ${IP} >> ~/.ssh/known_hosts ; sshpass -p debian  ssh-copy-id root@${IP}
   - name: bootstrap | masajeo SSH para entrar con clave publica
     shell: |
-      ssh-keygen -f ~/.ssh/known_hosts -R {{ ansible_default_ipv4.address }}
-      ssh-keyscan -H {{ ansible_default_ipv4.address }} >> ~/.ssh/known_hosts
-      sshpass -p {{ initial_root_password }} ssh-copy-id root@{{ ansible_default_ipv4.address }}                      # para equipos a controlar como root
-      sshpass -p {{ initial_devops_password }} ssh-copy-id {{ devops_user_name }}@{{ ansible_default_ipv4.address }}  # solo para equipos propios
+      ssh-keygen -f ~/.ssh/known_hosts -R {{ ansible_facts['default_ipv4']['address'] }}
+      ssh-keyscan -H {{ ansible_facts['default_ipv4']['address'] }} >> ~/.ssh/known_hosts
+      sshpass -p {{ initial_root_password }} ssh-copy-id root@{{ ansible_facts['default_ipv4']['address'] }}                      # para equipos a controlar como root
+      sshpass -p {{ initial_devops_password }} ssh-copy-id {{ devops_user_name }}@{{ ansible_facts['default_ipv4']['address'] }}  # solo para equipos propios
     delegate_to: localhost
 
 

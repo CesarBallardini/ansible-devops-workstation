@@ -35,14 +35,14 @@
     path: /etc/default/docker
     state: absent
   become: true
-  when: ansible_service_mgr == 'systemd'
+  when: ansible_facts['service_mgr'] == 'systemd'
   tags:
     - devops
     - docker
 
 - name: devops | docker | agrego repo
   apt_repository:
-    repo: "deb [arch=amd64 signed-by=/usr/share/keyrings/docker.asc] https://download.docker.com/linux/ubuntu  {{ ansible_distribution_release }} stable"
+    repo: "deb [arch=amd64 signed-by=/usr/share/keyrings/docker.asc] https://download.docker.com/linux/ubuntu  {{ ansible_facts['distribution_release'] }} stable"
     state: present
     update_cache: yes
     filename: docker
@@ -106,7 +106,7 @@
     owner: 'root'
     group: 'root'
     mode: '0755'
-  when: ansible_service_mgr == 'systemd'
+  when: ansible_facts['service_mgr'] == 'systemd'
   become: true
   tags:
     - devops
@@ -119,7 +119,7 @@
     owner: 'root'
     group: 'root'
     mode: '0755'
-  when: (ansible_service_mgr == 'systemd' and
+  when: (ansible_facts['service_mgr'] == 'systemd' and
         (docker__env_http_proxy is defined or docker__env_https_proxy is defined))
   become: true
   tags:
@@ -145,7 +145,7 @@
     mode: '0644'
   become: true
   register: reg_docker_proxy
-  when: (ansible_service_mgr == 'systemd' and
+  when: (ansible_facts['service_mgr'] == 'systemd' and
         (docker__env_http_proxy is defined or docker__env_https_proxy is defined))
   vars :
     __env_http_proxy:  "{{ docker__env_http_proxy }}"

@@ -9,7 +9,7 @@
     name:
       - swi-prolog-doc
     state: present
-  when: ansible_distribution_release != "focal"
+  when: ansible_facts['distribution_release'] != "focal"
   become: true
   tags:
     - utn
@@ -45,14 +45,14 @@
 - name: utn | racket | agrego repo Racket cuando no tengo acceso a protocolo hkp
   apt_repository:
     #repo: "ppa:plt/racket" # en redes con acceso a protocolo hkp
-    repo: "deb  [arch=amd64 signed-by=/usr/share/keyrings/racket.asc] https://ppa.launchpadcontent.net/plt/racket/ubuntu  {{ ansible_distribution_release }} main"
+    repo: "deb  [arch=amd64 signed-by=/usr/share/keyrings/racket.asc] https://ppa.launchpadcontent.net/plt/racket/ubuntu  {{ ansible_facts['distribution_release'] }} main"
     state: present
     update_cache: yes
     filename: racket
     mode: 0644
   become: true
   # FIXME: 2022-05-22: no hay ppa racket
-  when:  ansible_distribution == "Ubuntu" and ansible_distribution_version is version('22.04', operator='lt', strict=True)
+  when:  ansible_facts['distribution'] == "Ubuntu" and ansible_facts['distribution_version'] is version('22.04', operator='lt', strict=True)
   register: reg_add_ppa_racket
   tags:
     - utn

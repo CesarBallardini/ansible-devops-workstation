@@ -40,7 +40,7 @@
 
 - name: virtualbox | agrego repo
   apt_repository:
-    repo: "deb [arch=amd64 signed-by=/usr/share/keyrings/oracle_vbox_2016.asc] https://download.virtualbox.org/virtualbox/debian {{ ansible_distribution_release }} contrib"
+    repo: "deb [arch=amd64 signed-by=/usr/share/keyrings/oracle_vbox_2016.asc] https://download.virtualbox.org/virtualbox/debian {{ ansible_facts['distribution_release'] }} contrib"
     state: present
     update_cache: yes
     filename: virtualbox
