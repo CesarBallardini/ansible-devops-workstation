@@ -37,9 +37,12 @@
 - name: devops | terraform-docs | busca datos de todas las versiones
   ansible.builtin.shell: |
     #LANG=C curl --silent https://api.github.com/repos/segmentio/terraform-docs/releases # requiere un redirect
-    LANG=C curl --silent https://api.github.com/repositories/60978152/releases
+    LANG=C curl --silent --fail \
+      ${GITHUB_TOKEN:+-H "Authorization: token ${GITHUB_TOKEN}"} \
+      https://api.github.com/repositories/60978152/releases
   register: reg_terraform_docs_versiones
   changed_when: false
+  failed_when: false
   no_log: true
   tags:
     - devops
@@ -56,19 +59,31 @@
 
 - name: devops | terraform-docs | busca el nombre de la version actual
   ansible.builtin.shell: |
-    LANG=C curl --silent https://api.github.com/repositories/60978152/releases \
+    LANG=C curl --silent --fail \
+      ${GITHUB_TOKEN:+-H "Authorization: token ${GITHUB_TOKEN}"} \
+      https://api.github.com/repositories/60978152/releases \
       | jq -r '.[] | select(.name|test("v[0-9]*.[0-9]*.[0-9]*$")) | .name ' \
       | head -n 1
   register: reg_terraform_docs_url_version
   changed_when: false
+  failed_when: false
   tags:
     - devops
     - terraform
     - terraform-docs
 
 - ansible.builtin.set_fact:
-    terraform_docs_url_version: "{{ reg_terraform_docs_url_version.stdout[1:] }}"
+    terraform_docs_url_version: "{{ reg_terraform_docs_url_version.stdout[1:] if reg_terraform_docs_url_version.stdout is match('^v[0-9]') else '' }}"
     terraform_docs_version_instalada: "{{ reg_terraform_docs_version.rc == 0 and reg_terraform_docs_version.stdout or false }}"
+  tags:
+    - devops
+    - terraform
+    - terraform-docs
+
+- name: devops | terraform-docs | warn if version detection failed
+  ansible.builtin.debug:
+    msg: "WARNING: could not detect latest terraform-docs version from GitHub API (rate limit?). Skipping terraform-docs install/upgrade."
+  when: terraform_docs_url_version | length == 0 and (terraform_docs_version_deseada | d('') == '')
   tags:
     - devops
     - terraform
@@ -84,10 +99,13 @@
 
 - name: devops | terraform-docs | URL a descargar
   ansible.builtin.shell: |
-    curl --location --silent "https://api.github.com/repos/segmentio/terraform-docs/releases" \
+    curl --location --silent --fail \
+      ${GITHUB_TOKEN:+-H "Authorization: token ${GITHUB_TOKEN}"} \
+      "https://api.github.com/repos/segmentio/terraform-docs/releases" \
       | jq -r '.[] | select(.tag_name == "v{{ terraform_docs_version_a_instalar }}").assets[] | select( .name | test("terraform-docs-.*[lL]inux.*(x86_64|amd64).tar.gz")).browser_download_url '
   register: reg_terraform_docs_url_a_descargar
-  when: terraform_docs_version_a_instalar != terraform_docs_version_instalada
+  when: terraform_docs_version_a_instalar | length > 0 and terraform_docs_version_a_instalar != terraform_docs_version_instalada
+  failed_when: false
   tags:
     - devops
     - terraform
@@ -95,7 +113,7 @@
 
 - ansible.builtin.set_fact:
     terraform_docs_url_a_descargar: "{{ reg_terraform_docs_url_a_descargar.stdout_lines[-1] }}"
-  when: terraform_docs_version_a_instalar != terraform_docs_version_instalada
+  when: terraform_docs_version_a_instalar | length > 0 and terraform_docs_version_a_instalar != terraform_docs_version_instalada
   tags:
     - devops
     - terraform
@@ -132,7 +150,7 @@
     mode: "0755"
     force: true
   become: true
-  when: terraform_docs_version_a_instalar != terraform_docs_version_instalada
+  when: terraform_docs_version_a_instalar | length > 0 and terraform_docs_version_a_instalar != terraform_docs_version_instalada
   tags:
     - devops
     - terraform
@@ -143,8 +161,8 @@
     gunzip --to-stdout /tmp/{{ terraform_docs_url_a_descargar | basename }} > /usr/local/bin/terraform-docs
     chmod a+rx /usr/local/bin/terraform-docs
   become: true
-  when: terraform_docs_version_a_instalar != terraform_docs_version_instalada and terraform_docs_url_a_descargar.endswith('.gz') and not
-    terraform_docs_url_a_descargar.endswith('.tar.gz')
+  when: terraform_docs_version_a_instalar | length > 0 and terraform_docs_version_a_instalar != terraform_docs_version_instalada and terraform_docs_url_a_descargar.endswith('.gz')
+    and not terraform_docs_url_a_descargar.endswith('.tar.gz')
   tags:
     - devops
     - terraform
@@ -155,7 +173,7 @@
     tar xzf /tmp/{{ terraform_docs_url_a_descargar | basename }} --one-top-level=/usr/local/bin/ terraform-docs
     chmod a+rx /usr/local/bin/terraform-docs
   become: true
-  when: terraform_docs_version_a_instalar != terraform_docs_version_instalada and terraform_docs_url_a_descargar.endswith('.tar.gz')
+  when: terraform_docs_version_a_instalar | length > 0 and terraform_docs_version_a_instalar != terraform_docs_version_instalada and terraform_docs_url_a_descargar.endswith('.tar.gz')
   tags:
     - devops
     - terraform

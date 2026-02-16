@@ -27,17 +27,28 @@
 
 - name: devops | goss | busca el nombre de la version actual
   ansible.builtin.shell: |
-    curl --silent https://api.github.com/repositories/43526066/releases/latest \
-       | jq -r ".tag_name"
+    curl --silent --fail \
+      ${GITHUB_TOKEN:+-H "Authorization: token ${GITHUB_TOKEN}"} \
+      https://api.github.com/repositories/43526066/releases/latest \
+    | jq -r ".tag_name // empty"
   register: reg_goss_url_version
   changed_when: false
+  failed_when: false
   tags:
     - devops
     - goss
 
 - ansible.builtin.set_fact:
     goss_version_instalada: "{{ reg_goss_version.rc == 0 and reg_goss_version.stdout or false }}"
-    goss_url_version: "{{ reg_goss_url_version.stdout }}"
+    goss_url_version: "{{ reg_goss_url_version.stdout if reg_goss_url_version.stdout is match('^v[0-9]') else '' }}"
+  tags:
+    - devops
+    - goss
+
+- name: devops | goss | warn if version detection failed
+  ansible.builtin.debug:
+    msg: "WARNING: could not detect latest goss version from GitHub API (rate limit?). Skipping goss install/upgrade."
+  when: goss_url_version | length == 0
   tags:
     - devops
     - goss
@@ -45,6 +56,7 @@
 - ansible.builtin.set_fact:
     goss_url_actual: "https://github.com/aelsabbahy/goss/releases/download/{{ goss_url_version }}/goss-linux-amd64"
     dgoss_url_actual: "https://github.com/aelsabbahy/goss/releases/download/{{ goss_url_version }}/dgoss"
+  when: goss_url_version | length > 0
   tags:
     - devops
     - goss
@@ -75,7 +87,7 @@
     mode: "0755"
     force: true
   become: true
-  when: goss_version_instalada != goss_url_version
+  when: goss_url_version | length > 0 and goss_version_instalada != goss_url_version
   tags:
     - devops
     - goss
@@ -87,7 +99,7 @@
     mode: "0755"
     force: true
   become: true
-  when: goss_version_instalada != goss_url_version
+  when: goss_url_version | length > 0 and goss_version_instalada != goss_url_version
   tags:
     - devops
     - goss

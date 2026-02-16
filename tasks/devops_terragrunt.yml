@@ -27,19 +27,31 @@
 
 - name: devops | terragrunt | busca el nombre de la version actual
   ansible.builtin.shell: |
-    curl --silent "https://api.github.com/repos/gruntwork-io/terragrunt/releases" \
+    curl --silent --fail \
+      ${GITHUB_TOKEN:+-H "Authorization: token ${GITHUB_TOKEN}"} \
+      "https://api.github.com/repos/gruntwork-io/terragrunt/releases" \
       | jq -r '.[] | select(.name|test("v[0-9]*.[0-9]*.[0-9]*$")) | .name ' \
       | head -n 1 | tr -d " "
   register: reg_terragrunt_url_version
   changed_when: false
+  failed_when: false
   tags:
     - devops
     - terraform
     - terragrunt
 
 - ansible.builtin.set_fact:
-    terragrunt_url_version: "{{ reg_terragrunt_url_version.stdout[1:] }}"
+    terragrunt_url_version: "{{ reg_terragrunt_url_version.stdout[1:] if reg_terragrunt_url_version.stdout is match('^v[0-9]') else '' }}"
     terragrunt_version_instalada: "{{ reg_terragrunt_version.rc == 0 and reg_terragrunt_version.stdout or false }}"
+  tags:
+    - devops
+    - terraform
+    - terragrunt
+
+- name: devops | terragrunt | warn if version detection failed
+  ansible.builtin.debug:
+    msg: "WARNING: could not detect latest terragrunt version from GitHub API (rate limit?). Skipping terragrunt install/upgrade."
+  when: terragrunt_url_version | length == 0
   tags:
     - devops
     - terraform
@@ -47,10 +59,14 @@
 
 - name: devops | terragrunt | busca el URL de la version actual
   ansible.builtin.shell: |
-    curl --silent "https://api.github.com/repos/gruntwork-io/terragrunt/releases" \
+    curl --silent --fail \
+      ${GITHUB_TOKEN:+-H "Authorization: token ${GITHUB_TOKEN}"} \
+      "https://api.github.com/repos/gruntwork-io/terragrunt/releases" \
       | jq -r '.[] | select(.name == "v{{ terragrunt_url_version }}").assets[] | select(.name == "terragrunt_linux_amd64").browser_download_url'
   register: reg_terragrunt_url_actual
   changed_when: false
+  failed_when: false
+  when: terragrunt_url_version | length > 0
   tags:
     - devops
     - terraform
@@ -58,6 +74,7 @@
 
 - ansible.builtin.set_fact:
     terragrunt_url_actual: "{{ reg_terragrunt_url_actual.stdout }}"
+  when: terragrunt_url_version | length > 0
   tags:
     - devops
     - terraform
@@ -94,7 +111,7 @@
     mode: "0755"
     force: true
   become: true
-  when: terragrunt_version_instalada != terragrunt_url_version
+  when: terragrunt_url_version | length > 0 and terragrunt_version_instalada != terragrunt_url_version
   tags:
     - devops
     - terraform

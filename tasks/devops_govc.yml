@@ -33,9 +33,12 @@
 
 - name: devops | govc | busca datos de la version actual
   ansible.builtin.shell: |
-    LANG=C curl --silent https://api.github.com/repos/vmware/govmomi/releases/latest
+    LANG=C curl --silent --fail \
+      ${GITHUB_TOKEN:+-H "Authorization: token ${GITHUB_TOKEN}"} \
+      https://api.github.com/repos/vmware/govmomi/releases/latest
   register: reg_govc_actual
   changed_when: false
+  failed_when: false
   tags:
     - devops
     - govc
@@ -45,12 +48,22 @@
     govc_url_version: "{{ item[1:] }}"
   with_items: "{{ (reg_govc_actual.stdout|from_json).tag_name }}"
   changed_when: false
+  when: reg_govc_actual.rc == 0 and reg_govc_actual.stdout | length > 0
   tags:
     - devops
     - govc
 
 - ansible.builtin.set_fact:
     govc_version_instalada: "{{ reg_govc_version.rc == 0 and reg_govc_version.stdout or false }}"
+    govc_url_version: "{{ govc_url_version | default('') }}"
+  tags:
+    - devops
+    - govc
+
+- name: devops | govc | warn if version detection failed
+  ansible.builtin.debug:
+    msg: "WARNING: could not detect latest govc version from GitHub API (rate limit?). Skipping govc install/upgrade."
+  when: govc_url_version | length == 0 and govc_version_deseada | d('') == ''
   tags:
     - devops
     - govc
@@ -93,17 +106,19 @@
 #
 - name: devops | govc | url a descargar
   ansible.builtin.shell: |
-    curl --silent https://api.github.com/repos/vmware/govmomi/releases \
-      | jq -r '.[] | select(.tag_name == "v{{govc_version_a_instalar}}").assets[] | select( .name | test("govc_[lL]inux.*(x86_64|amd64)")).browser_download_url '
+    curl --silent --fail \
+      ${GITHUB_TOKEN:+-H "Authorization: token ${GITHUB_TOKEN}"} \
+      https://api.github.com/repos/vmware/govmomi/releases \
+    | jq -r '.[] | select(.tag_name == "v{{govc_version_a_instalar}}").assets[] | select( .name | test("govc_[lL]inux.*(x86_64|amd64)")).browser_download_url '
   register: reg_govc_url_a_descargar
-  when: govc_version_instalada != govc_version_a_instalar
+  when: govc_version_a_instalar | length > 0 and govc_version_instalada != govc_version_a_instalar
   tags:
     - devops
     - govc
 
 - ansible.builtin.debug:
     msg: "GOVC, URL a descargar - {{ reg_govc_url_a_descargar }}"
-  when: govc_version_instalada != govc_version_a_instalar
+  when: govc_version_a_instalar | length > 0 and govc_version_instalada != govc_version_a_instalar
   tags:
     - devops
     - govc
@@ -111,7 +126,7 @@
 - name: devops | govc | url a descargar
   ansible.builtin.set_fact:
     govc_url_a_descargar: "{{ reg_govc_url_a_descargar.stdout}}"
-  when: govc_version_instalada != govc_version_a_instalar
+  when: govc_version_a_instalar | length > 0 and govc_version_instalada != govc_version_a_instalar
   tags:
     - devops
     - govc
@@ -123,7 +138,7 @@
     mode: "0755"
     force: true
   become: true
-  when: govc_version_instalada != govc_version_a_instalar
+  when: govc_version_a_instalar | length > 0 and govc_version_instalada != govc_version_a_instalar
   tags:
     - devops
     - govc
@@ -133,7 +148,7 @@
     gunzip --to-stdout /tmp/{{ govc_url_a_descargar | basename }} > /usr/local/bin/govc
     chmod a+rx /usr/local/bin/govc
   become: true
-  when: govc_version_instalada != govc_version_a_instalar and govc_url_a_descargar.endswith('.gz') and not govc_url_a_descargar.endswith('.tar.gz')
+  when: govc_version_a_instalar | length > 0 and govc_version_instalada != govc_version_a_instalar and govc_url_a_descargar.endswith('.gz') and not govc_url_a_descargar.endswith('.tar.gz')
   tags:
     - devops
     - govc
@@ -143,7 +158,7 @@
     tar xzf /tmp/{{ govc_url_a_descargar | basename }} --one-top-level=/usr/local/bin/ govc
     chmod a+rx /usr/local/bin/govc
   become: true
-  when: govc_version_instalada != govc_version_a_instalar and govc_url_a_descargar.endswith('.tar.gz')
+  when: govc_version_a_instalar | length > 0 and govc_version_instalada != govc_version_a_instalar and govc_url_a_descargar.endswith('.tar.gz')
   tags:
     - devops
     - govc

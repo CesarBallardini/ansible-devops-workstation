@@ -27,29 +27,43 @@
 
 - name: devops | aws | busca el nombre de la version actual
   ansible.builtin.shell: |
-    curl --silent  -H "Accept: application/vnd.github.v3+json"  https://api.github.com/repos/aws/aws-cli/tags | jq --raw-output ".[0].name"
+    curl --silent --fail \
+      ${GITHUB_TOKEN:+-H "Authorization: token ${GITHUB_TOKEN}"} \
+      -H "Accept: application/vnd.github.v3+json" \
+      https://api.github.com/repos/aws/aws-cli/tags \
+    | jq --raw-output ".[0].name // empty"
   register: reg_aws_url_version
   changed_when: false
-  ignore_errors: true
+  failed_when: false
   tags:
     - devops
     - aws
 
 - ansible.builtin.set_fact:
     aws_version_instalada: "{{ reg_aws_version.rc == 0 and reg_aws_version.stdout or false }}"
-    aws_url_version: "{{ reg_aws_url_version.stdout if reg_aws_url_version.rc == 0 else '2.1.22' }}"
+    aws_url_version: "{{ reg_aws_url_version.stdout if reg_aws_url_version.stdout is match('^[0-9]') else '' }}"
+  tags:
+    - devops
+    - aws
+
+- name: devops | aws | warn if version detection failed
+  ansible.builtin.debug:
+    msg: "WARNING: could not detect latest AWS CLI version from GitHub API (rate limit?). Skipping AWS CLI install/upgrade."
+  when: aws_url_version | length == 0
   tags:
     - devops
     - aws
 
 - ansible.builtin.set_fact:
     aws_filename_actual: "awscli-exe-linux-x86_64-{{ aws_url_version }}.zip"
+  when: aws_url_version | length > 0
   tags:
     - devops
     - aws
 
 - ansible.builtin.set_fact:
     aws_url_actual: "https://awscli.amazonaws.com/{{ aws_filename_actual }}"
+  when: aws_url_version | length > 0
   tags:
     - devops
     - aws
@@ -89,7 +103,7 @@
     mode: "0755"
     force: true
   become: true
-  when: aws_version_instalada != aws_url_version
+  when: aws_url_version | length > 0 and aws_version_instalada != aws_url_version
   tags:
     - devops
     - aws
@@ -99,7 +113,7 @@
     src: "/var/cache/aws-downloads/{{ aws_filename_actual }}"
     dest: /usr/local/
     remote_src: true
-  when: aws_version_instalada != aws_url_version
+  when: aws_url_version | length > 0 and aws_version_instalada != aws_url_version
   become: true
   tags:
     - devops
@@ -110,7 +124,7 @@
     ./install --update
   args:
     chdir: /usr/local/aws
-  when: aws_version_instalada != aws_url_version
+  when: aws_url_version | length > 0 and aws_version_instalada != aws_url_version
   become: true
   tags:
     - devops
