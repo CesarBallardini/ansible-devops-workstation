@@ -95,6 +95,12 @@ apt_repositories:
 devops_user_name: 'root'
 devops_user_id: 0
 
+pharo_version_family: "130"
+pharo_version: "13.1"
+pharo_main_version: "13"
+pharo_home_directory: "/opt/pharo"
+
+
 tinyproxy_listen_ip: '0.0.0.0'
 tinyproxy_listen_port: '8888'
 
