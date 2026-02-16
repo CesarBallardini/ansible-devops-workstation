@@ -1,0 +1,30 @@
+---
+# Ansible-lint configuration for ansible-devops-workstation
+# Phase 1: Minimal config - start permissive, tighten over time
+
+# Base profile: basic -> moderate -> production
+# https://ansible-lint.readthedocs.io/en/latest/rules/
+# Using 'basic' to start with minimal rules
+profile: basic
+
+# Skip rules that cause noise in this project
+skip_list:
+  - yaml  # Allow duplicate keys in variable files
+  - name[casing]  # Task names don't need uppercase
+  - name[play]  # Plays don't need names
+  - no-free-form  # Allow free-form module options
+  - jinja[spacing]  # Jinja spacing is flexible
+  - command-instead-of-shell  # Complex scripts need shell
+  - command-instead-of-module  # curl/wget needed for dynamic versions
+  - schema[tasks]  # Some task files have minor schema issues
+  - literal-compare  # Allow explicit True/False comparisons
+  - deprecated-module  # 'include' is deprecated but works
+  - deprecated-local-action  # External role uses local_action
+  - meta-runtime  # External roles may have outdated meta
+
+# Exclude external roles from linting
+exclude_paths:
+  - roles/ocsinventory-agent/
+
+# Warn about issues but don't fail
+warn_list: []  # Disable warnings for now
