@@ -8,7 +8,6 @@
     name:
       - swi-prolog-doc
     state: present
-  when: ansible_facts['distribution_release'] != "focal"
   become: true
   tags:
     - utn
@@ -25,47 +24,6 @@
   tags:
     - utn
     - prolog
-
-# https://docs.ansible.com/ansible/latest/collections/ansible/builtin/apt_key_module.html
-# The apt-key command has been deprecated and suggests to ‘manage keyring files in trusted.gpg.d instead’.
-
-- name: utn | racket | agrega clave del repo
-  ansible.builtin.get_url:
-    url: "https://keyserver.ubuntu.com/pks/lookup?op=get&search=0x3C9A6980F827E01E"
-    mode: "0644"
-    dest: /usr/share/keyrings/racket.asc
-    force: true
-  become: true
-  tags:
-    - utn
-    - racket
-
-- name: utn | racket | agrego repo Racket cuando no tengo acceso a protocolo hkp
-  ansible.builtin.apt_repository:
-    # repo: "ppa:plt/racket" # en redes con acceso a protocolo hkp
-    repo: "deb  [arch=amd64 signed-by=/usr/share/keyrings/racket.asc] https://ppa.launchpadcontent.net/plt/racket/ubuntu  {{ ansible_facts['distribution_release']
-      }} main"
-    state: present
-    update_cache: true
-    filename: racket
-    mode: "0644"
-  become: true
-  # FIXME: 2022-05-22: no hay ppa racket
-  when: ansible_facts['distribution'] == "Ubuntu" and ansible_facts['distribution_version'] is version('22.04', operator='lt', strict=True)
-  register: reg_add_ppa_racket
-  tags:
-    - utn
-    - racket
-
-- name: utn | racket | actualizo lista paquetes .deb
-  ansible.builtin.apt:
-    update_cache: true
-    cache_valid_time: 3600
-  become: true
-  when: reg_add_ppa_racket is changed
-  tags:
-    - utn
-    - racket
 
 - name: utn | racket | instala Racket Scheme
   ansible.builtin.apt:

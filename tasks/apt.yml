@@ -49,24 +49,3 @@
   changed_when: false
   tags:
     - apt
-
-# https://bugs.launchpad.net/ubuntu/+source/ansible/+bug/1833013/comments/6
-# https://github.com/hashicorp/vagrant/issues/10914
-- name: apt | fix error libssl1.1 que solicita intervencion interactiva
-  ansible.builtin.shell: >
-    dpkg-reconfigure libc6 ;
-    export DEBIAN_FRONTEND=noninteractive ;
-    export DEBCONF_NONINTERACTIVE_SEEN=true ;
-    export UCF_FORCE_CONFOLD=1 ;
-    export APT_LISTCHANGES_FRONTEND=none
-
-    echo 'libc6 libraries/restart-without-asking boolean true' | debconf-set-selections
-    sudo dpkg-reconfigure libc6
-
-    apt-get -q --option \"Dpkg::Options::=--force-confold\" install libssl1.1 -y
-  # TODO: 22.04 viene con libssl3, ya no trae más libssl1, eliminar mas adelante
-  when: ansible_facts['distribution'] == "Ubuntu" and ansible_facts['distribution_version'] is version('22.04', operator='lt', strict=True)
-  become: true
-  changed_when: false
-  tags:
-    - apt

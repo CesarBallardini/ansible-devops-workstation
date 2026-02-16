@@ -25,15 +25,3 @@
   tags:
     - video
     - ffmpeg
-
-# TODO: no hay paquete al dia de hoy en focal: 2020-03-05
-- name: ffmpeg | instala key-mon excepto en focal o superior
-  ansible.builtin.apt:
-    name:
-      - key-mon
-    state: present
-  become: true
-  when: ansible_facts['distribution'] == "Ubuntu" and ansible_facts['distribution_version'] is version('20.04', operator='lt', strict=True)
-  tags:
-    - video
-    - ffmpeg

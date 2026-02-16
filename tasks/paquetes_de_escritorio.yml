@@ -136,7 +136,6 @@
       - exfatprogs
       - python-is-python3
     state: present
-  when: ansible_facts['distribution'] == "Ubuntu" and ansible_facts['distribution_version'] is version('22.04', operator='ge', strict=True)
   become: true
   tags:
     - escritorio
@@ -183,16 +182,6 @@
       - zram-config
       #- gnome-tweak-tool
     state: present
-  become: true
-  tags:
-    - escritorio
-
-- name: escritorio | instala varios pre 20.04
-  ansible.builtin.apt:
-    name:
-      - exfat-utils
-    state: present
-  when: ansible_facts['distribution'] == "Ubuntu" and ansible_facts['distribution_version'] is version('22.04', operator='lt', strict=True)
   become: true
   tags:
     - escritorio
@@ -300,12 +289,6 @@
   tags:
     - escritorio
 
-- name: escritorio | instala aplicaciones con flatpak
-  ansible.builtin.import_tasks: tasks/instala_flatpak.yml
-  when: ansible_facts['distribution'] == "Ubuntu" and ansible_facts['distribution_release'] == "bionic"
-  tags:
-    - escritorio
-    - flatpak
 
 # FIXME:
 #

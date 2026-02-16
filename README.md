@@ -48,7 +48,7 @@ almacenamiento magnético rotativo, etc.)
 
 Cómo instalar una notebook o pc con estas herramientas.
 
-## 1.1. Instale desde DVD o mediante PXE un escritorio Ubuntu 18.04, 20.04, 22.04
+## 1.1. Instale desde DVD o mediante PXE un escritorio Ubuntu 22.04, 24.04
 
 1. `sudo` configurado para correr sin pedir contraseña con la cuenta que corre este script
 2. APT configurado (mirrors, acceso al mirror y acceso a fuentes de paquetes por internet)
