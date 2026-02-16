@@ -1,33 +1,52 @@
-# hosts en Vagrantfile
+# hosts en Vagrantfile — one entry per distro VM
+# ansible_local provisioner runs inside each VM with --limit <hostname>
 
-# Using local connection since ansible_local provisioner runs inside the VM
-# The hostname must remain "devopsws" to match --limit in Vagrantfile
-devopsws ansible_connection=local ansible_host=localhost
+devopsws-jammy     ansible_connection=local ansible_host=localhost
+devopsws-noble     ansible_connection=local ansible_host=localhost
+devopsws-resolute  ansible_connection=local ansible_host=localhost
+devopsws-trixie    ansible_connection=local ansible_host=localhost
+devopsws-forky     ansible_connection=local ansible_host=localhost
 
-[ejemplo]
-devopsws
+[devops_group]
+devopsws-jammy
+devopsws-noble
+devopsws-resolute
+devopsws-trixie
+devopsws-forky
 
-[tinyproxy]
-devopsws
+[devops_group_ubuntu]
+devopsws-jammy
+devopsws-noble
+devopsws-resolute
 
-[servidor]
-devopsws
+[devops_group_debian]
+devopsws-trixie
+devopsws-forky
 
-[escritorio]
-devopsws
+# Playbook target groups — use :children to reference devops_group
+[ejemplo:children]
+devops_group
 
-[devops]
-devopsws
+[tinyproxy:children]
+devops_group
 
-[utn]
-devopsws
+[servidor:children]
+devops_group
 
-[ocsinventoryagent]
-devopsws
+[escritorio:children]
+devops_group
 
-[python3]
-devopsws
+[devops:children]
+devops_group
+
+[utn:children]
+devops_group
+
+[ocsinventoryagent:children]
+devops_group
+
+[python3:children]
+devops_group
 
 [python3:vars]
 ansible_python_interpreter=/usr/bin/python3
-

@@ -1,0 +1,57 @@
+---
+security_repo_base_url: "security.debian.org/debian-security"
+
+security_repositories:
+  vendor_base:
+    uri: "http://security.debian.org/debian-security"
+    suffix: "-security"
+    state: "present"
+    components:
+      - main
+      - contrib
+      - non-free
+      - non-free-firmware
+
+standard_repo_base_url: "deb.debian.org/debian"
+
+standard_repositories:
+  vendor_base:
+    uri: "http://deb.debian.org/debian"
+    suffix: ""
+    state: "present"
+    components:
+      - main
+      - contrib
+      - non-free
+      - non-free-firmware
+  vendor_security:
+    uri: "http://security.debian.org/debian-security"
+    suffix: "-security"
+    state: "present"
+    components:
+      - main
+      - contrib
+      - non-free
+      - non-free-firmware
+  vendor_updates:
+    uri: "http://deb.debian.org/debian"
+    suffix: "-updates"
+    state: "present"
+    components:
+      - main
+      - contrib
+      - non-free
+      - non-free-firmware
+  vendor_backports:
+    uri: "http://deb.debian.org/debian"
+    suffix: "-backports"
+    state: "absent"
+    components:
+      - main
+      - contrib
+      - non-free
+      - non-free-firmware
+
+apt_repositories:
+  - "{{ standard_repositories }}"
+  - "{{ security_repositories }}"

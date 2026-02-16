@@ -236,6 +236,12 @@ The Proxy configuration from your workstation and the inventory (with its variab
 vagrant-inventory/
 ├── ansible.cfg
 ├── hosts
-└── host_vars
-    └── devopsws
+├── group_vars/
+│   └── devops_group
+└── host_vars/
+    ├── devopsws-jammy
+    ├── devopsws-noble
+    ├── devopsws-resolute
+    ├── devopsws-trixie
+    └── devopsws-forky
 ```

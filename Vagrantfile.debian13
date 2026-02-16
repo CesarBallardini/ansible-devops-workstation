@@ -20,8 +20,8 @@
 
 VAGRANTFILE_API_VERSION = "2"
 
-HOSTNAME = "devopsws"
-IP_ADDRESS="192.168.56.11"
+HOSTNAME = "devopsws-trixie"
+IP_ADDRESS="192.168.56.14"
 IP_NETMASK_BITS="24"
 IP_NETWORK="192.168.56.0"
 
@@ -141,48 +141,7 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
                            IP_ADDRESS + '/' + IP_NETMASK_BITS,
                            IP_NETWORK + '/' + IP_NETMASK_BITS,
                            '192.168.20.0/22'
-                         ],
-        # Debian-specific APT repository configuration (overrides Ubuntu defaults in host_vars)
-        security_repo_base_url: "security.debian.org/debian-security",
-        standard_repo_base_url: "deb.debian.org/debian",
-        security_repositories: {
-          vendor_base: {
-            uri: "http://security.debian.org/debian-security",
-            suffix: "-security",
-            state: "present",
-            components: ["main", "contrib", "non-free", "non-free-firmware"]
-          }
-        },
-        standard_repositories: {
-          vendor_base: {
-            uri: "http://deb.debian.org/debian",
-            suffix: "",
-            state: "present",
-            components: ["main", "contrib", "non-free", "non-free-firmware"]
-          },
-          vendor_security: {
-            uri: "http://security.debian.org/debian-security",
-            suffix: "-security",
-            state: "present",
-            components: ["main", "contrib", "non-free", "non-free-firmware"]
-          },
-          vendor_updates: {
-            uri: "http://deb.debian.org/debian",
-            suffix: "-updates",
-            state: "present",
-            components: ["main", "contrib", "non-free", "non-free-firmware"]
-          },
-          vendor_backports: {
-            uri: "http://deb.debian.org/debian",
-            suffix: "-backports",
-            state: "absent",
-            components: ["main", "contrib", "non-free", "non-free-firmware"]
-          }
-        },
-        apt_repositories: [
-          "{{ standard_repositories }}",
-          "{{ security_repositories }}"
-        ]
+                         ]
       }
     end
 
