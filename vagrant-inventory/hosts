@@ -1,7 +1,8 @@
 # hosts en Vagrantfile
 
-devopsws ansible_host=192.168.56.11 ansible_user=vagrant ansible_password=vagrant ansible_sudo_password=vagrant
-# agregar devopsws en los grupos mas abajo de acuerdo a las necesidades
+# Using local connection since ansible_local provisioner runs inside the VM
+# The hostname must remain "devopsws" to match --limit in Vagrantfile
+devopsws ansible_connection=local ansible_host=localhost
 
 [ejemplo]
 devopsws

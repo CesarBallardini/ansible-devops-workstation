@@ -153,6 +153,7 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
     end
     config.vm.provision "ansible-provision", type: :ansible_local do |ansible|
       ansible.install = false
+      ansible.compatibility_mode = "2.0"
       ansible.playbook_command = "/home/vagrant/.ansible-venv/bin/ansible-playbook"
       ansible.playbook = "site.yml"
       ansible.config_file = "vagrant-inventory/ansible.cfg"
