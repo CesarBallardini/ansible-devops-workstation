@@ -15,6 +15,11 @@
     - zoom
 
 
+- set_fact:
+    zoom_download_dir: /usr/local/zoom_download
+  tags:
+    - zoom
+
 - name: zoom | version actual instalada
   shell: |
      LANG=C dpkg-query --showformat='${Version}\n' --show zoom
@@ -25,46 +30,51 @@
     - zoom
 
 
-- name: zoom | busca el nombre de la version actual
-  shell: |
-    wget -o /dev/null -O - https://zoom.us/download#client_4meeting | pup 'span[class="linux-ver-text"] text{}' | sed "s@Version \([0-9]*\.[0-9]*\.[0-9]*\).*(\(.*\))@\1.\2@"
+- name: zoom | directorio de descargas
+  file:
+    path: "{{ zoom_download_dir }}"
+    state: directory
+    owner: root
+    group: root
+    mode: '0755'
+  become: true
+  tags:
+    - zoom
 
-  register: reg_zoom_version_actual
+- name: zoom | descarga paquete
+  get_url:
+    url: "https://zoom.us/client/latest/zoom_amd64.deb"
+    dest: {{ zoom_download_dir }}/zoom_amd64.deb
+    force: true
+  become: true
+  tags:
+    - zoom
+
+- name: zoom | version disponible en el paquete descargado
+  shell: dpkg-deb -f {{ zoom_download_dir }}/zoom_amd64.deb Version
+  register: reg_zoom_version_disponible
   changed_when: false
   tags:
     - zoom
 
-- set_fact:
-    zoom_url_actual: "https://zoom.us/client/latest/zoom_amd64.deb"
-    zoom_version_instalada: "{{ reg_zoom_version_instalada.stdout }}"
-    zoom_version_actual:    "x{{ reg_zoom_version_actual.stdout }}"
-  tags:
-    - zoom
-
-- debug: msg="zoom, version instalada - {{ zoom_version_instalada }}"
-  tags:
-    - zoom
-- debug: msg="zoom, url actual        - {{ zoom_url_actual }}"
-  tags:
-    - zoom
-- debug: msg="zoom, url version       - {{ zoom_version_actual }}"
+- name: zoom | debug versiones
+  debug:
+    msg: "zoom instalada={{ reg_zoom_version_instalada.stdout | default('no instalado') }} disponible={{ reg_zoom_version_disponible.stdout }}"
   tags:
     - zoom
 
 - name: zoom | instala paquete
   apt:
-    deb: "{{ zoom_url_actual }}"
+    deb: {{ zoom_download_dir }}/zoom_amd64.deb
   become: true
-  when: zoom_version_instalada != zoom_version_actual
+  when: reg_zoom_version_instalada.stdout != reg_zoom_version_disponible.stdout
   tags:
     - zoom
 
-
 - name: zoom | asegura dependencias
-  shell: |
-       apt-get -y -f install
+  shell: apt-get -y -f install
   become: true
-  when: zoom_version_instalada != zoom_version_actual
+  when: reg_zoom_version_instalada.stdout != reg_zoom_version_disponible.stdout
   tags:
-   - zoom
+    - zoom
 

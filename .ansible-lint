@@ -4,11 +4,12 @@
 
 # Base profile: basic -> moderate -> production
 # https://ansible-lint.readthedocs.io/en/latest/rules/
+# Using 'moderate' - production requires FQCN for all ~350 modules across 40 files
+# Would require extensive manual changes
 profile: moderate
 
 # Skip rules that cause noise in this project
 skip_list:
-  - yaml  # Allow duplicate keys in variable files
   - name[casing]  # Task names don't need uppercase
   - name[play]  # Plays don't need names
   - no-free-form  # Allow free-form module options

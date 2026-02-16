@@ -4,7 +4,7 @@
   tasks:
 
   - name: all | /etc/environment
-    template:
+    ansible.builtin.template:
       src: environment.j2
       dest: /etc/environment
       owner: root
@@ -14,31 +14,31 @@
     tags: [ proxy ]
 
   - name: all | requisitos para modulo apt
-    apt:
+    ansible.builtin.apt:
       name: aptitude
       state: present
     become: true
 
   - name: all | requisitos para modulo apt_repository
-    apt:
+    ansible.builtin.apt:
       name: python3-apt
       state: present
     become: true
 
   - name: all | configura APT
-    include_tasks: tasks/apt.yml
+    ansible.builtin.include_tasks: tasks/apt.yml
     tags: [ apt ]
 
   - name: all | instala y configura apt_fast
-    include_tasks: tasks/instala_apt_fast.yml
+    ansible.builtin.include_tasks: tasks/instala_apt_fast.yml
     tags: [ apt-fast, apt ]
 
   - name: all | actualiza paquetes en sistema
-    include_tasks: tasks/actualiza_sistema.yml
+    ansible.builtin.include_tasks: tasks/actualiza_sistema.yml
     tags: [ apt, upgrade ]
 
   - name: paquetes generales requisitos para instalar devops
-    apt:
+    ansible.builtin.apt:
       name:
         - jq
         - git
@@ -50,16 +50,16 @@
     become: true
 
   - name: all | pup Parsing HTML at the command line
-    include_tasks: tasks/instala_pup.yml
+    ansible.builtin.include_tasks: tasks/instala_pup.yml
     tags: [ pup ]
 
   - name: all | mejora performance
-    include_tasks: tasks/mejora_performance.yml
+    ansible.builtin.include_tasks: tasks/mejora_performance.yml
     tags: [ performance ]
 
 
   - name: all | configura locales
-    include_role:
+    ansible.builtin.include_role:
       name: locales
       apply:
         become: true

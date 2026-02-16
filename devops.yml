@@ -4,7 +4,7 @@
   tasks:
 
     - name: devops | verifica si hay virtualizacion por hardware requerido para VMware Workstation
-      command: egrep "svm|vmx" /proc/cpuinfo
+      ansible.builtin.command: egrep "svm|vmx" /proc/cpuinfo
       ignore_errors: True
       changed_when: False
       become: True
@@ -15,7 +15,7 @@
         - virtualbox
 
     # https://idroot.us/install-vmware-workstation-player-ubuntu-20-04/
-    - include_role:
+    - ansible.builtin.include_role:
         name: vmware-workstation
         apply:
           become: true
@@ -37,7 +37,7 @@
   tasks:
 
   - name: devops | desactiva vmware workstation
-    shell: |
+    ansible.builtin.shell: |
       update-rc.d vmware disable
       update-rc.d vmware-workstation-server disable
       update-rc.d vmware-USBArbitrator disable
@@ -48,44 +48,44 @@
       - devops
       - vmware-workstation
 
-  - include_tasks: tasks/devops_aws.yml
+  - ansible.builtin.include_tasks: tasks/devops_aws.yml
     tags: 
       - devops
       - aws
 
-  - include_tasks: tasks/devops_ansible.yml
+  - ansible.builtin.include_tasks: tasks/devops_ansible.yml
     tags: 
       - devops
       - ansible 
 
-  - include_tasks: tasks/devops_git.yml
+  - ansible.builtin.include_tasks: tasks/devops_git.yml
     tags: 
       - devops
       - git
 
-  - include_tasks: tasks/devops_git_credential_manager.yml
+  - ansible.builtin.include_tasks: tasks/devops_git_credential_manager.yml
     tags: 
       - devops
       - git-credential-manager
 
-  - include_tasks: tasks/devops_terraform.yml
+  - ansible.builtin.include_tasks: tasks/devops_terraform.yml
     tags: 
       - devops
       - terraform
 
-  - include_tasks: tasks/devops_terraform_docs.yml
+  - ansible.builtin.include_tasks: tasks/devops_terraform_docs.yml
     tags: 
       - devops
       - terraform
       - terraform-docs
 
-  - include_tasks: tasks/devops_terragrunt.yml
+  - ansible.builtin.include_tasks: tasks/devops_terragrunt.yml
     tags: 
       - devops
       - terraform
       - terragrunt
 
-  - include_tasks: tasks/devops_virtualbox.yml
+  - ansible.builtin.include_tasks: tasks/devops_virtualbox.yml
     when: hay_virtualizacion_register is succeeded
     vars:
       virtualbox_old_packages_to_remove: 
@@ -99,7 +99,7 @@
       - devops
       - virtualbox
 
-  - include_tasks: tasks/devops_virtualbox.yml
+  - ansible.builtin.include_tasks: tasks/devops_virtualbox.yml
     when: hay_virtualizacion_register is failed
     vars:
       virtualbox_old_packages_to_remove: 
@@ -113,27 +113,27 @@
       - devops
       - virtualbox
 
-  - include_tasks: tasks/devops_vagrant.yml
+  - ansible.builtin.include_tasks: tasks/devops_vagrant.yml
     tags: 
       - devops
       - vagrant
 
-  - include_tasks: tasks/devops_packer.yml
+  - ansible.builtin.include_tasks: tasks/devops_packer.yml
     tags: 
       - devops
       - packer
 
-  - include_tasks: tasks/devops_goss.yml
+  - ansible.builtin.include_tasks: tasks/devops_goss.yml
     tags: 
       - devops
       - goss
 
-  - include_tasks: tasks/devops_govc.yml
+  - ansible.builtin.include_tasks: tasks/devops_govc.yml
     tags: 
       - devops
       - govc
 
-  - include_tasks: tasks/devops_docker.yml
+  - ansible.builtin.include_tasks: tasks/devops_docker.yml
     tags: 
       - devops
       - docker
