@@ -31,6 +31,8 @@ skip_list:
 # Exclude external roles from linting
 exclude_paths:
   - roles/ocsinventory-agent/
+  - roles/locales/
+  - roles/vmware-workstation/
 
 # Warn about issues but don't fail
 warn_list: []
