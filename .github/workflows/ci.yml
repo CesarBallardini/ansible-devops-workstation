@@ -17,7 +17,6 @@ jobs:
       fail-fast: false
       matrix:
         os:
-          - ubuntu-22.04
           - ubuntu-24.04
 
     steps:
@@ -37,15 +36,14 @@ jobs:
           cat /etc/apt/sources.list || true
           cat /etc/apt/sources.list.d/*.sources 2>/dev/null || true
 
-      - name: Install Python and pip
-        run: |
-          sudo apt-get update -qq
-          sudo apt-get install -y python3-pip
+      - name: Install uv
+        uses: astral-sh/setup-uv@v5
 
-      - name: Install Ansible
+      - name: Create venv and install Ansible
         run: |
-          sudo -H python3 -m pip install --upgrade pip setuptools wheel --break-system-packages
-          sudo -H python3 -m pip install --upgrade ansible --break-system-packages
+          uv venv .venv
+          uv pip install --python .venv/bin/python ansible
+          echo "${{ github.workspace }}/.venv/bin" >> "$GITHUB_PATH"
 
       - name: Install Ansible Galaxy roles and collections
         run: |
