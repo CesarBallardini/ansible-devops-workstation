@@ -123,8 +123,9 @@ fuse_restrict_access: False
 swappiness: "10"
 ansible_version_deseada: ''
 
-pharo_version_family: "90"
-pharo_version: "9.0"
+pharo_version_family: "130"
+pharo_version: "13.1"
+pharo_main_version: "13"
 pharo_home_directory: "/opt/pharo"
 
 # Config de OCS-Inventory: si ocs_server es vacio, no se instala
