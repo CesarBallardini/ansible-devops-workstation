@@ -148,6 +148,10 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
         s.privileged = false
         s.inline = "cd /vagrant && ./first-time-install-ansible.sh"
     end
+    config.vm.provision "link-ansible", type: "shell" do |s|
+        s.privileged = true
+        s.inline = "for f in /home/vagrant/.ansible-venv/bin/ansible*; do ln -sf \"$f\" /usr/local/bin/; done"
+    end
     config.vm.provision "ansible-provision", type: :ansible_local do |ansible|
       ansible.install = false
       ansible.playbook_command = "/home/vagrant/.ansible-venv/bin/ansible-playbook"
