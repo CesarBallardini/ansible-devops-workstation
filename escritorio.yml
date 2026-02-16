@@ -79,15 +79,15 @@
       when: ansible_facts['distribution'] == "Ubuntu" and ansible_facts['distribution_version'] is version('22.04', operator='lt', strict=True)
       tags: [unetbootin]
 
-    - ansible.builtin.include_role:
-        name: claude_code
-        apply:
-          become: true
-          tags:
-            - escritorio
-            - claude-code
-      tags:
-        - escritorio
-        - claude-code
+#    - ansible.builtin.include_role:
+#        name: claude_code
+#        apply:
+#          become: true
+#          tags:
+#            - escritorio
+#            - claude-code
+#      tags:
+#        - escritorio
+#        - claude-code
 
   # - include_tasks: tasks/instala_emulador_3270.yml # se usa para conectarse a minis y mainframes IBM
