@@ -37,7 +37,7 @@
       tags: [apt, upgrade]
 
     - name: paquetes generales requisitos para instalar devops
-      ansible.builtin.apt:
+      ansible.builtin.package:
         name:
           - jq
           - git

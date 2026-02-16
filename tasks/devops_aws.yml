@@ -2,7 +2,7 @@
 # See https://github.com/aelsabbahy/goss/releases for release versions
 
 - name: devops | paquetes generales
-  ansible.builtin.apt:
+  ansible.builtin.package:
     name:
       - jq
       - git

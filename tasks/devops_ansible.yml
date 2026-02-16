@@ -12,7 +12,7 @@
 # se obtiene de variables de inventario
 
 - name: devops | ansible | paquetes generales
-  ansible.builtin.apt:
+  ansible.builtin.package:
     name:
       - jq
       - git

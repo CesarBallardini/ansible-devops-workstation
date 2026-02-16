@@ -4,7 +4,7 @@
 # cp /opt/pharo/Pharo12*.image ./Pharo.image && cp /opt/pharo/Pharo12*.changes ./Pharo.changes && cp /opt/pharo/Pharo*.sources . && /opt/pharo/pharo &
 
 - name: utn | instala prolog
-  ansible.builtin.apt:
+  ansible.builtin.package:
     name:
       - swi-prolog-doc
     state: present
@@ -14,7 +14,7 @@
     - prolog
 
 - name: utn | instala prolog
-  ansible.builtin.apt:
+  ansible.builtin.package:
     name:
       - swi-prolog-nox
       - gprolog
@@ -26,7 +26,7 @@
     - prolog
 
 - name: utn | racket | instala Racket Scheme
-  ansible.builtin.apt:
+  ansible.builtin.package:
     name:
       - racket
       - racket-doc

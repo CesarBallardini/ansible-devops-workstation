@@ -103,7 +103,7 @@
     - escritorio
 
 - name: escritorio | instala paquetes de servidor
-  ansible.builtin.apt:
+  ansible.builtin.package:
     name:
       - cgroup-tools
       - cmake
@@ -143,13 +143,10 @@
 - name: escritorio | instala varios
   ansible.builtin.apt:
     name:
-      - antiword
       - axel
       - bchunk
       - convmv
       - dia
-      - djview4
-      - elinks
       - eog
       - exfat-fuse
       #- fdupes
@@ -176,12 +173,31 @@
       - wv
       - x11-xkb-utils
       - xauth
-      - xchm
-      - xournal
       - xscreensaver
       - zram-config
       #- gnome-tweak-tool
     state: present
+  become: true
+  tags:
+    - escritorio
+
+- name: escritorio | check available optional desktop packages
+  ansible.builtin.include_tasks: tasks/package_available.yml
+  vars:
+    optional_packages:
+      - antiword
+      - djview4
+      - elinks
+      - xchm
+      - xournal
+  tags:
+    - escritorio
+
+- name: escritorio | instala paquetes opcionales de escritorio
+  ansible.builtin.apt:
+    name: "{{ available_optional_packages }}"
+    state: present
+  when: available_optional_packages | length > 0
   become: true
   tags:
     - escritorio
@@ -232,6 +248,7 @@
       - modemmanager
       - telepathy-indicator
     state: absent
+  failed_when: false
   become: true
   tags:
     - escritorio

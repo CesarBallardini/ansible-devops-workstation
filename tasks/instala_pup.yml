@@ -2,7 +2,7 @@
 # See https://github.com/ericchiang/pup/releases for release versions
 
 - name: paquetes generales
-  ansible.builtin.apt:
+  ansible.builtin.package:
     name:
       - jq
       - git

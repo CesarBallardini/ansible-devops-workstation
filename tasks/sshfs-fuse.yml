@@ -13,12 +13,17 @@
     state: "present"
   become: true
 
-- name: fuse | Install required packages fuse
-  ansible.builtin.apt:
-    name: "fuse"
-    state: "present"
-    install_recommends: false
+- name: fuse | Install fuse (prefer fuse3)
   become: true
+  block:
+    - ansible.builtin.apt:
+        name: fuse3
+        state: present
+  rescue:
+    - ansible.builtin.apt:
+        name: fuse
+        state: present
+        install_recommends: false
 
 - name: fuse | Divert original /etc/fuse.conf
   ansible.builtin.command: dpkg-divert --quiet --local --divert /etc/fuse.conf.dpkg-divert --rename /etc/fuse.conf

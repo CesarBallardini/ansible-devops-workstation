@@ -2,7 +2,7 @@
 # See https://zoom.us/download#client_4meeting
 
 - name: zoom | paquetes generales
-  ansible.builtin.apt:
+  ansible.builtin.package:
     name:
       - jq
       - git

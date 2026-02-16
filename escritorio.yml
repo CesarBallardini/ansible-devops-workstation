@@ -64,6 +64,9 @@
 #      - escritorio
 #      - codium
 
+    - ansible.builtin.include_tasks: tasks/sshfs-fuse.yml
+      tags: [escritorio]
+
     - ansible.builtin.include_tasks: tasks/instala_rambox.yml
       tags: [rambox]
 

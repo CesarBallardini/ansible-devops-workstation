@@ -1,0 +1,13 @@
+---
+# Usage: include with var `optional_packages` (list of package names)
+# Sets fact `available_optional_packages` with the subset that exists in apt
+- name: check | gather apt cache
+  ansible.builtin.shell:
+    cmd: apt-cache pkgnames
+  register: _apt_cache_pkgnames
+  changed_when: false
+  become: true
+
+- name: check | filter available packages
+  ansible.builtin.set_fact:
+    available_optional_packages: "{{ optional_packages | select('in', _apt_cache_pkgnames.stdout_lines) | list }}"
