@@ -81,7 +81,7 @@
 - name: devops | docker | Ensure 'docker' group exists
   group:
     name: docker
-  become: yes
+  become: true
   tags:
     - devops
     - docker
@@ -93,7 +93,7 @@
     groups:
       - docker
     append: yes
-  become: yes
+  become: true
   tags:
     - devops
     - docker
@@ -107,7 +107,7 @@
     group: 'root'
     mode: '0755'
   when: ansible_service_mgr == 'systemd'
-  become: yes
+  become: true
   tags:
     - devops
     - docker
@@ -121,7 +121,7 @@
     mode: '0755'
   when: (ansible_service_mgr == 'systemd' and
         (docker__env_http_proxy is defined or docker__env_https_proxy is defined))
-  become: yes
+  become: true
   tags:
     - devops
     - docker
@@ -143,7 +143,7 @@
     owner: 'root'
     group: 'root'
     mode: '0644'
-  become: yes
+  become: true
   register: reg_docker_proxy
   when: (ansible_service_mgr == 'systemd' and
         (docker__env_http_proxy is defined or docker__env_https_proxy is defined))

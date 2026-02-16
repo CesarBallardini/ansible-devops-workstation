@@ -37,7 +37,7 @@
     - apt
 
 - include_tasks: agrego_repositorio.yml
-  with_items: "{{ apt_repositories }}"
+  loop: "{{ apt_repositories }}"
   loop_control:
     loop_var: un_repo
   tags:

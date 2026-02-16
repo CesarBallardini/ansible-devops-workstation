@@ -135,7 +135,7 @@
     owner: root
     group: root
   become: true
-  with_items:
+  loop:
     - "{{ pharo_home_directory }}"
     - "{{ pharo_home_directory }}/downloads"
   tags:
@@ -211,6 +211,9 @@
 
     cp {{ pharo_home_directory }}/Pharo{{ pharo_version }}*-64bit-*.changes {{ pharo_home_directory }}/images/Pharo.changes
     chmod o+rw {{ pharo_home_directory }}/images/Pharo.changes
+
+    #cp {{ pharo_home_directory }}/Pharo13.1-*.sources {{ pharo_home_directory }}/images/
+    #chmod o+rw {{ pharo_home_directory }}/images/Pharo13.1-*.sources
 
     cp {{ pharo_home_directory }}/Pharo{{ pharo_version }}-*.sources {{ pharo_home_directory }}/images/
     chmod o+rw {{ pharo_home_directory }}/images/Pharo{{ pharo_version }}-*.sources

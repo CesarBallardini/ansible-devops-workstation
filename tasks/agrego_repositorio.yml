@@ -5,7 +5,7 @@
     state: "{{ item.value.state }}"
     update_cache: yes
   loop: "{{ un_repo |dict2items }}"
-  become: yes
+  become: true
   tags:
     - apt
 

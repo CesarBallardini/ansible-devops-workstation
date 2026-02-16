@@ -27,7 +27,7 @@
     name: "{{ item }}"
     state: present
     #method: user
-  with_items:
+  loop:
       - com.calibre_ebook.calibre
       - com.dropbox.Client
       - com.jetbrains.IntelliJ-IDEA-Community
@@ -52,7 +52,7 @@
 
 - name: flatpak | Update the package from flathub for system
   command: "flatpak update --assumeyes --app {{ item }}"
-  with_items:
+  loop:
       - com.calibre_ebook.calibre
       - com.dropbox.Client
       - com.jetbrains.IntelliJ-IDEA-Community

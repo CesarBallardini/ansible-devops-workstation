@@ -151,7 +151,7 @@
 # https://github.com/hashicorp/vagrant/issues/13527 Vagrant plugins cannot be installed anymore for vagrant 2.4.2 
 - name : devops | vagrant | instala plugins
   command: "vagrant plugin install {{ item }}"
-  with_items: "{{ (vagrant_plugins_deseados | difference(reg_plugins_instalados.stdout_lines)) }}"
+  loop: "{{ (vagrant_plugins_deseados | difference(reg_plugins_instalados.stdout_lines)) }}"
   become: true
   become_user: "{{ devops_user_name }}"
   tags:
