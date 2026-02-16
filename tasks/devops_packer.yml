@@ -80,17 +80,20 @@
     - packer
 
 
-- debug:
+- name: Show installed version
+  debug:
     msg: "Packer, version instalada - {{ packer_version_instalada }}"
   tags:
     - devops
     - packer
-- debug:
+- name: Show current URL
+  debug:
     msg: "Packer, url actual        - {{ packer_url_actual}}"
   tags:
     - devops
     - packer
-- debug:
+- name: Show version URL
+  debug:
     msg: "Packer, url version       - {{ packer_url_version}}"
   tags:
     - devops

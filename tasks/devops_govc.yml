@@ -16,8 +16,6 @@
     - govc
 
 - set_fact:
-    govc_version_deseada: '0.24.0'
-    #govc_version_deseada: '0.25.0'
     govc_version_deseada: ''
   tags:
    - devops
@@ -65,17 +63,20 @@
    - devops
    - govc
 
-- debug:
+- name: Show installed version
+  debug:
     msg: "GOVC, version instalada - {{ govc_version_instalada }}"
   tags:
     - devops
     - govc
-- debug:
+- name: Show desired version
+  debug:
     msg: "GOVC, version deseada - {{ govc_version_deseada }}"
   tags:
     - devops
     - govc
-- debug:
+- name: Show version to install
+  debug:
     msg: "GOVC, version a instalar - {{ govc_version_a_instalar }}"
   tags:
     - devops

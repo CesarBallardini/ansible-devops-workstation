@@ -72,21 +72,24 @@
    - terragrunt
 
 
-- debug:
+- name: Show installed version
+  debug:
     msg: "Terragrunt, version instalada - [{{ terragrunt_version_instalada }}]"
   tags:
    - devops
    - terraform
    - terragrunt
 
-- debug:
+- name: Show current URL
+  debug:
     msg: "Terragrunt, url actual        - [{{ terragrunt_url_actual }}]"
   tags:
    - devops
    - terraform
    - terragrunt
 
-- debug:
+- name: Show version URL
+  debug:
     msg: "Terragrunt, url version       - [{{ terragrunt_url_version }}]"
   tags:
    - devops

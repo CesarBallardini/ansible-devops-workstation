@@ -45,15 +45,18 @@
   tags:
     - pup
 
-- debug:
+- name: Show installed version
+  debug:
     msg: "pup, version instalada - {{ pup_version_instalada }}"
   tags:
     - pup
-- debug:
+- name: Show current URL
+  debug:
     msg: "pup, url actual        - {{ pup_url_actual }}"
   tags:
     - pup
-- debug:
+- name: Show version URL
+  debug:
     msg: "pup, url version       - {{ pup_url_version }}"
   tags:
     - pup

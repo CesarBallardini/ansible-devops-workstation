@@ -58,17 +58,20 @@
     - devops
     - aws
 
-- debug:
+- name: Show installed version
+  debug:
     msg: "AWS, version instalada - {{ aws_version_instalada }}"
   tags:
     - devops
     - aws
-- debug:
+- name: Show current URL
+  debug:
     msg: "AWS, url actual        - {{ aws_url_actual }}"
   tags:
     - devops
     - aws
-- debug:
+- name: Show version URL
+  debug:
     msg: "AWS, url version       - {{ aws_url_version }}"
   tags:
     - devops

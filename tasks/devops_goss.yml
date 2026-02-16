@@ -52,18 +52,21 @@
     - devops
     - goss
 
-- debug:
+- name: Show installed version
+  debug:
     msg: "Goss, version instalada - {{ goss_version_instalada }}"
   tags:
     - devops
     - goss
-- debug:
+- name: Show current URL
+  debug:
     msg: "Goss, url actual        - {{ goss_url_actual }}"
   tags:
     - devops
     - goss
-- debug:
-    msg: "Goss, url version       - {{ goss_url_version}}"
+- name: Show version URL
+  debug:
+    msg: "Goss, url version       - {{ goss_version_actual }}"
   tags:
     - devops
     - goss

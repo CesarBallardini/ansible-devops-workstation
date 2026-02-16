@@ -107,21 +107,24 @@
    - terraform-docs
 
 
-- debug:
+- name: Show installed version
+  debug:
     msg: "Terraform-docs, version instalada - {{ terraform_docs_version_instalada }}"
   tags:
    - devops
    - terraform
    - terraform-docs
 
-- debug: 
+- name: Show desired version
+  debug: 
     msg: "Terraform-docs, version deseada - {{ terraform_docs_version_deseada }}"
   tags:
    - devops
    - terraform
    - terraform-docs
 
-- debug: 
+- name: Show version to install
+  debug: 
     msg: "Terraform-docs, version a instalar - {{ terraform_docs_version_a_instalar }}"
   tags:
    - devops

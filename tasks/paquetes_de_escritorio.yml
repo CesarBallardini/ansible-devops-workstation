@@ -98,7 +98,8 @@
 
 
 - name: escritorio | completa instalacion de idiomas
-  shell: apt install -y $(check-language-support)
+  shell: |
+    apt install -y $(check-language-support)
   become: true
   changed_when: false
   tags:
