@@ -3,7 +3,7 @@
 
 [![CI](https://github.com/CesarBallardini/ansible-devops-workstation/actions/workflows/ci.yml/badge.svg?branch=master)](https://github.com/CesarBallardini/ansible-devops-workstation/actions/workflows/ci.yml)
 
-From a base installation of Ubuntu 22.04, 24.04 or Debian 13 (Bookworm), Debian 14 (Trixie) you can add the popular tools for working in the following areas:
+From a base installation of Ubuntu 22.04, 24.04 or Debian 13 (Trixie), Debian 14 (Forky) you can add the popular tools for working in the following areas:
 
 * Graphical desktop for Internet browsing (the desktop is installed before running the playbooks)
   * Google Chrome
@@ -120,6 +120,9 @@ localhost
 [utn]
 localhost
 
+[ocsinventoryagent]
+localhost
+
 [python3]
 localhost
 
@@ -202,23 +205,23 @@ This repository contains specific Vagrantfiles for each supported distribution:
 |---------|--------------|
 | `Vagrantfile.ubuntu22.04` | Ubuntu 22.04 (Jammy) |
 | `Vagrantfile.ubuntu24.04` | Ubuntu 24.04 (Noble) |
-| `Vagrantfile.debian13` | Debian 13 (Bookworm) |
-| `Vagrantfile.debian14` | Debian 14 (Trixie) |
+| `Vagrantfile.debian13` | Debian 13 (Trixie) |
+| `Vagrantfile.debian14` | Debian 14 (Forky) |
 
 ### Usage
 
 ```bash
 # Ubuntu 22.04
-time vagrant up --file=Vagrantfile.ubuntu22.04
+time VAGRANT_VAGRANTFILE=Vagrantfile.ubuntu22.04 vagrant up
 
 # Ubuntu 24.04
-time vagrant up --file=Vagrantfile.ubuntu24.04
+time VAGRANT_VAGRANTFILE=Vagrantfile.ubuntu24.04 vagrant up
 
 # Debian 13
-time vagrant up --file=Vagrantfile.debian13
+time VAGRANT_VAGRANTFILE=Vagrantfile.debian13 vagrant up
 
 # Debian 14
-time vagrant up --file=Vagrantfile.debian14
+time VAGRANT_VAGRANTFILE=Vagrantfile.debian14 vagrant up
 ```
 
 The Proxy configuration from your workstation and the inventory (with its variables) available in `vagrant-inventory` will be used.

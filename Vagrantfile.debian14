@@ -2,7 +2,7 @@
 # vi: set ft=ruby :
 
 # Vagrantfile for Debian 14 (Forky)
-# Usage: vagrant up --file=Vagrantfile.debian14
+# Usage: VAGRANT_VAGRANTFILE=Vagrantfile.debian14 vagrant up
 
 # Para aprovechar este Vagrantfile necesita Vagrant y Virtualbox instalados:
 #
@@ -44,8 +44,8 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
 
   config.vm.define HOSTNAME do |srv|
 
-    # NOTE: Use "debian/testing64" until the official "debian/forky64" box is available
-    srv.vm.box = "debian/forky64"
+    # NOTE: "debian/forky64" does not exist yet; using "debian/testing64" as fallback
+    srv.vm.box = "debian/testing64"
 
     srv.disksize.size = '20GB'
 

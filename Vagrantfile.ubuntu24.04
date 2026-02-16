@@ -2,7 +2,7 @@
 # vi: set ft=ruby :
 
 # Vagrantfile for Ubuntu 24.04 (Noble)
-# Usage: vagrant up --file=Vagrantfile.ubuntu24.04
+# Usage: VAGRANT_VAGRANTFILE=Vagrantfile.ubuntu24.04 vagrant up
 
 # Para aprovechar este Vagrantfile necesita Vagrant y Virtualbox instalados:
 #

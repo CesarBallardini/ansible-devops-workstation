@@ -2,7 +2,7 @@
 # vi: set ft=ruby :
 
 # Vagrantfile for Debian 13 (Trixie)
-# Usage: vagrant up --file=Vagrantfile.debian13
+# Usage: VAGRANT_VAGRANTFILE=Vagrantfile.debian13 vagrant up
 
 # Para aprovechar este Vagrantfile necesita Vagrant y Virtualbox instalados:
 #
@@ -44,7 +44,8 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
 
   config.vm.define HOSTNAME do |srv|
 
-    srv.vm.box = "debian/trixie64"
+    # NOTE: "debian/trixie64" only provides libvirt, not virtualbox
+    srv.vm.box = "alvistack/debian-13"
 
     srv.disksize.size = '20GB'
 

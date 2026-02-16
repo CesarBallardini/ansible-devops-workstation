@@ -2,7 +2,7 @@
 # vi: set ft=ruby :
 
 # Vagrantfile for Ubuntu 22.04 (Jammy)
-# Usage: vagrant up --file=Vagrantfile.ubuntu22.04
+# Usage: VAGRANT_VAGRANTFILE=Vagrantfile.ubuntu22.04 vagrant up
 
 # Para aprovechar este Vagrantfile necesita Vagrant y Virtualbox instalados:
 #
