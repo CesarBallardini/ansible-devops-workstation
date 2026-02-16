@@ -1,11 +1,10 @@
 ---
 # Ansible-lint configuration for ansible-devops-workstation
-# Phase 1: Minimal config - start permissive, tighten over time
+# Phase 4: Using moderate profile
 
 # Base profile: basic -> moderate -> production
 # https://ansible-lint.readthedocs.io/en/latest/rules/
-# Using 'basic' to start with minimal rules
-profile: basic
+profile: moderate
 
 # Skip rules that cause noise in this project
 skip_list:
@@ -27,4 +26,4 @@ exclude_paths:
   - roles/ocsinventory-agent/
 
 # Warn about issues but don't fail
-warn_list: []  # Disable warnings for now
+warn_list: []
