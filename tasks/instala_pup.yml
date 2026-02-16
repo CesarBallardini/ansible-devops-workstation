@@ -25,61 +25,35 @@
     - pup
 
 
-- name: pup | busca el nombre de la version actual
-  shell: |
-    curl --silent --insecure https://api.github.com/repos/ericchiang/pup/releases/latest | jq -r ".tag_name"
-
-  register: reg_pup_url_version
-  changed_when: false
-  tags:
-    - pup
-
 - set_fact:
     pup_version_instalada: "{{ reg_pup_version.rc == 0 and reg_pup_version.stdout or false }}"
-    pup_url_version: "{{ reg_pup_url_version.stdout[1:] }}"
+    pup_version: "0.4.0"
   tags:
     - pup
 
 - set_fact:
-    pup_url_actual: "https://github.com/ericchiang/pup/releases/download/v{{ pup_url_version }}/pup_v{{ pup_url_version }}_linux_amd64.zip"
-  tags:
-    - pup
-
-- name: Show installed version
-  debug:
-    msg: "pup, version instalada - {{ pup_version_instalada }}"
-  tags:
-    - pup
-- name: Show current URL
-  debug:
-    msg: "pup, url actual        - {{ pup_url_actual }}"
-  tags:
-    - pup
-- name: Show version URL
-  debug:
-    msg: "pup, url version       - {{ pup_url_version }}"
+    pup_url_actual: "https://github.com/ericchiang/pup/releases/download/v{{ pup_version }}/pup_v{{ pup_version }}_linux_amd64.zip"
   tags:
     - pup
 
 - name: pup | descarga paquete
   get_url:
     url: "{{ pup_url_actual }}"
-    dest: "/tmp/{{ pup_url_actual | basename }}"
-    mode: 0755
+    dest: "/tmp/pup_v{{ pup_version }}_linux_amd64.zip"
     force: yes
   become: true
-  when: pup_version_instalada != pup_url_version
+  when: pup_version_instalada != pup_version
   tags:
     - pup
 
-
 - name: pup | instala binario
-  shell: |
-       gunzip --to-stdout /tmp/{{ pup_url_actual | basename }} > /usr/local/bin/pup
-       chmod a+rx /usr/local/bin/pup
-
+  unarchive:
+    src: "/tmp/pup_v{{ pup_version }}_linux_amd64.zip"
+    dest: /usr/local/bin
+    remote_src: yes
+    mode: '0755'
   become: true
-  when: pup_version_instalada != pup_url_version
+  when: pup_version_instalada != pup_version
   tags:
-   - pup
+    - pup
 
