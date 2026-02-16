@@ -13,37 +13,40 @@
         - vmware-workstation
         - virtualbox
 
-    # https://idroot.us/install-vmware-workstation-player-ubuntu-20-04/
-    - ansible.builtin.include_role:
-        name: vmware-workstation
-        apply:
-          become: true
-          environment: # https://communities.vmware.com/thread/620226
-            LC_ALL: "C"
-          tags:
-            - devops
-            - vmware-workstation
-      when: hay_virtualizacion_register is succeeded
-      vars:
-        workstation_tempdir: /var/cache/workstation-downloads
-      tags:
-        - devops
-        - vmware-workstation
+##
+# VMWARE Workstation no longer available for download without registration
+#
+#    # https://idroot.us/install-vmware-workstation-player-ubuntu-20-04/
+#    - ansible.builtin.include_role:
+#        name: vmware-workstation
+#        apply:
+#          become: true
+#          environment: # https://communities.vmware.com/thread/620226
+#            LC_ALL: "C"
+#          tags:
+#            - devops
+#            - vmware-workstation
+#      when: hay_virtualizacion_register is succeeded
+#      vars:
+#        workstation_tempdir: /var/cache/workstation-downloads
+#      tags:
+#        - devops
+#        - vmware-workstation
 
 - hosts: devops
 
-  tasks:
-    - name: devops | desactiva vmware workstation
-      ansible.builtin.shell: |
-        update-rc.d vmware disable
-        update-rc.d vmware-workstation-server disable
-        update-rc.d vmware-USBArbitrator disable
-      when: hay_virtualizacion_register is succeeded
-      become: true
-      changed_when: false
-      tags:
-        - devops
-        - vmware-workstation
+#  tasks:
+#    - name: devops | desactiva vmware workstation
+#      ansible.builtin.shell: |
+#        update-rc.d vmware disable
+#        update-rc.d vmware-workstation-server disable
+#        update-rc.d vmware-USBArbitrator disable
+#      when: hay_virtualizacion_register is succeeded
+#      become: true
+#      changed_when: false
+#      tags:
+#        - devops
+#        - vmware-workstation
 
     - ansible.builtin.include_tasks: tasks/devops_aws.yml
       tags:
