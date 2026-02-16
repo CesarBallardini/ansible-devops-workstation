@@ -27,6 +27,7 @@
 - name: performance | verificar si existe bateria
   ansible.builtin.shell: LANG=C upower -i /org/freedesktop/UPower/devices/battery_BATT | grep -E percentage | awk {'print $2'} | sed 's/[^0-9]*//g'
   register: exist_battery
+  changed_when: false
   tags: [performance]
 
 - name: performance | instala tlp

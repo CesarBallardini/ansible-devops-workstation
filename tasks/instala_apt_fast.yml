@@ -65,7 +65,6 @@
     url: "https://keyserver.ubuntu.com/pks/lookup?op=get&search=0x1EE2FF37CA8DA16B"
     mode: "0644"
     dest: /usr/share/keyrings/apt-fast.asc
-    force: true
   become: true
   when: ansible_facts['distribution'] == 'Ubuntu'
   tags:

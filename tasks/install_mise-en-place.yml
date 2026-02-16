@@ -8,28 +8,19 @@
   tags:
     - mise-en-place
 
-- name: Download and convert GPG key for Mise
+- name: mise-en-place | download GPG key
   ansible.builtin.get_url:
     url: "https://mise.jdx.dev/gpg-key.pub"
-    dest: /tmp/mise-gpg-key.pub
-  tags:
-    - mise-en-place
-
-- name: Convert GPG key to dearmor format
-  ansible.builtin.command: gpg --dearmor /tmp/mise-gpg-key.pub
-  args:
-    removes: /tmp/mise-gpg-key.pub
-    chdir: /tmp
-  register: gpg_conversion
-  tags:
-    - mise-en-place
-
-- name: Move the converted key to the keyrings directory
-  ansible.builtin.copy:
-    src: /tmp/mise-gpg-key.pub.gpg
-    dest: /etc/apt/keyrings/mise-archive-keyring.gpg
+    dest: /usr/share/keyrings/mise-archive-keyring.asc
     mode: "0644"
-  when: gpg_conversion.rc == 0
+  become: true
+  tags:
+    - mise-en-place
+
+- name: mise-en-place | convert GPG key to dearmor format
+  ansible.builtin.command: gpg --dearmor --yes -o /etc/apt/keyrings/mise-archive-keyring.gpg /usr/share/keyrings/mise-archive-keyring.asc
+  args:
+    creates: /etc/apt/keyrings/mise-archive-keyring.gpg
   become: true
   tags:
     - mise-en-place
@@ -39,20 +30,6 @@
     repo: "deb [signed-by=/etc/apt/keyrings/mise-archive-keyring.gpg arch=amd64] https://mise.jdx.dev/deb stable main"
     state: present
     filename: mise-in-place
-    update_cache: true
-  become: true
-  tags:
-    - mise-en-place
-
-- name: Clean up temporary GPG key file
-  ansible.builtin.file:
-    path: /tmp/mise-gpg-key.pub.gpg
-    state: absent
-  tags:
-    - mise-en-place
-
-- name: Update apt package index again
-  ansible.builtin.apt:
     update_cache: true
   become: true
   tags:
