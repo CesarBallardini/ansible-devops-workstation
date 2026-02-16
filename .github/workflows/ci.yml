@@ -1,0 +1,85 @@
+---
+name: CI
+
+on:
+  push:
+    branches:
+      - master
+  pull_request:
+    branches:
+      - master
+
+jobs:
+  test:
+    name: "Test on ${{ matrix.os }}"
+    runs-on: ${{ matrix.os }}
+    strategy:
+      fail-fast: false
+      matrix:
+        os:
+          - ubuntu-22.04
+          - ubuntu-24.04
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: System information
+        run: |
+          ip address show
+          lsb_release -a
+          cat /proc/cpuinfo
+          cat /proc/meminfo
+          free -m
+          mount
+          df -h .
+          find /etc/apt/sources.list.d
+          cat /etc/apt/sources.list || true
+          cat /etc/apt/sources.list.d/*.sources 2>/dev/null || true
+
+      - name: Install Python and pip
+        run: |
+          sudo apt-get update -qq
+          sudo apt-get install -y python3-pip
+
+      - name: Install Ansible
+        run: |
+          sudo -H python3 -m pip install --upgrade pip setuptools wheel --break-system-packages
+          sudo -H python3 -m pip install --upgrade ansible --break-system-packages
+
+      - name: Install Ansible Galaxy roles and collections
+        run: |
+          mkdir -p roles/
+          ansible-galaxy role install -p roles -r requirements.yml
+          ansible-galaxy collection install -r requirements.yml
+
+      - name: Create ansible.cfg
+        run: |
+          printf '[defaults]\ngathering = smart\nroles_path = roles/' > ansible.cfg
+
+      - name: Syntax check
+        run: >
+          ansible-playbook -vv
+          -i tests/inventory
+          tests/test.yml
+          --syntax-check
+
+      - name: Run playbook (first pass)
+        timeout-minutes: 45
+        run: >
+          ansible-playbook
+          -i tests/inventory
+          tests/test.yml
+          --connection=local
+          --extra-vars @tests/hosts-vars.yml
+          --skip-tags docker
+
+      - name: Run playbook (idempotency check)
+        timeout-minutes: 45
+        run: >
+          ansible-playbook
+          -i tests/inventory
+          tests/test.yml
+          --connection=local
+          --extra-vars @tests/hosts-vars.yml
+          --skip-tags docker

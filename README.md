@@ -1,7 +1,7 @@
 
 # Playbooks Ansible que instalan una estación de trabajo para personal DevOps
 
-[![Build Status](https://travis-ci.com/CesarBallardini/ansible-devops-workstation.svg?branch=master)](https://app.travis-ci.com/github/CesarBallardini/ansible-devops-workstation)
+[![CI](https://github.com/CesarBallardini/ansible-devops-workstation/actions/workflows/ci.yml/badge.svg?branch=master)](https://github.com/CesarBallardini/ansible-devops-workstation/actions/workflows/ci.yml)
 
 A partir de una instalación base de Ubuntu 22.04, 24.04 se pueden agregar las herramientas
 populares para trabajar en las siguientes áreas:
