@@ -49,8 +49,14 @@ fuse_restrict_access: False
 swappiness: "10"
 # FIXME: la maxima version posible en ubuntu 18.04
 #ansible_version_deseada: ''
-ansible_version_deseada: '4.10.0'
+#ansible_version_deseada: '4.10.0'
+ansible_version_deseada: ''
 ansible_venv_path: '~/.ansible-venv'
+
+pharo_version_family: "130"
+pharo_version: "13.1"
+pharo_main_version: "13"
+pharo_home_directory: "/opt/pharo"
 
 
 # Config de OCS-Inventory: si ocs_server es vacio, no se instala
@@ -64,3 +70,5 @@ ocs_now: false
 
 
 workstation_download_url: https://download3.vmware.com/software/wkst/file/VMware-Workstation-Full-16.1.2-17966106.x86_64.bundle
+
+goss_version_actual: ''
