@@ -1,20 +1,19 @@
 ---
-
-- set_fact:
-    __env_http_proxy:  "{{ http_proxy }}"
+- ansible.builtin.set_fact:
+    __env_http_proxy: "{{ http_proxy }}"
     __env_https_proxy: "{{ https_proxy }}"
-    __env_no_proxy:    "{{ no_proxy }}"
+    __env_no_proxy: "{{ no_proxy }}"
 
 - name: snap | actualizo lista paquetes .deb
-  apt:
-    update_cache: yes
+  ansible.builtin.apt:
+    update_cache: true
     cache_valid_time: 3600
   become: true
   tags:
     - snap
 
 - name: snap | instala snapd
-  apt:
+  ansible.builtin.apt:
     name: snapd
     state: present
   become: true
@@ -22,42 +21,39 @@
     - snap
 
 - name: devops | snap | Make sure that snapd.service.d directory exists
-  file:
-    path: '/etc/systemd/system/snapd.service.d/'
-    state: 'directory'
-    owner: 'root'
-    group: 'root'
-    mode: '0755'
-  when: (ansible_facts['service_mgr'] == 'systemd' and
-        (__env_http_proxy is defined or __env_https_proxy is defined))
+  ansible.builtin.file:
+    path: "/etc/systemd/system/snapd.service.d/"
+    state: "directory"
+    owner: "root"
+    group: "root"
+    mode: "0755"
+  when: (ansible_facts['service_mgr'] == 'systemd' and (__env_http_proxy is defined or __env_https_proxy is defined))
   become: true
   tags:
     - snap
     - proxy
 
 - name: devops | snap | configura proxy
-  template:
-    src: 'http-proxy.conf.j2'
-    dest: '/etc/systemd/system/snapd.service.d/http-proxy.conf'
-    owner: 'root'
-    group: 'root'
-    mode: '0644'
+  ansible.builtin.template:
+    src: "http-proxy.conf.j2"
+    dest: "/etc/systemd/system/snapd.service.d/http-proxy.conf"
+    owner: "root"
+    group: "root"
+    mode: "0644"
   become: true
   register: reg_snap_proxy
-  when: (ansible_facts['service_mgr'] == 'systemd' and
-        (__env_http_proxy is defined or __env_https_proxy is defined))
+  when: (ansible_facts['service_mgr'] == 'systemd' and (__env_http_proxy is defined or __env_https_proxy is defined))
   tags:
     - snap
     - proxy
 
 - name: devops | snap | snap deamon is running
-  systemd:
+  ansible.builtin.systemd:
     state: restarted
-    daemon_reload: yes
+    daemon_reload: true
     name: snapd
   become: true
   when: reg_snap_proxy is changed
   tags:
     - snap
     - proxy
-                                                                                              

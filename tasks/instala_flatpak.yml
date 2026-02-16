@@ -1,7 +1,6 @@
 ---
-
 - name: flatpak | instala flatpak
-  apt:
+  ansible.builtin.apt:
     name:
       - flatpak
       #- gnome-software-plugin-flatpak
@@ -12,7 +11,7 @@
     - flatpak
 
 - name: flatpak | Add the flathub flatpak repository remote to the system installation
-  flatpak_remote:
+  community.general.flatpak_remote:
     name: flathub
     state: present
     flatpakrepo_url: https://flathub.org/repo/flathub.flatpakrepo
@@ -23,17 +22,17 @@
     - flatpak
 
 - name: flatpak | Install the package from flathub for system
-  flatpak:
+  community.general.flatpak:
     name: "{{ item }}"
     state: present
     #method: user
   loop:
-      - com.calibre_ebook.calibre
-      - com.dropbox.Client
-      - com.jetbrains.IntelliJ-IDEA-Community
-      - io.atom.Atom
-      #- org.libreoffice.LibreOffice
-      - com.jetbrains.WebStorm
+    - com.calibre_ebook.calibre
+    - com.dropbox.Client
+    - com.jetbrains.IntelliJ-IDEA-Community
+    - io.atom.Atom
+    #- org.libreoffice.LibreOffice
+    - com.jetbrains.WebStorm
   become: true
   tags:
     - escritorio
@@ -51,16 +50,15 @@
 #
 
 - name: flatpak | Update the package from flathub for system
-  command: "flatpak update --assumeyes --app {{ item }}"
+  ansible.builtin.command: "flatpak update --assumeyes --app {{ item }}"
   loop:
-      - com.calibre_ebook.calibre
-      - com.dropbox.Client
-      - com.jetbrains.IntelliJ-IDEA-Community
-      - io.atom.Atom
-      #- org.libreoffice.LibreOffice
-      - com.jetbrains.WebStorm
+    - com.calibre_ebook.calibre
+    - com.dropbox.Client
+    - com.jetbrains.IntelliJ-IDEA-Community
+    - io.atom.Atom
+    #- org.libreoffice.LibreOffice
+    - com.jetbrains.WebStorm
   become: true
   tags:
     - escritorio
     - flatpak
-

@@ -1,7 +1,6 @@
 ---
-
 - name: paquetes generales requisitos para instalar devops
-  apt:
+  ansible.builtin.apt:
     name: git
     state: present
   become: true
@@ -10,10 +9,10 @@
     - git
 
 - name: devops | descarga completion de git para bash
-  get_url:
+  ansible.builtin.get_url:
     url: https://raw.githubusercontent.com/git/git/master/contrib/completion/git-prompt.sh
     dest: ~/.git-prompt.sh
-    mode: 0660
+    mode: "0660"
   become: true
   become_user: "{{ devops_user_name }}"
   tags:
@@ -21,15 +20,13 @@
     - git
 
 - name: devops | linea en .bashrc para completamientos git de bash
-  lineinfile:
+  ansible.builtin.lineinfile:
     path: ~/.bashrc
-    line: 'source ~/.git-prompt.sh'
+    line: "source ~/.git-prompt.sh"
   become: true
   become_user: "{{ devops_user_name }}"
   tags:
     - devops
     - git
-
-
 
 # FIXME: configurar ~/.gitconfig

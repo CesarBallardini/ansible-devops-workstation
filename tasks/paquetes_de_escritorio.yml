@@ -1,12 +1,11 @@
 ---
-
 # https://docs.ansible.com/ansible/latest/collections/ansible/builtin/apt_key_module.html
 # The apt-key command has been deprecated and suggests to ‘manage keyring files in trusted.gpg.d instead’.
 
 - name: escritorio | agrega clave del repo Google Chrome
-  get_url:
+  ansible.builtin.get_url:
     url: https://dl-ssl.google.com/linux/linux_signing_key.pub
-    mode: '0644'
+    mode: "0644"
     dest: /usr/share/keyrings/google-chrome.asc
     force: true
   become: true
@@ -14,26 +13,25 @@
     - escritorio
 
 - name: escritorio | agrego repo google chrome
-  apt_repository:
+  ansible.builtin.apt_repository:
     repo: "deb [arch=amd64 signed-by=/usr/share/keyrings/google-chrome.asc] http://dl.google.com/linux/chrome/deb/ stable main"
     state: present
     filename: google-chrome
-    update_cache: yes
+    update_cache: true
   become: true
   tags:
     - escritorio
 
 - name: escritorio | actualizo lista paquetes .deb
-  apt:
-    update_cache: yes
+  ansible.builtin.apt:
+    update_cache: true
     cache_valid_time: 3600
   become: true
   tags:
     - escritorio
 
-
 - name: escritorio | libdvd-pkg config 1
-  debconf:
+  ansible.builtin.debconf:
     name: libdvd-pkg
     question: libdvd-pkg/build
     value: "True"
@@ -44,7 +42,7 @@
     - escritorio
 
 - name: escritorio | libdvd-pkg config 2
-  debconf:
+  ansible.builtin.debconf:
     name: libdvd-pkg
     question: libdvd-pkg/first-install
     value: ""
@@ -54,7 +52,7 @@
     - escritorio
 
 - name: escritorio | libdvd-pkg config 3
-  debconf:
+  ansible.builtin.debconf:
     name: libdvd-pkg
     question: libdvd-pkg/upgrade
     value: ""
@@ -64,7 +62,7 @@
     - escritorio
 
 - name: escritorio | libdvd-pkg config 4
-  debconf:
+  ansible.builtin.debconf:
     name: libdvd-pkg
     question: libdvd-pkg/post-invoke_hook-remove
     value: "False"
@@ -75,7 +73,7 @@
     - escritorio
 
 - name: escritorio | libdvd-pkg config 5
-  debconf:
+  ansible.builtin.debconf:
     name: libdvd-pkg
     question: libdvd-pkg/post-invoke_hook-install
     value: "True"
@@ -86,7 +84,7 @@
     - escritorio
 
 - name: escritorio | ttf-mscorefonts-installer
-  debconf:
+  ansible.builtin.debconf:
     name: ttf-mscorefonts-installer
     question: msttcorefonts/accepted-mscorefonts-eula
     value: "True"
@@ -96,18 +94,16 @@
   tags:
     - escritorio
 
-
 - name: escritorio | completa instalacion de idiomas
-  shell: |
+  ansible.builtin.shell: |
     apt install -y $(check-language-support)
   become: true
   changed_when: false
   tags:
     - escritorio
 
-
 - name: escritorio | instala paquetes de servidor
-  apt:
+  ansible.builtin.apt:
     name:
       - cgroup-tools
       - cmake
@@ -134,21 +130,19 @@
   tags:
     - escritorio
 
-
 - name: escritorio | instala varios
-  apt:
+  ansible.builtin.apt:
     name:
       - exfatprogs
       - python-is-python3
     state: present
-  when:  ansible_facts['distribution'] == "Ubuntu" and ansible_facts['distribution_version'] is version('22.04', operator='ge', strict=True)
+  when: ansible_facts['distribution'] == "Ubuntu" and ansible_facts['distribution_version'] is version('22.04', operator='ge', strict=True)
   become: true
   tags:
     - escritorio
 
-
 - name: escritorio | instala varios
-  apt:
+  ansible.builtin.apt:
     name:
       - antiword
       - axel
@@ -194,18 +188,17 @@
     - escritorio
 
 - name: escritorio | instala varios pre 20.04
-  apt:
+  ansible.builtin.apt:
     name:
       - exfat-utils
     state: present
-  when:  ansible_facts['distribution'] == "Ubuntu" and ansible_facts['distribution_version'] is version('22.04', operator='lt', strict=True)
+  when: ansible_facts['distribution'] == "Ubuntu" and ansible_facts['distribution_version'] is version('22.04', operator='lt', strict=True)
   become: true
   tags:
     - escritorio
 
-
 - name: escritorio | instala libreoffice
-  apt:
+  ansible.builtin.apt:
     name:
       - libreoffice-base-core
       - libreoffice-calc
@@ -234,7 +227,7 @@
     - escritorio
 
 - name: escritorio | elimina varios
-  apt:
+  ansible.builtin.apt:
     name:
       - avahi-daemon
       - bamfdaemon
@@ -267,9 +260,8 @@
 # grep "compose:" /usr/share/X11/xkb/rules/base.lst
 # setxkbmap -print -verbose 10
 
-
 - name: escritorio | activa tecla de Compose
-  shell: setxkbmap -option "compose:paus"
+  ansible.builtin.shell: setxkbmap -option "compose:paus"
   failed_when: false
   changed_when: false
   tags:
@@ -296,36 +288,33 @@
 #    - escritorio
 
 - name: escritorio | configura cgroup-tools en grub
-  lineinfile:
+  ansible.builtin.lineinfile:
     path: /etc/default/grub
-    regexp: '^GRUB_CMDLINE_LINUX_DEFAULT='
+    regexp: "^GRUB_CMDLINE_LINUX_DEFAULT="
     line: 'GRUB_CMDLINE_LINUX_DEFAULT="cgroup_enable=memory swapaccount=1"'
     owner: root
     group: root
-    mode: 0644
-    validate: 'sudo /usr/sbin/update-grub # %s'
+    mode: "0644"
+    validate: "sudo /usr/sbin/update-grub # %s"
   become: true
   tags:
     - escritorio
 
-
 - name: escritorio | instala aplicaciones con flatpak
-  import_tasks: tasks/instala_flatpak.yml
+  ansible.builtin.import_tasks: tasks/instala_flatpak.yml
   when: ansible_facts['distribution'] == "Ubuntu" and ansible_facts['distribution_release'] == "bionic"
   tags:
     - escritorio
     - flatpak
-
 
 # FIXME:
 #
 #  sudo vi /usr/local/bin/gdmflexiserver
 #
 # #!/bin/sh
-# # 
+# #
 # # replacement for missing gdmflexiserver in Ubuntu 1[48].04
 # #
 # dm-tool switch-to-greeter
 #
 #  sudo chmod a+rx  /usr/local/bin/gdmflexiserver
-

@@ -2,52 +2,46 @@
 - hosts: tinyproxy
 
   tasks:
-
     - name: tinyproxy | instala paquete
-      apt:
+      ansible.builtin.apt:
         name: tinyproxy
       become: true
-      tags: [ tinyproxy, proxy ]
-
+      tags: [tinyproxy, proxy]
 
     - name: tinyproxy | package facts
       ansible.builtin.package_facts:
         manager: auto
-      tags: [ tinyproxy, proxy ]
-
+      tags: [tinyproxy, proxy]
 
     - name: tinyproxy | configuracion pre 1.8.4
-      template:
-        src: 'tinyproxy.conf-pre1.8.4.j2'
-        dest: '/etc/tinyproxy/tinyproxy.conf'
-        owner: 'root'
-        group: 'root'
-        mode: '0644'
+      ansible.builtin.template:
+        src: "tinyproxy.conf-pre1.8.4.j2"
+        dest: "/etc/tinyproxy/tinyproxy.conf"
+        owner: "root"
+        group: "root"
+        mode: "0644"
       become: true
       when: ansible_facts.packages['tinyproxy'][0].version is version('1.8.4', operator='le')
       register: reg_tinyproxy_conf
-      tags: [ tinyproxy, proxy ]
-
+      tags: [tinyproxy, proxy]
 
     - name: tinyproxy | configuracion post 1.10.0
-      template:
-        src: 'tinyproxy.conf.j2'
-        dest: '/etc/tinyproxy/tinyproxy.conf'
-        owner: 'root'
-        group: 'root'
-        mode: '0644'
+      ansible.builtin.template:
+        src: "tinyproxy.conf.j2"
+        dest: "/etc/tinyproxy/tinyproxy.conf"
+        owner: "root"
+        group: "root"
+        mode: "0644"
       become: true
       when: ansible_facts.packages['tinyproxy'][0].version is version('1.8.4', operator='gt')
       register: reg_tinyproxy_conf
-      tags: [ tinyproxy, proxy ]
-
+      tags: [tinyproxy, proxy]
 
     - name: tinyproxy | daemon restarted
-      service:
+      ansible.builtin.service:
         state: restarted
         enabled: true
         name: tinyproxy
       become: true
       when: reg_tinyproxy_conf is changed
-      tags: [ tinyproxy, proxy ]
-
+      tags: [tinyproxy, proxy]

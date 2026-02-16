@@ -1,7 +1,6 @@
 ---
-
 - name: slack | instala desde snap
-  snap:
+  community.general.snap:
     name: slack
   become: true
   tags:

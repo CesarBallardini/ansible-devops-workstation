@@ -2,83 +2,92 @@
 - hosts: escritorio
 
   tasks:
-
     # TODO:
     # template para /etc/systemd/timesyncd.conf poner los servidores NTP
     # sudo service systemd-timesyncd restart
 
-  - include_tasks: tasks/paquetes_de_escritorio.yml
-    tags: [ escritorio ]
+    - ansible.builtin.include_tasks: tasks/paquetes_de_escritorio.yml
+      tags: [escritorio]
 
-  - include_tasks: tasks/instala_zoom.yml
-    tags: [ zoom ]
+    - ansible.builtin.include_tasks: tasks/instala_zoom.yml
+      tags: [zoom]
 
-  - include_tasks: tasks/instala_ffmpeg.yml
-    tags: [ ffmpeg, video ]
+    - ansible.builtin.include_tasks: tasks/instala_ffmpeg.yml
+      tags: [ffmpeg, video]
 
-  - include_tasks: tasks/instala_openshot.yml
-    tags: [ openshot, video ]
+    - ansible.builtin.include_tasks: tasks/instala_openshot.yml
+      tags: [openshot, video]
 
 # FIXME: en 22.04 se debe insatalar ntfs-3g que requiere fuse3 y elimina fuse
 #  - include_tasks: tasks/sshfs-fuse.yml
 #    tags: [ escritorio ]
 
-  - include_tasks: tasks/instala_snap.yml
-    tags: 
-      - escritorio
-      - snap
+    - ansible.builtin.include_tasks: tasks/instala_snap.yml
+      tags:
+        - escritorio
+        - snap
 
-  - include_tasks: tasks/dev_eclipse.yml
-    tags: 
-      - escritorio
-      - eclipse
+    - ansible.builtin.include_tasks: tasks/dev_eclipse.yml
+      tags:
+        - escritorio
+        - eclipse
 
-  - include_tasks: tasks/dev_netbeans.yml
-    tags: 
-      - escritorio
-      - netbeans
+    - ansible.builtin.include_tasks: tasks/dev_netbeans.yml
+      tags:
+        - escritorio
+        - netbeans
 
-  - include_tasks: tasks/instala_telegram_desktop.yml
-    tags: 
-      - escritorio
-      - telegram_desktop
+    - ansible.builtin.include_tasks: tasks/instala_telegram_desktop.yml
+      tags:
+        - escritorio
+        - telegram_desktop
 
-  - include_tasks: tasks/instala_slack.yml
-    tags: 
-      - escritorio
-      - slack
+    - ansible.builtin.include_tasks: tasks/instala_slack.yml
+      tags:
+        - escritorio
+        - slack
 
-  - include_tasks: tasks/instala_bitwarden.yml
-    tags:
-      - escritorio
-      - bitwarden
+    - ansible.builtin.include_tasks: tasks/instala_bitwarden.yml
+      tags:
+        - escritorio
+        - bitwarden
 
-  # Microsoft VisualStudio Code es version privativa, usaba VSCodium, el fork libre, me canse de los plugins que solo funcionan en vscode
-  - include_tasks: tasks/instala_microsoft_visualstudio_code.yml
-    tags:
-      - escritorio
-      - microsoft_visualstudio_code
+    # Microsoft VisualStudio Code es version privativa, usaba VSCodium, el fork libre, me canse de los plugins que solo funcionan en vscode
+    - ansible.builtin.include_tasks: tasks/instala_microsoft_visualstudio_code.yml
+      tags:
+        - escritorio
+        - microsoft_visualstudio_code
 
-  - include_tasks: tasks/install_mise-en-place.yml
-    tags:
-      - escritorio
-      - mise-en-place
+    - ansible.builtin.include_tasks: tasks/install_mise-en-place.yml
+      tags:
+        - escritorio
+        - mise-en-place
 
 #  - include_tasks: tasks/instala_codium.yml
 #    tags: 
 #      - escritorio
 #      - codium
 
-  - include_tasks: tasks/instala_rambox.yml
-    tags: [ rambox ]
+    - ansible.builtin.include_tasks: tasks/instala_rambox.yml
+      tags: [rambox]
 
-  #- include_tasks: tasks/liveusb-multiboot.yml # no funciona correctamente sobre ubuntu 18.04 (2019/02/06)
-  #tags: [ multiboot ]
+    # - include_tasks: tasks/liveusb-multiboot.yml # no funciona correctamente sobre ubuntu 18.04 (2019/02/06)
+    # tags: [ multiboot ]
 
     # FIXME: 2022-05-22 no hay unetbootin todavia en el repo ppa
-  - include_tasks: tasks/unetbootin.yml
-    when:  ansible_facts['distribution'] == "Ubuntu" and ansible_facts['distribution_version'] is version('22.04', operator='lt', strict=True)
-    tags: [ unetbootin ]
+    - ansible.builtin.include_tasks: tasks/unetbootin.yml
+      when: ansible_facts['distribution'] == "Ubuntu" and ansible_facts['distribution_version'] is version('22.04', operator='lt', strict=True)
+      tags: [unetbootin]
 
-  #- include_tasks: tasks/instala_emulador_3270.yml # se usa para conectarse a minis y mainframes IBM
+    - ansible.builtin.include_role:
+        name: claude_code
+        apply:
+          become: true
+          tags:
+            - escritorio
+            - claude-code
+      tags:
+        - escritorio
+        - claude-code
 
+  # - include_tasks: tasks/instala_emulador_3270.yml # se usa para conectarse a minis y mainframes IBM

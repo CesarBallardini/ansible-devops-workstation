@@ -2,82 +2,79 @@
 - hosts: all
 
   tasks:
+    - name: all | /etc/environment
+      ansible.builtin.template:
+        src: environment.j2
+        dest: /etc/environment
+        owner: root
+        group: root
+        mode: "0644"
+      become: true
+      tags: [proxy]
 
-  - name: all | /etc/environment
-    ansible.builtin.template:
-      src: environment.j2
-      dest: /etc/environment
-      owner: root
-      group: root
-      mode: '0644'
-    become: true
-    tags: [ proxy ]
+    - name: all | requisitos para modulo apt
+      ansible.builtin.apt:
+        name: aptitude
+        state: present
+      become: true
 
-  - name: all | requisitos para modulo apt
-    ansible.builtin.apt:
-      name: aptitude
-      state: present
-    become: true
+    - name: all | requisitos para modulo apt_repository
+      ansible.builtin.apt:
+        name: python3-apt
+        state: present
+      become: true
 
-  - name: all | requisitos para modulo apt_repository
-    ansible.builtin.apt:
-      name: python3-apt
-      state: present
-    become: true
+    - name: all | configura APT
+      ansible.builtin.include_tasks: tasks/apt.yml
+      tags: [apt]
 
-  - name: all | configura APT
-    ansible.builtin.include_tasks: tasks/apt.yml
-    tags: [ apt ]
+    - name: all | instala y configura apt_fast
+      ansible.builtin.include_tasks: tasks/instala_apt_fast.yml
+      tags: [apt-fast, apt]
 
-  - name: all | instala y configura apt_fast
-    ansible.builtin.include_tasks: tasks/instala_apt_fast.yml
-    tags: [ apt-fast, apt ]
+    - name: all | actualiza paquetes en sistema
+      ansible.builtin.include_tasks: tasks/actualiza_sistema.yml
+      tags: [apt, upgrade]
 
-  - name: all | actualiza paquetes en sistema
-    ansible.builtin.include_tasks: tasks/actualiza_sistema.yml
-    tags: [ apt, upgrade ]
+    - name: paquetes generales requisitos para instalar devops
+      ansible.builtin.apt:
+        name:
+          - jq
+          - git
+          - wget
+          - curl
+          - socat
+          - unzip
+        state: present
+      become: true
 
-  - name: paquetes generales requisitos para instalar devops
-    ansible.builtin.apt:
-      name:
-        - jq
-        - git
-        - wget
-        - curl
-        - socat
-        - unzip
-      state: present
-    become: true
+    - name: all | pup Parsing HTML at the command line
+      ansible.builtin.include_tasks: tasks/instala_pup.yml
+      tags: [pup]
 
-  - name: all | pup Parsing HTML at the command line
-    ansible.builtin.include_tasks: tasks/instala_pup.yml
-    tags: [ pup ]
-
-  - name: all | mejora performance
-    ansible.builtin.include_tasks: tasks/mejora_performance.yml
-    tags: [ performance ]
+    - name: all | mejora performance
+      ansible.builtin.include_tasks: tasks/mejora_performance.yml
+      tags: [performance]
 
 
-  - name: all | configura locales
-    ansible.builtin.include_role:
-      name: locales
-      apply:
-        become: true
-        tags:
-          - locales
-    tags:
-      - locales
-    vars:
-      locales_present: 
-        - es_AR.UTF-8
-        - en_US.UTF-8
-      locales_language_packs_present:
-        - language-pack-en
-        - language-pack-en-base
-        - language-pack-es
-        - language-pack-es-base
-      locales_default:
-        lang: es_AR.UTF-8
+    - name: all | configura locales
+      ansible.builtin.include_role:
+        name: locales
+        apply:
+          become: true
+          tags:
+            - locales
+      tags:
+        - locales
+      vars:
+        locales_present:
+          - es_AR.UTF-8
+          - en_US.UTF-8
+        locales_language_packs_present:
+          - language-pack-en
+          - language-pack-en-base
+          - language-pack-es
+          - language-pack-es-base
+        locales_default:
+          lang: es_AR.UTF-8
         #lc_all: C
-
-

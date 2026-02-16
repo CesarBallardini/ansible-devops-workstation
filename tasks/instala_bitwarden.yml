@@ -1,8 +1,7 @@
 ---
-
 - name: bitwarden | instala desde snap
-  snap:
-    name: 
+  community.general.snap:
+    name:
       - bw
       - bitwarden
   become: true

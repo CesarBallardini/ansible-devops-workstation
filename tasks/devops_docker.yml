@@ -1,9 +1,8 @@
 ---
-
 # config proxy https://elegantinfrastructure.com/docker/ultimate-guide-to-docker-http-proxy-configuration/
 
 - name: devops | docker | install requisites
-  apt:
+  ansible.builtin.apt:
     name:
       - apt-transport-https
       - ca-certificates
@@ -20,9 +19,9 @@
 # The apt-key command has been deprecated and suggests to ‘manage keyring files in trusted.gpg.d instead’.
 
 - name: devops | docker | agrega clave del repo
-  get_url:
-    url: 'https://download.docker.com/linux/ubuntu/gpg'
-    mode: '0644'
+  ansible.builtin.get_url:
+    url: "https://download.docker.com/linux/ubuntu/gpg"
+    mode: "0644"
     dest: /usr/share/keyrings/docker.asc
     force: true
   become: true
@@ -41,10 +40,10 @@
     - docker
 
 - name: devops | docker | agrego repo
-  apt_repository:
+  ansible.builtin.apt_repository:
     repo: "deb [arch=amd64 signed-by=/usr/share/keyrings/docker.asc] https://download.docker.com/linux/ubuntu  {{ ansible_facts['distribution_release'] }} stable"
     state: present
-    update_cache: yes
+    update_cache: true
     filename: docker
   become: true
   register: reg_add_repo_docker
@@ -52,10 +51,9 @@
     - devops
     - docker
 
-
 - name: devops | docker | actualizo lista paquetes .deb
-  apt:
-    update_cache: yes
+  ansible.builtin.apt:
+    update_cache: true
     cache_valid_time: 3600
   become: true
   when: reg_add_repo_docker is changed
@@ -64,8 +62,8 @@
     - docker
 
 - name: devops | docker | instala docker-ce
-  apt:
-    name: 
+  ansible.builtin.apt:
+    name:
       - docker-ce
       - docker-ce-cli
       - containerd.io
@@ -77,35 +75,32 @@
     - devops
     - docker
 
-
 - name: devops | docker | Ensure 'docker' group exists
-  group:
+  ansible.builtin.group:
     name: docker
   become: true
   tags:
     - devops
     - docker
 
-
 - name: devops | docker | "Add users to 'docker' group."
-  user:
-    name:  "{{ devops_user_name }}"
+  ansible.builtin.user:
+    name: "{{ devops_user_name }}"
     groups:
       - docker
-    append: yes
+    append: true
   become: true
   tags:
     - devops
     - docker
 
-
 - name: devops | docker | Make sure that systemd directory exists
-  file:
-    path: '/etc/systemd/system'
-    state: 'directory'
-    owner: 'root'
-    group: 'root'
-    mode: '0755'
+  ansible.builtin.file:
+    path: "/etc/systemd/system"
+    state: "directory"
+    owner: "root"
+    group: "root"
+    mode: "0755"
   when: ansible_facts['service_mgr'] == 'systemd'
   become: true
   tags:
@@ -113,52 +108,50 @@
     - docker
 
 - name: devops | docker | Make sure that docker.service.d directory exists
-  file:
-    path: '/etc/systemd/system/docker.service.d'
-    state: 'directory'
-    owner: 'root'
-    group: 'root'
-    mode: '0755'
-  when: (ansible_facts['service_mgr'] == 'systemd' and
-        (docker__env_http_proxy is defined or docker__env_https_proxy is defined))
+  ansible.builtin.file:
+    path: "/etc/systemd/system/docker.service.d"
+    state: "directory"
+    owner: "root"
+    group: "root"
+    mode: "0755"
+  when: (ansible_facts['service_mgr'] == 'systemd' and (docker__env_http_proxy is defined or docker__env_https_proxy is defined))
   become: true
   tags:
     - devops
     - docker
 
-- debug: var=docker__env_https_proxy
+- ansible.builtin.debug: var=docker__env_https_proxy
   tags:
     - devops
     - docker
 
-- debug: var=https_proxy
+- ansible.builtin.debug: var=https_proxy
   tags:
     - devops
     - docker
 
 - name: devops | docker | configura proxy
-  template:
-    src: 'http-proxy.conf.j2'
-    dest: '/etc/systemd/system/docker.service.d/http-proxy.conf'
-    owner: 'root'
-    group: 'root'
-    mode: '0644'
+  ansible.builtin.template:
+    src: "http-proxy.conf.j2"
+    dest: "/etc/systemd/system/docker.service.d/http-proxy.conf"
+    owner: "root"
+    group: "root"
+    mode: "0644"
   become: true
   register: reg_docker_proxy
-  when: (ansible_facts['service_mgr'] == 'systemd' and
-        (docker__env_http_proxy is defined or docker__env_https_proxy is defined))
-  vars :
-    __env_http_proxy:  "{{ docker__env_http_proxy }}"
+  when: (ansible_facts['service_mgr'] == 'systemd' and (docker__env_http_proxy is defined or docker__env_https_proxy is defined))
+  vars:
+    __env_http_proxy: "{{ docker__env_http_proxy }}"
     __env_https_proxy: "{{ docker__env_https_proxy }}"
-    __env_no_proxy:    "{{ docker__env_no_proxy}}"
+    __env_no_proxy: "{{ docker__env_no_proxy}}"
   tags:
     - devops
     - docker
 
 - name: devops | docker | docker deamon is running
-  systemd:
+  ansible.builtin.systemd:
     state: restarted
-    daemon_reload: yes
+    daemon_reload: true
     name: docker
   become: true
   when: reg_docker_proxy is changed

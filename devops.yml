@@ -2,14 +2,13 @@
 - hosts: devops
 
   tasks:
-
     - name: devops | verifica si hay virtualizacion por hardware requerido para VMware Workstation
       ansible.builtin.command: egrep "svm|vmx" /proc/cpuinfo
-      ignore_errors: True
-      changed_when: False
-      become: True
+      ignore_errors: true
+      changed_when: false
+      become: true
       register: hay_virtualizacion_register
-      tags: 
+      tags:
         - devops
         - vmware-workstation
         - virtualbox
@@ -27,114 +26,111 @@
       when: hay_virtualizacion_register is succeeded
       vars:
         workstation_tempdir: /var/cache/workstation-downloads
-      tags: 
+      tags:
         - devops
         - vmware-workstation
-
 
 - hosts: devops
 
   tasks:
+    - name: devops | desactiva vmware workstation
+      ansible.builtin.shell: |
+        update-rc.d vmware disable
+        update-rc.d vmware-workstation-server disable
+        update-rc.d vmware-USBArbitrator disable
+      when: hay_virtualizacion_register is succeeded
+      become: true
+      changed_when: false
+      tags:
+        - devops
+        - vmware-workstation
 
-  - name: devops | desactiva vmware workstation
-    ansible.builtin.shell: |
-      update-rc.d vmware disable
-      update-rc.d vmware-workstation-server disable
-      update-rc.d vmware-USBArbitrator disable
-    when: hay_virtualizacion_register is succeeded
-    become: true
-    changed_when: false
-    tags: 
-      - devops
-      - vmware-workstation
+    - ansible.builtin.include_tasks: tasks/devops_aws.yml
+      tags:
+        - devops
+        - aws
 
-  - ansible.builtin.include_tasks: tasks/devops_aws.yml
-    tags: 
-      - devops
-      - aws
+    - ansible.builtin.include_tasks: tasks/devops_ansible.yml
+      tags:
+        - devops
+        - ansible
 
-  - ansible.builtin.include_tasks: tasks/devops_ansible.yml
-    tags: 
-      - devops
-      - ansible 
+    - ansible.builtin.include_tasks: tasks/devops_git.yml
+      tags:
+        - devops
+        - git
 
-  - ansible.builtin.include_tasks: tasks/devops_git.yml
-    tags: 
-      - devops
-      - git
+    - ansible.builtin.include_tasks: tasks/devops_git_credential_manager.yml
+      tags:
+        - devops
+        - git-credential-manager
 
-  - ansible.builtin.include_tasks: tasks/devops_git_credential_manager.yml
-    tags: 
-      - devops
-      - git-credential-manager
+    - ansible.builtin.include_tasks: tasks/devops_terraform.yml
+      tags:
+        - devops
+        - terraform
 
-  - ansible.builtin.include_tasks: tasks/devops_terraform.yml
-    tags: 
-      - devops
-      - terraform
+    - ansible.builtin.include_tasks: tasks/devops_terraform_docs.yml
+      tags:
+        - devops
+        - terraform
+        - terraform-docs
 
-  - ansible.builtin.include_tasks: tasks/devops_terraform_docs.yml
-    tags: 
-      - devops
-      - terraform
-      - terraform-docs
+    - ansible.builtin.include_tasks: tasks/devops_terragrunt.yml
+      tags:
+        - devops
+        - terraform
+        - terragrunt
 
-  - ansible.builtin.include_tasks: tasks/devops_terragrunt.yml
-    tags: 
-      - devops
-      - terraform
-      - terragrunt
+    - ansible.builtin.include_tasks: tasks/devops_virtualbox.yml
+      when: hay_virtualizacion_register is succeeded
+      vars:
+        virtualbox_old_packages_to_remove:
+          - virtualbox-dkms
+          - virtualbox-5.1
+          - virtualbox-5.2
+          - virtualbox-6.0
+          - virtualbox-6.1
+        virtualbox_version_to_install: "virtualbox-7.0"
+      tags:
+        - devops
+        - virtualbox
 
-  - ansible.builtin.include_tasks: tasks/devops_virtualbox.yml
-    when: hay_virtualizacion_register is succeeded
-    vars:
-      virtualbox_old_packages_to_remove: 
-        - virtualbox-dkms
-        - virtualbox-5.1
-        - virtualbox-5.2
-        - virtualbox-6.0
-        - virtualbox-6.1
-      virtualbox_version_to_install: "virtualbox-7.0"
-    tags: 
-      - devops
-      - virtualbox
+    - ansible.builtin.include_tasks: tasks/devops_virtualbox.yml
+      when: hay_virtualizacion_register is failed
+      vars:
+        virtualbox_old_packages_to_remove:
+          - virtualbox-dkms
+          - virtualbox-5.1
+          - virtualbox-5.2
+          - virtualbox-6.1
+          - virtualbox-7.0
+        virtualbox_version_to_install: "virtualbox-6.0"
+      tags:
+        - devops
+        - virtualbox
 
-  - ansible.builtin.include_tasks: tasks/devops_virtualbox.yml
-    when: hay_virtualizacion_register is failed
-    vars:
-      virtualbox_old_packages_to_remove: 
-        - virtualbox-dkms
-        - virtualbox-5.1
-        - virtualbox-5.2
-        - virtualbox-6.1
-        - virtualbox-7.0
-      virtualbox_version_to_install: "virtualbox-6.0"
-    tags: 
-      - devops
-      - virtualbox
+    - ansible.builtin.include_tasks: tasks/devops_vagrant.yml
+      tags:
+        - devops
+        - vagrant
 
-  - ansible.builtin.include_tasks: tasks/devops_vagrant.yml
-    tags: 
-      - devops
-      - vagrant
+    - ansible.builtin.include_tasks: tasks/devops_packer.yml
+      tags:
+        - devops
+        - packer
 
-  - ansible.builtin.include_tasks: tasks/devops_packer.yml
-    tags: 
-      - devops
-      - packer
+    - ansible.builtin.include_tasks: tasks/devops_goss.yml
+      tags:
+        - devops
+        - goss
 
-  - ansible.builtin.include_tasks: tasks/devops_goss.yml
-    tags: 
-      - devops
-      - goss
+    - ansible.builtin.include_tasks: tasks/devops_govc.yml
+      tags:
+        - devops
+        - govc
 
-  - ansible.builtin.include_tasks: tasks/devops_govc.yml
-    tags: 
-      - devops
-      - govc
-
-  - ansible.builtin.include_tasks: tasks/devops_docker.yml
-    tags: 
-      - devops
-      - docker
-
+    - ansible.builtin.include_tasks: tasks/devops_docker.yml
+      tags:
+        - devops
+        - docker

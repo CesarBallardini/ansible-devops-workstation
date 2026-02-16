@@ -1,5 +1,4 @@
 ---
-
 # https://blog.programster.org/ubuntu-18-04-install-unetbootin
 # https://askubuntu.com/questions/776611/unetbootin-has-no-gui-on-ubuntu-gnome/885894#885894
 #
@@ -8,43 +7,36 @@
 #
 # What the above command does is disable shared memory access for running this Qt based application, allowing it to work properly on GNOME.
 
-
 # https://docs.ansible.com/ansible/latest/collections/ansible/builtin/apt_key_module.html
-# The apt-key command has been deprecated and suggests to ‘manage keyring files in trusted.gpg.d instead’.
+# The apt-key command has been deprecated and suggests to 'manage keyring files in trusted.gpg.d instead'.
 
 - name: unetbootin | agrega clave del repo
-  get_url:
-    url: 'https://keyserver.ubuntu.com/pks/lookup?op=get&search=0xd45df2e8fc91ae7e'
-    mode: '0644'
+  ansible.builtin.get_url:
+    url: "https://keyserver.ubuntu.com/pks/lookup?op=get&search=0xd45df2e8fc91ae7e"
+    mode: "0644"
     dest: /usr/share/keyrings/unetbootin.asc
     force: true
   become: true
-  tags:
-
 
 - name: unetbootin | agrego repo
-  apt_repository:
-    repo: "deb [arch=amd64 signed-by=/usr/share/keyrings/unetbootin.asc] http://ppa.launchpad.net/gezakovacs/ppa/ubuntu {{ ansible_facts['distribution_release'] }} main"
+  ansible.builtin.apt_repository:
+    repo: "deb [arch=amd64 signed-by=/usr/share/keyrings/unetbootin.asc] http://ppa.launchpad.net/gezakovacs/ppa/ubuntu {{ ansible_facts['distribution_release'] }}
+      main"
     state: present
-    update_cache: yes
+    update_cache: true
     filename: unetbootin
   become: true
   register: reg_add_ppa_unetbootin
-  tags: [ unetbootin ]
-
 
 - name: unetbootin | actualizo lista paquetes .deb
-  apt:
-    update_cache: yes
+  ansible.builtin.apt:
+    update_cache: true
     cache_valid_time: 3600
   become: true
   when: reg_add_ppa_unetbootin is changed
-  tags: [ unetbootin ]
-  
+
 - name: unetbootin | instala paquete
-  apt:
-    name:  unetbootin
+  ansible.builtin.apt:
+    name: unetbootin
     state: present
   become: true
-  tags: [ unetbootin ]
-

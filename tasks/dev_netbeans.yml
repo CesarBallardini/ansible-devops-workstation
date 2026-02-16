@@ -1,21 +1,19 @@
 ---
-
 # https://netbeans.apache.org/kb/docs/php/index.html
 # https://netbeans.org/kb/trails/php.html
 # https://stackoverflow.com/questions/48317705/how-to-install-symfony4-in-netbeans
 # https://somospnt.com/blog/31-apache-netbeans-11-como-configurar-el-ide-para-aprovecharlo-al-maximo
 
 - name: netbeans | actualizo lista paquetes .deb
-  apt:
-    update_cache: yes
+  ansible.builtin.apt:
+    update_cache: true
     cache_valid_time: 3600
   become: true
   tags:
     - netbeans
 
-
 - name: netbeans | instala Open JDK 11
-  apt:
+  ansible.builtin.apt:
     name:
       - openjdk-11-jdk
     state: present
@@ -23,11 +21,10 @@
   tags:
     - netbeans
 
-
 - name: netbeans | instala desde snap
-  snap:
+  community.general.snap:
     name: netbeans
-    classic: yes
+    classic: true
   become: true
   tags:
     - netbeans

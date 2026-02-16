@@ -1,16 +1,13 @@
 ---
-
 #  sudo add-apt-repository ppa:mc3man/trusty-media -y 
 #  sudo apt-fast update
 #  sudo apt-fast dist-upgrade -y
 #
 #  sudo apt-fast install ffmpeg -y
 #  sudo apt-fast install x264 key-mon graphicsmagick -y
-
-
 - name: ffmpeg | actualizo lista paquetes .deb
-  apt:
-    update_cache: yes
+  ansible.builtin.apt:
+    update_cache: true
     cache_valid_time: 3600
   become: true
   tags:
@@ -18,7 +15,7 @@
     - ffmpeg
 
 - name: ffmpeg | instala ffmpeg
-  apt:
+  ansible.builtin.apt:
     name:
       - ffmpeg
       - x264
@@ -31,7 +28,7 @@
 
 # TODO: no hay paquete al dia de hoy en focal: 2020-03-05
 - name: ffmpeg | instala key-mon excepto en focal o superior
-  apt:
+  ansible.builtin.apt:
     name:
       - key-mon
     state: present
@@ -40,4 +37,3 @@
   tags:
     - video
     - ffmpeg
-

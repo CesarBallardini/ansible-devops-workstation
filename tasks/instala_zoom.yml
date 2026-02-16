@@ -2,7 +2,7 @@
 # See https://zoom.us/download#client_4meeting
 
 - name: zoom | paquetes generales
-  apt:
+  ansible.builtin.apt:
     name:
       - jq
       - git
@@ -14,67 +14,64 @@
   tags:
     - zoom
 
-
-- set_fact:
+- ansible.builtin.set_fact:
     zoom_download_dir: /usr/local/zoom_download
   tags:
     - zoom
 
 - name: zoom | version actual instalada
-  shell: |
-     LANG=C dpkg-query --showformat='${Version}\n' --show zoom
+  ansible.builtin.shell: |
+    LANG=C dpkg-query --showformat='${Version}\n' --show zoom
   register: reg_zoom_version_instalada
   failed_when: false
   changed_when: false
   tags:
     - zoom
 
-
 - name: zoom | directorio de descargas
-  file:
+  ansible.builtin.file:
     path: "{{ zoom_download_dir }}"
     state: directory
     owner: root
     group: root
-    mode: '0755'
+    mode: "0755"
   become: true
   tags:
     - zoom
 
 - name: zoom | descarga paquete
-  get_url:
+  ansible.builtin.get_url:
     url: "https://zoom.us/client/latest/zoom_amd64.deb"
-    dest: {{ zoom_download_dir }}/zoom_amd64.deb
+    dest: "{{ zoom_download_dir }}/zoom_amd64.deb"
     force: true
   become: true
   tags:
     - zoom
 
 - name: zoom | version disponible en el paquete descargado
-  shell: dpkg-deb -f {{ zoom_download_dir }}/zoom_amd64.deb Version
+  ansible.builtin.shell: dpkg-deb -f {{ zoom_download_dir }}/zoom_amd64.deb Version
   register: reg_zoom_version_disponible
   changed_when: false
   tags:
     - zoom
 
 - name: zoom | debug versiones
-  debug:
+  ansible.builtin.debug:
     msg: "zoom instalada={{ reg_zoom_version_instalada.stdout | default('no instalado') }} disponible={{ reg_zoom_version_disponible.stdout }}"
   tags:
     - zoom
 
 - name: zoom | instala paquete
-  apt:
-    deb: {{ zoom_download_dir }}/zoom_amd64.deb
+  ansible.builtin.apt:
+    deb: "{{ zoom_download_dir }}/zoom_amd64.deb"
   become: true
   when: reg_zoom_version_instalada.stdout != reg_zoom_version_disponible.stdout
   tags:
     - zoom
 
 - name: zoom | asegura dependencias
-  shell: apt-get -y -f install
+  ansible.builtin.shell: apt-get -y -f install
   become: true
   when: reg_zoom_version_instalada.stdout != reg_zoom_version_disponible.stdout
   tags:
     - zoom
-

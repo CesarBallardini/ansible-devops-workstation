@@ -2,7 +2,7 @@
 # See https://github.com/ramboxapp/community-edition/releases for versions
 
 - name: paquetes generales
-  apt:
+  ansible.builtin.apt:
     name:
       - jq
       - git
@@ -14,61 +14,58 @@
   tags:
     - rambox
 
-
 - name: rambox | version actual instalada
-  shell: |
-     LANG=C dpkg -l rambox | awk ' /^ii/ {print gensub("([0-9]*\\.[0-9]*\\.[0-9]*)-(.*)", "\\1","1", $3) }'
+  ansible.builtin.shell: |
+    LANG=C dpkg -l rambox | awk ' /^ii/ {print gensub("([0-9]*\\.[0-9]*\\.[0-9]*)-(.*)", "\\1","1", $3) }'
   register: reg_rambox_version
   failed_when: false
   changed_when: false
   tags:
     - rambox
 
-
 - name: rambox | busca el nombre de la version actual
-  shell: |
+  ansible.builtin.shell: |
     curl --silent https://api.github.com/repos/ramboxapp/community-edition/releases/latest | jq -r ".tag_name"
   register: reg_rambox_url_version
   changed_when: false
   tags:
     - rambox
 
-- set_fact:
+- ansible.builtin.set_fact:
     rambox_version_instalada: "{{ reg_rambox_version.rc == 0 and reg_rambox_version.stdout or false }}"
     rambox_url_version: "{{ reg_rambox_url_version.stdout }}"
   tags:
     - rambox
 
-- set_fact:
+- ansible.builtin.set_fact:
     rambox_url_actual: "https://github.com/ramboxapp/community-edition/releases/download/{{ rambox_url_version }}/Rambox-{{ rambox_url_version }}-linux-amd64.deb"
   tags:
     - rambox
 
-- debug: msg="ramboxapp, version instalada - {{ rambox_version_instalada }}"
+- ansible.builtin.debug: msg="ramboxapp, version instalada - {{ rambox_version_instalada }}"
   tags:
     - rambox
-- debug: msg="ramboxapp, url actual        - {{ rambox_url_actual }}"
+- ansible.builtin.debug: msg="ramboxapp, url actual        - {{ rambox_url_actual }}"
   tags:
     - rambox
-- debug: msg="ramboxapp, url version       - {{ rambox_url_version }}"
+- ansible.builtin.debug: msg="ramboxapp, url version       - {{ rambox_url_version }}"
   tags:
     - rambox
 # "
 
 - name: rambox | descarga paquete
-  get_url:
+  ansible.builtin.get_url:
     url: "{{ rambox_url_actual }}"
     dest: "/tmp/{{ rambox_url_actual | basename }}"
-    mode: 0755
+    mode: "0755"
     force: true
   become: true
   when: rambox_version_instalada|default("0.0.0", true) is version(rambox_url_version, operator='lt', strict=True)
   tags:
     - rambox
 
-
 - name: rambox | instala binario
-  apt:
+  ansible.builtin.apt:
     deb: /tmp/{{ rambox_url_actual | basename }}
   become: true
   when: rambox_version_instalada|default("0.0.0", true) is version(rambox_url_version, operator='lt', strict=True)
@@ -76,8 +73,8 @@
     - rambox
 
 - name: rambox | Install missing packages
-  shell: |
-       apt install -f -y
+  ansible.builtin.shell: |
+    apt install -f -y
   become: true
   when: rambox_version_instalada|default("0.0.0", true) is version(rambox_url_version, operator='lt', strict=True)
   tags:

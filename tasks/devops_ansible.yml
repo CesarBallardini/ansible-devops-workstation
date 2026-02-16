@@ -1,5 +1,4 @@
 ---
-
 # Como parte del bootstrap de la estación de trabajo se instaló Ansible mediante:
 # (sino se da el problema de cómo correr ansible para instalar ansible :)
 #
@@ -13,7 +12,7 @@
 # se obtiene de variables de inventario
 
 - name: devops | ansible | paquetes generales
-  apt:
+  ansible.builtin.apt:
     name:
       - jq
       - git
@@ -23,76 +22,73 @@
     state: present
   become: true
   tags:
-   - devops
-   - ansible
-
+    - devops
+    - ansible
 
 - name: devops | ansible | version actual instalada
-  shell: |
-          python3 -m pip list | awk '/^ansible .*/{print $2}' | tr -d '()'
-          #LANG=C ansible --version | sed -n  -e "s/^ansible[ ]*\([0-9\.]*\)/\1/p"
+  ansible.builtin.shell: |
+    python3 -m pip list | awk '/^ansible .*/{print $2}' | tr -d '()'
+    #LANG=C ansible --version | sed -n  -e "s/^ansible[ ]*\([0-9\.]*\)/\1/p"
   register: reg_ansible_version
   failed_when: false
   changed_when: false
   tags:
-   - devops
-   - ansible
+    - devops
+    - ansible
 
 - name: devops | ansible | busca el nombre de la version actual
-  shell: |
-      curl https://pypi.org/pypi/ansible/json -o - 2>/dev/null \
-        | jq  ".releases| keys[]"  \
-        | tr -d '"' \
-        | sed -n -e "/^[0-9]*\\.[0-9]*\\.[0-9]*$/p" \
-        | grep  "^[0-9]*\.[0-9]*\.[0-9]*$" \
-        | sed '/-/!{s/$/_/}' \
-        | sort -Vr \
-        | sed 's/_$//' \
-        | head -n 1
-
+  ansible.builtin.shell: |
+    curl https://pypi.org/pypi/ansible/json -o - 2>/dev/null \
+      | jq  ".releases| keys[]"  \
+      | tr -d '"' \
+      | sed -n -e "/^[0-9]*\\.[0-9]*\\.[0-9]*$/p" \
+      | grep  "^[0-9]*\.[0-9]*\.[0-9]*$" \
+      | sed '/-/!{s/$/_/}' \
+      | sort -Vr \
+      | sed 's/_$//' \
+      | head -n 1
   register: reg_ansible_pip_version
   changed_when: false
   tags:
-   - devops
-   - ansible
+    - devops
+    - ansible
 
-- set_fact:
+- ansible.builtin.set_fact:
     ansible_pip_version: "{{ reg_ansible_pip_version.stdout }}"
   tags:
-   - devops
-   - ansible
+    - devops
+    - ansible
 
-- set_fact:
+- ansible.builtin.set_fact:
     ansible_version_a_instalar: "{{ ansible_version_deseada | d('')  if ansible_version_deseada | d('') != '' else  ansible_pip_version }}"
     ansible_version_instalada: "{{ reg_ansible_version.rc == 0 and reg_ansible_version.stdout or '0.0.0' }}"
   tags:
-   - devops
-   - ansible
+    - devops
+    - ansible
 
-- debug: msg="Ansible, version instalada  - {{ ansible_version_instalada }}"
+- ansible.builtin.debug: msg="Ansible, version instalada  - {{ ansible_version_instalada }}"
   tags:
-   - devops
-   - ansible
-- debug: msg="Ansible, version deseada    - {{ ansible_version_deseada | d() }}"
+    - devops
+    - ansible
+- ansible.builtin.debug: msg="Ansible, version deseada    - {{ ansible_version_deseada | d() }}"
   tags:
-   - devops
-   - ansible
-- debug: msg="Ansible, version a instalar - {{ ansible_version_a_instalar }}"
+    - devops
+    - ansible
+- ansible.builtin.debug: msg="Ansible, version a instalar - {{ ansible_version_a_instalar }}"
   tags:
-   - devops
-   - ansible
-- debug: msg="Ansible, pip version        - {{ ansible_pip_version}}"
+    - devops
+    - ansible
+- ansible.builtin.debug: msg="Ansible, pip version        - {{ ansible_pip_version}}"
   tags:
-   - devops
-   - ansible
+    - devops
+    - ansible
 
-- debug: msg="Pasar de 2.9.x hacia 2.10.x debe hacerse con uninstall/install"
-  #failed_when: ansible_version_a_instalar is version('2.10', '>') and ansible_version_instalada is version('2.9.99', '<')
-  when: ((ansible_version_a_instalar is version('2.10.0', '>=') and ansible_version_instalada is version('2.9.99', '<'))  or
-         (ansible_version_a_instalar is version('2.9.99', '<')  and ansible_version_instalada is version('2.10.0', '>=')))
+- ansible.builtin.debug: msg="Pasar de 2.9.x hacia 2.10.x debe hacerse con uninstall/install"
+  when: ((ansible_version_a_instalar is version('2.10.0', '>=') and ansible_version_instalada is version('2.9.99', '<'))  or (ansible_version_a_instalar is
+    version('2.9.99', '<')  and ansible_version_instalada is version('2.10.0', '>=')))
   tags:
-   - devops
-   - ansible
+    - devops
+    - ansible
 
 # FIXME: los siguientes cambios de version dan los resultados:
 # 2.8.6 -> 2.10.0 OK
@@ -103,27 +99,24 @@
 # 2.9.6  -> 2.8.6 ERROR, volver a correr el playbook
 #
 - name: devops | ansible | actualiza manualmente Ansible
-  shell: |
+  ansible.builtin.shell: |
     sudo apt-get install -y python3-pip
     python3 -m pip install --upgrade pip
     python3 -m pip uninstall -y  ansible      || /bin/true
     python3 -m pip uninstall -y  ansible-base || /bin/true
     python3 -m pip install ansible-core
     python3 -m pip install ansible=={{ ansible_version_a_instalar }}
- 
-  when: ansible_version_a_instalar != ansible_version_instalada 
+  when: ansible_version_a_instalar != ansible_version_instalada
   changed_when: false
   environment:
     - ANSIBLE_SKIP_CONFLICT_CHECK: 1
   tags:
-   - devops
-   - ansible
-
-
+    - devops
+    - ansible
 
 - name: devops | ansible | instala python3-pip python3-setuptools
-  apt:
-    name: 
+  ansible.builtin.apt:
+    name:
       - python3-pip
       - python3-setuptools
     state: present
@@ -132,22 +125,20 @@
     - devops
     - ansible
 
-
 - name: devops | ansible | verifica pip existe localmente
-  stat:
+  ansible.builtin.stat:
     path: /usr/local/bin/pip
   register: reg_local_pip
 
 - name: devops | ansible | instala pip desde pip
-  command: python3 -m pip install --upgrade pip
+  ansible.builtin.command: python3 -m pip install --upgrade pip
   args:
     creates: /usr/local/bin/pip
   when: not reg_local_pip.stat.exists
   become: true
 
-
 - name: devops | ansible | actualiza pip
-  pip:
+  ansible.builtin.pip:
     name: pip
     state: latest
     executable: /usr/local/bin/pip
@@ -157,7 +148,7 @@
     - ansible
 
 - name: devops | ansible | actualiza setuptools
-  pip:
+  ansible.builtin.pip:
     name: setuptools
     state: latest
     executable: /usr/local/bin/pip
@@ -178,7 +169,7 @@
 #    - ansible
 
 - name: devops | ansible | actualiza ansible-lint
-  pip:
+  ansible.builtin.pip:
     name: ansible-lint
     state: latest
     executable: /usr/local/bin/pip
@@ -188,7 +179,7 @@
     - ansible
 
 - name: devops | ansible | actualiza ansible-cmdb
-  pip:
+  ansible.builtin.pip:
     name: ansible-cmdb
     state: latest
     executable: /usr/local/bin/pip
@@ -198,7 +189,7 @@
     - ansible
 
 - name: devops | ansible | actualiza proxmoxer
-  pip:
+  ansible.builtin.pip:
     name: proxmoxer
     state: latest
     executable: /usr/local/bin/pip
@@ -208,7 +199,7 @@
     - ansible
 
 - name: devops | ansible | actualiza requests
-  pip:
+  ansible.builtin.pip:
     name: requests
     state: latest
     executable: /usr/local/bin/pip
@@ -218,7 +209,7 @@
     - ansible
 
 - name: devops | ansible | actualiza paramiko
-  pip:
+  ansible.builtin.pip:
     name: paramiko
     state: latest
     executable: /usr/local/bin/pip
@@ -227,6 +218,4 @@
     - devops
     - ansible
 
-
 # FIXME: instala modulos de ansible para infra a bajo nivel (esxi, vshpere, etc)
-

@@ -1,70 +1,66 @@
 ---
-
 - name: performance | actualizo lista paquetes .deb
-  apt:
-    update_cache: yes
+  ansible.builtin.apt:
+    update_cache: true
     cache_valid_time: 3600
   become: true
-  tags: [ performance ]
+  tags: [performance]
 
 - name: performance | instala preload, indicator-cpufreq, etc.
-  apt:
-    name: 
+  ansible.builtin.apt:
+    name:
       - indicator-cpufreq
       - preload
       - ubuntu-restricted-extras
     state: present
   become: true
-  tags: [ performance ]
+  tags: [performance]
 
 - name: performance | verificar si existe bateria
-  shell: LANG=C upower -i /org/freedesktop/UPower/devices/battery_BATT | grep -E percentage | awk {'print $2'} | sed 's/[^0-9]*//g'
+  ansible.builtin.shell: LANG=C upower -i /org/freedesktop/UPower/devices/battery_BATT | grep -E percentage | awk {'print $2'} | sed 's/[^0-9]*//g'
   register: exist_battery
-  tags: [ performance ]
+  tags: [performance]
 
 - name: performance | instala tlp
-  apt:
-    name: 
-      #- laptop-mode-tools # es incompatible con tlp
+  ansible.builtin.apt:
+    name:
+      # - laptop-mode-tools # es incompatible con tlp
       - tlp
       - tlp-rdw
     state: present
   become: true
   when: exist_battery.stdout|int > 0
-  tags: [ performance ]
+  tags: [performance]
 
 # TODO: para configurar laptop-mode-tools:
 # sudo lmt-config-gui 
 
 - name: performance | inicia tlp
-  command: tlp start
+  ansible.builtin.command: tlp start
   changed_when: false
   become: true
   when: exist_battery.stdout|int > 0
-  tags: [ performance ]
+  tags: [performance]
 
-##
+# #
 # FIXME: desactiva animaciones - hacer que se guarde, sino anda en la sesión actual únicamente:
 #
 # gsettings set org.gnome.desktop.interface enable-animations 'false'
 # gsettings set org.gnome.desktop.search-providers disable-external 'true'
-
-
 - name: performance | ajusta swappiness
-  sysctl:
+  ansible.posix.sysctl:
     name: vm.swappiness
     value: "{{ swappiness }}"
     state: present
-    reload: yes
+    reload: true
   become: true
-  tags: [ performance ]
+  tags: [performance]
 
 - name: performance | ajusta vfs_cache_pressure
-  sysctl:
+  ansible.posix.sysctl:
     name: vm.vfs_cache_pressure
     value: "50"
     state: present
-    reload: yes
+    reload: true
   become: true
-  tags: [ performance ]
-
+  tags: [performance]

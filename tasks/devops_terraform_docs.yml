@@ -1,7 +1,6 @@
 ---
-
 - name: devops | paquetes generales
-  apt:
+  ansible.builtin.apt:
     name:
       - jq
       - git
@@ -11,162 +10,153 @@
     state: present
   become: true
   tags:
-   - devops
-   - terraform
-   - terraform-docs
+    - devops
+    - terraform
+    - terraform-docs
 
-- set_fact:
-    #terraform_docs_version_deseada: '0.13.0'
-    #terraform_docs_version_deseada: '0.12.1'
-    terraform_docs_version_deseada: ''
+- ansible.builtin.set_fact:
+    # terraform_docs_version_deseada: '0.13.0'
+    # terraform_docs_version_deseada: '0.12.1'
+    terraform_docs_version_deseada: ""
   tags:
-   - devops
-   - terraform
-   - terraform-docs
+    - devops
+    - terraform
+    - terraform-docs
 
 - name: devops | terraform-docs | version actual instalada
-  shell: |
-     /usr/local/bin/terraform-docs --version  | sed -n  -e "s/^terraform-docs version *v\([^ ]*\) .*/\1/p"
+  ansible.builtin.shell: |
+    /usr/local/bin/terraform-docs --version  | sed -n  -e "s/^terraform-docs version *v\([^ ]*\) .*/\1/p"
   register: reg_terraform_docs_version
   failed_when: false
   changed_when: false
   tags:
-   - devops
-   - terraform
-   - terraform-docs
+    - devops
+    - terraform
+    - terraform-docs
 
 - name: devops | terraform-docs | busca datos de todas las versiones
-  shell: |
+  ansible.builtin.shell: |
     #LANG=C curl --silent https://api.github.com/repos/segmentio/terraform-docs/releases # requiere un redirect
     LANG=C curl --silent https://api.github.com/repositories/60978152/releases
-
   register: reg_terraform_docs_versiones
   changed_when: false
   no_log: true
   tags:
-   - devops
-   - terraform
-   - terraform-docs
+    - devops
+    - terraform
+    - terraform-docs
 
 - name: devops | terraform-docs | versiones
-  set_fact:
-          terraform_docs_versiones: "{{ reg_terraform_docs_versiones.stdout }}"
+  ansible.builtin.set_fact:
+    terraform_docs_versiones: "{{ reg_terraform_docs_versiones.stdout }}"
   tags:
-   - devops
-   - terraform
-   - terraform-docs
-
+    - devops
+    - terraform
+    - terraform-docs
 
 - name: devops | terraform-docs | busca el nombre de la version actual
-  shell: |
+  ansible.builtin.shell: |
     LANG=C curl --silent https://api.github.com/repositories/60978152/releases \
       | jq -r '.[] | select(.name|test("v[0-9]*.[0-9]*.[0-9]*$")) | .name ' \
       | head -n 1
-
   register: reg_terraform_docs_url_version
   changed_when: false
   tags:
-   - devops
-   - terraform
-   - terraform-docs
+    - devops
+    - terraform
+    - terraform-docs
 
-- set_fact:
+- ansible.builtin.set_fact:
     terraform_docs_url_version: "{{ reg_terraform_docs_url_version.stdout[1:] }}"
     terraform_docs_version_instalada: "{{ reg_terraform_docs_version.rc == 0 and reg_terraform_docs_version.stdout or false }}"
   tags:
-   - devops
-   - terraform
-   - terraform-docs
+    - devops
+    - terraform
+    - terraform-docs
 
-
-- set_fact:
-    terraform_docs_version_a_instalar: "{{ terraform_docs_version_deseada | d('')  if terraform_docs_version_deseada | d('') != '' else  terraform_docs_url_version }}"
+- ansible.builtin.set_fact:
+    terraform_docs_version_a_instalar: "{{ terraform_docs_version_deseada | d('')  if terraform_docs_version_deseada | d('') != '' else  terraform_docs_url_version
+      }}"
   tags:
-   - devops
-   - terraform
-   - terraform-docs
+    - devops
+    - terraform
+    - terraform-docs
 
 - name: devops | terraform-docs | URL a descargar
-  shell: |
+  ansible.builtin.shell: |
     curl --location --silent "https://api.github.com/repos/segmentio/terraform-docs/releases" \
       | jq -r '.[] | select(.tag_name == "v{{ terraform_docs_version_a_instalar }}").assets[] | select( .name | test("terraform-docs-.*[lL]inux.*(x86_64|amd64).tar.gz")).browser_download_url '
-
   register: reg_terraform_docs_url_a_descargar
   when: terraform_docs_version_a_instalar != terraform_docs_version_instalada
   tags:
-   - devops
-   - terraform
-   - terraform-docs
+    - devops
+    - terraform
+    - terraform-docs
 
-- set_fact:
-    terraform_docs_url_a_descargar : "{{ reg_terraform_docs_url_a_descargar.stdout_lines[-1] }}"
+- ansible.builtin.set_fact:
+    terraform_docs_url_a_descargar: "{{ reg_terraform_docs_url_a_descargar.stdout_lines[-1] }}"
   when: terraform_docs_version_a_instalar != terraform_docs_version_instalada
   tags:
-   - devops
-   - terraform
-   - terraform-docs
-
+    - devops
+    - terraform
+    - terraform-docs
 
 - name: Show installed version
-  debug:
+  ansible.builtin.debug:
     msg: "Terraform-docs, version instalada - {{ terraform_docs_version_instalada }}"
   tags:
-   - devops
-   - terraform
-   - terraform-docs
+    - devops
+    - terraform
+    - terraform-docs
 
 - name: Show desired version
-  debug: 
+  ansible.builtin.debug:
     msg: "Terraform-docs, version deseada - {{ terraform_docs_version_deseada }}"
   tags:
-   - devops
-   - terraform
-   - terraform-docs
+    - devops
+    - terraform
+    - terraform-docs
 
 - name: Show version to install
-  debug: 
+  ansible.builtin.debug:
     msg: "Terraform-docs, version a instalar - {{ terraform_docs_version_a_instalar }}"
   tags:
-   - devops
-   - terraform
-   - terraform-docs
+    - devops
+    - terraform
+    - terraform-docs
 
 - name: devops | terraform-docs | descarga paquete
-  get_url:
+  ansible.builtin.get_url:
     url: "{{ terraform_docs_url_a_descargar }}"
     dest: "/tmp/{{ terraform_docs_url_a_descargar | basename }}"
-    mode: 0755
-    force: yes
+    mode: "0755"
+    force: true
   become: true
   when: terraform_docs_version_a_instalar != terraform_docs_version_instalada
   tags:
-   - devops
-   - terraform
-   - terraform-docs
+    - devops
+    - terraform
+    - terraform-docs
 
 - name: devops | terraform-docs | instala binario desde .gz
-  shell: |
-       gunzip --to-stdout /tmp/{{ terraform_docs_url_a_descargar | basename }} > /usr/local/bin/terraform-docs
-       chmod a+rx /usr/local/bin/terraform-docs
-
+  ansible.builtin.shell: |
+    gunzip --to-stdout /tmp/{{ terraform_docs_url_a_descargar | basename }} > /usr/local/bin/terraform-docs
+    chmod a+rx /usr/local/bin/terraform-docs
   become: true
-  when: terraform_docs_version_a_instalar != terraform_docs_version_instalada and terraform_docs_url_a_descargar.endswith('.gz') and not terraform_docs_url_a_descargar.endswith('.tar.gz')
+  when: terraform_docs_version_a_instalar != terraform_docs_version_instalada and terraform_docs_url_a_descargar.endswith('.gz') and not
+    terraform_docs_url_a_descargar.endswith('.tar.gz')
   tags:
-   - devops
-   - terraform
-   - terraform-docs
-
+    - devops
+    - terraform
+    - terraform-docs
 
 - name: devops | terraform-docs | instala binario desde .tar.gz
-  shell: |
-       tar xzf /tmp/{{ terraform_docs_url_a_descargar | basename }} --one-top-level=/usr/local/bin/ terraform-docs
-       chmod a+rx /usr/local/bin/terraform-docs
-
+  ansible.builtin.shell: |
+    tar xzf /tmp/{{ terraform_docs_url_a_descargar | basename }} --one-top-level=/usr/local/bin/ terraform-docs
+    chmod a+rx /usr/local/bin/terraform-docs
   become: true
   when: terraform_docs_version_a_instalar != terraform_docs_version_instalada and terraform_docs_url_a_descargar.endswith('.tar.gz')
   tags:
-   - devops
-   - terraform
-   - terraform-docs
-
-
+    - devops
+    - terraform
+    - terraform-docs

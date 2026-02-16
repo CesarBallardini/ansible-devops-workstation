@@ -1,22 +1,19 @@
 ---
-
 # https://itsfoss.com/vscodium/
 # https://gitlab.com/paulcarroty/vscodium-deb-rpm-repo
 # https://github.com/VSCodium/vscodium
 
 # When we [Microsoft] build Visual Studio Code, we do exactly this. We clone the vscode repository, we lay down a customized product.json that has Microsoft specific functionality (telemetry, gallery, logo, etc.), and then produce a build that we release under our license.
 #
-#When you clone and build from the vscode repo, none of these endpoints are configured in the default product.json. Therefore, you generate a "clean" build, without the Microsoft customizations, which is by default licensed under the MIT license
+# When you clone and build from the vscode repo, none of these endpoints are configured in the default product.json. Therefore, you generate a "clean" build, without the Microsoft customizations, which is by default licensed under the MIT license
 
-#wget -qO - https://gitlab.com/paulcarroty/vscodium-deb-rpm-repo/raw/master/pub.gpg | sudo apt-key add -
-#echo 'deb https://gitlab.com/paulcarroty/vscodium-deb-rpm-repo/raw/repos/debs/ vscodium main' | sudo tee --append /etc/apt/sources.list
-#sudo apt update
-#sudo apt install codium
-
-
+# wget -qO - https://gitlab.com/paulcarroty/vscodium-deb-rpm-repo/raw/master/pub.gpg | sudo apt-key add -
+# echo 'deb https://gitlab.com/paulcarroty/vscodium-deb-rpm-repo/raw/repos/debs/ vscodium main' | sudo tee --append /etc/apt/sources.list
+# sudo apt update
+# sudo apt install codium
 - name: codium | actualizo lista paquetes .deb
-  apt:
-    update_cache: yes
+  ansible.builtin.apt:
+    update_cache: true
     cache_valid_time: 3600
   become: true
   tags:
@@ -26,15 +23,14 @@
 # The apt-key command has been deprecated and suggests to ‘manage keyring files in trusted.gpg.d instead’.
 
 - name: codium | agrega clave del repo
-  get_url:
-    url: 'https://gitlab.com/paulcarroty/vscodium-deb-rpm-repo/raw/master/pub.gpg'
-    mode: '0644'
+  ansible.builtin.get_url:
+    url: "https://gitlab.com/paulcarroty/vscodium-deb-rpm-repo/raw/master/pub.gpg"
+    mode: "0644"
     dest: /usr/share/keyrings/codium.asc
     force: true
   become: true
   tags:
     - codium
-
 
 ###
 ## Los siguientes son los repos oficiales en Gitlab.  
@@ -55,20 +51,19 @@
 ## Workaround: https://gitlab.com/paulcarroty/vscodium-deb-rpm-repo/-/issues/36#note_395793123
 #
 - name: codium | agrego repo
-  apt_repository:
-    #repo: "deb [signed-by=/etc/apt/trusted.gpg.d/vscodium-archive-keyring.gpg] https://paulcarroty.gitlab.io/vscodium-deb-rpm-repo/debs/ vscodium main"
+  ansible.builtin.apt_repository:
+    # repo: "deb [signed-by=/etc/apt/trusted.gpg.d/vscodium-archive-keyring.gpg] https://paulcarroty.gitlab.io/vscodium-deb-rpm-repo/debs/ vscodium main"
     repo: "deb [arch=amd64 signed-by=/usr/share/keyrings/codium.asc] https://paulcarroty.gitlab.io/vscodium-deb-rpm-repo/debs/ vscodium main"
     state: present
-    update_cache: yes
+    update_cache: true
     filename: codium
-    mode: 0644
+    mode: "0644"
   become: true
   tags:
     - codium
 
-
 - name: codium | instala codium
-  apt:
+  ansible.builtin.apt:
     name:
       - codium
     state: present
@@ -76,4 +71,3 @@
   ignore_errors: true # https://gitlab.com/paulcarroty/vscodium-deb-rpm-repo/-/issues/53 Currently, Linux x64 builds are failing (https://github.com/VSCodium/vscodium/issues/632). This apparently means that this repository is empty for the failing versions. When some Codium builds are missing from the latest version, this repo should use the old ones instead of just having an empty repo.
   tags:
     - codium
-

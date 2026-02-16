@@ -2,7 +2,7 @@
 # See https://github.com/aelsabbahy/goss/releases for release versions
 
 - name: devops | paquetes generales
-  apt:
+  ansible.builtin.apt:
     name:
       - jq
       - git
@@ -15,10 +15,9 @@
     - devops
     - goss
 
-
 - name: devops | goss | version actual instalada
-  shell: |
-     LANG=C /usr/local/bin/goss --version  | sed -n  -e "s/goss version[ ]*\([0-9\.]*\)/\1/p"
+  ansible.builtin.shell: |
+    LANG=C /usr/local/bin/goss --version  | sed -n  -e "s/goss version[ ]*\([0-9\.]*\)/\1/p"
   register: reg_goss_version
   failed_when: false
   changed_when: false
@@ -26,26 +25,24 @@
     - devops
     - goss
 
-
 - name: devops | goss | busca el nombre de la version actual
-  shell: |
-      curl --silent https://api.github.com/repositories/43526066/releases/latest \
-         | jq -r ".tag_name"
-
+  ansible.builtin.shell: |
+    curl --silent https://api.github.com/repositories/43526066/releases/latest \
+       | jq -r ".tag_name"
   register: reg_goss_url_version
   changed_when: false
   tags:
     - devops
     - goss
 
-- set_fact:
+- ansible.builtin.set_fact:
     goss_version_instalada: "{{ reg_goss_version.rc == 0 and reg_goss_version.stdout or false }}"
     goss_url_version: "{{ reg_goss_url_version.stdout }}"
   tags:
     - devops
     - goss
 
-- set_fact:
+- ansible.builtin.set_fact:
     goss_url_actual: "https://github.com/aelsabbahy/goss/releases/download/{{ goss_url_version }}/goss-linux-amd64"
     dgoss_url_actual: "https://github.com/aelsabbahy/goss/releases/download/{{ goss_url_version }}/dgoss"
   tags:
@@ -53,47 +50,44 @@
     - goss
 
 - name: Show installed version
-  debug:
+  ansible.builtin.debug:
     msg: "Goss, version instalada - {{ goss_version_instalada }}"
   tags:
     - devops
     - goss
 - name: Show current URL
-  debug:
+  ansible.builtin.debug:
     msg: "Goss, url actual        - {{ goss_url_actual }}"
   tags:
     - devops
     - goss
 - name: Show version URL
-  debug:
+  ansible.builtin.debug:
     msg: "Goss, url version       - {{ goss_version_actual }}"
   tags:
     - devops
     - goss
 
 - name: devops | goss | descarga paquete
-  get_url:
+  ansible.builtin.get_url:
     url: "{{ goss_url_actual }}"
     dest: /usr/local/bin/goss
-    mode: 0755
-    force: yes
+    mode: "0755"
+    force: true
   become: true
   when: goss_version_instalada != goss_url_version
   tags:
     - devops
     - goss
-
 
 - name: devops | dgoss | descarga paquete
-  get_url:
+  ansible.builtin.get_url:
     url: "{{ dgoss_url_actual }}"
     dest: /usr/local/bin/dgoss
-    mode: 0755
-    force: yes
+    mode: "0755"
+    force: true
   become: true
   when: goss_version_instalada != goss_url_version
   tags:
     - devops
     - goss
-
-

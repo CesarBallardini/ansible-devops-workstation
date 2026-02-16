@@ -1,16 +1,14 @@
 ---
-
-
 #  sudo debconf-set-selections <<!EOF
-#apt-fast        apt-fast/aptmanager     select  apt-get
-#apt-fast        apt-fast/downloader     select  aria2c
-#apt-fast        apt-fast/dlflag boolean true
-#apt-fast        apt-fast/maxdownloads   string  5
-#!EOF
+# apt-fast        apt-fast/aptmanager     select  apt-get
+# apt-fast        apt-fast/downloader     select  aria2c
+# apt-fast        apt-fast/dlflag boolean true
+# apt-fast        apt-fast/maxdownloads   string  5
+# !EOF
 #
 
 - name: apt-fast | Selecciona apt-get como manager de apt-fast
-  debconf:
+  ansible.builtin.debconf:
     name: apt-fast
     question: apt-fast/aptmanager
     value: apt-get
@@ -21,7 +19,7 @@
     - apt-fast
 
 - name: apt-fast | Selecciona aria2c como downloader de apt-fast
-  debconf:
+  ansible.builtin.debconf:
     name: apt-fast
     question: apt-fast/downloader
     value: aria2c
@@ -32,10 +30,10 @@
     - apt-fast
 
 - name: apt-fast | dlflag
-  debconf:
+  ansible.builtin.debconf:
     name: apt-fast
     question: apt-fast/dlflag
-    value: 'true'
+    value: "true"
     vtype: boolean
   become: true
   tags:
@@ -43,7 +41,7 @@
     - apt-fast
 
 - name: apt-fast | dlflag
-  debconf:
+  ansible.builtin.debconf:
     name: apt-fast
     question: apt-fast/maxdownloads
     value: "5"
@@ -52,7 +50,6 @@
   tags:
     - apt
     - apt-fast
-
 
 #  sudo add-apt-repository ppa:saiarcot895/myppa -y
 #  sudo apt-get update
@@ -64,9 +61,9 @@
 # The apt-key command has been deprecated and suggests to ‘manage keyring files in trusted.gpg.d instead’.
 
 - name: apt-fast | agrega clave del repo
-  get_url:
-    url: 'https://keyserver.ubuntu.com/pks/lookup?op=get&search=0x1EE2FF37CA8DA16B'
-    mode: '0644'
+  ansible.builtin.get_url:
+    url: "https://keyserver.ubuntu.com/pks/lookup?op=get&search=0x1EE2FF37CA8DA16B"
+    mode: "0644"
     dest: /usr/share/keyrings/apt-fast.asc
     force: true
   become: true
@@ -79,22 +76,20 @@
 # sudo apt-key list | less 
 # sudo apt-key export CA8DA16B | sudo gpg --dearmour -o /etc/apt/trusted.gpg.d/apt-fast.gpg
 
-
-- set_fact:
-        apt_fast_distro_release: "{{ ansible_facts['distribution_release'] }}"
+- ansible.builtin.set_fact:
+    apt_fast_distro_release: "{{ ansible_facts['distribution_release'] }}"
   tags:
     - apt
     - apt-fast
 
-
 # FIXME: sudo apt-key export CA8DA16B | sudo gpg --dearmour -o /usr/share/keyrings/apt-fast.gpg
 
 - name: apt-fast | agrego repo
-  apt_repository:
-    #repo: 'ppa:apt-fast/stable' # no se puede porque intenta descargar la key mediante hkp: y no sale si el proxy no permite HKP
+  ansible.builtin.apt_repository:
+    # repo: 'ppa:apt-fast/stable' # no se puede porque intenta descargar la key mediante hkp: y no sale si el proxy no permite HKP
     repo: "deb [arch=amd64 signed-by=/usr/share/keyrings/apt-fast.asc] http://ppa.launchpad.net/apt-fast/stable/ubuntu {{ apt_fast_distro_release }} main"
     state: present
-    update_cache: yes
+    update_cache: true
     filename: aptfast
   become: true
   register: reg_add_ppa_aptfast
@@ -102,20 +97,19 @@
     - apt
     - apt-fast
 
-
 - name: apt-fast | actualizo lista paquetes .deb
-  apt:
-    update_cache: yes
+  ansible.builtin.apt:
+    update_cache: true
     cache_valid_time: 3600
   become: true
   when: reg_add_ppa_aptfast is changed
   tags:
     - apt
     - apt-fast
-  
+
 - name: apt-fast | instala apt-fast
-  apt:
-    name: 
+  ansible.builtin.apt:
+    name:
       - aria2
       - apt-fast
     state: present
@@ -124,19 +118,17 @@
     - apt
     - apt-fast
 
-
 # https://stackoverflow.com/a/27617181 sed multistage para separar por espacios y comas
 - name: apt-fast | configura mirrors
-  shell: |
+  ansible.builtin.shell: |
     APT_FAST_MIRRORS=$( grep -R "^deb" /etc/apt/sources.list* | awk '$2 ~ /http/ {print $2; next; } {print $3 } ' | sort -u | sed -n '$! s/$/,/; 1 h; 1 ! H; $ { x; s/\n/ /g; p; }' )
     APT_FAST_MIRRORS="'"$APT_FAST_MIRRORS"'"
-    
+
     # si es la primera vez que se instala, cambia el comentario original
     sudo sed -i "s|^#MIRRORS=( 'none' )|MIRRORS=\( ${APT_FAST_MIRRORS} \)|" /etc/apt-fast.conf
-    
+
     # si es una vez posterior, cambia la linea de MIRRORS activa
     sudo sed -i "s|^MIRRORS=.*|MIRRORS=\( ${APT_FAST_MIRRORS} \)|" /etc/apt-fast.conf
-
   changed_when: false
   become: true
   tags:

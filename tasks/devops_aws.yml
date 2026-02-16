@@ -2,7 +2,7 @@
 # See https://github.com/aelsabbahy/goss/releases for release versions
 
 - name: devops | paquetes generales
-  apt:
+  ansible.builtin.apt:
     name:
       - jq
       - git
@@ -15,11 +15,9 @@
     - devops
     - aws
 
-
 - name: devops | aws | version actual instalada
-  shell: |
-     LANG=C /usr/local/bin/aws --version | sed  -n "s@aws-cli/\([0-9\\.]*\) .*@\\1@p"
-
+  ansible.builtin.shell: |
+    LANG=C /usr/local/bin/aws --version | sed  -n "s@aws-cli/\([0-9\\.]*\) .*@\\1@p"
   register: reg_aws_version
   failed_when: false
   changed_when: false
@@ -27,11 +25,9 @@
     - devops
     - aws
 
-
 - name: devops | aws | busca el nombre de la version actual
-  shell: |
-      curl --silent  -H "Accept: application/vnd.github.v3+json"  https://api.github.com/repos/aws/aws-cli/tags | jq --raw-output ".[0].name"
-
+  ansible.builtin.shell: |
+    curl --silent  -H "Accept: application/vnd.github.v3+json"  https://api.github.com/repos/aws/aws-cli/tags | jq --raw-output ".[0].name"
   register: reg_aws_url_version
   changed_when: false
   ignore_errors: true
@@ -39,46 +35,46 @@
     - devops
     - aws
 
-- set_fact:
+- ansible.builtin.set_fact:
     aws_version_instalada: "{{ reg_aws_version.rc == 0 and reg_aws_version.stdout or false }}"
     aws_url_version: "{{ reg_aws_url_version.stdout if reg_aws_url_version.rc == 0 else '2.1.22' }}"
   tags:
     - devops
     - aws
 
-- set_fact:
+- ansible.builtin.set_fact:
     aws_filename_actual: "awscli-exe-linux-x86_64-{{ aws_url_version }}.zip"
   tags:
     - devops
     - aws
 
-- set_fact:
+- ansible.builtin.set_fact:
     aws_url_actual: "https://awscli.amazonaws.com/{{ aws_filename_actual }}"
   tags:
     - devops
     - aws
 
 - name: Show installed version
-  debug:
+  ansible.builtin.debug:
     msg: "AWS, version instalada - {{ aws_version_instalada }}"
   tags:
     - devops
     - aws
 - name: Show current URL
-  debug:
+  ansible.builtin.debug:
     msg: "AWS, url actual        - {{ aws_url_actual }}"
   tags:
     - devops
     - aws
 - name: Show version URL
-  debug:
+  ansible.builtin.debug:
     msg: "AWS, url version       - {{ aws_url_version }}"
   tags:
     - devops
     - aws
 
 - name: devops | aws | directorio de descarga
-  file:
+  ansible.builtin.file:
     path: /var/cache/aws-downloads
     state: directory
   become: true
@@ -87,11 +83,11 @@
     - aws
 
 - name: devops | aws | descarga instalador
-  get_url:
+  ansible.builtin.get_url:
     url: "{{ aws_url_actual }}"
     dest: /var/cache/aws-downloads/
-    mode: 0755
-    force: yes
+    mode: "0755"
+    force: true
   become: true
   when: aws_version_instalada != aws_url_version
   tags:
@@ -99,10 +95,10 @@
     - aws
 
 - name: devops | aws | descomprime instalador
-  unarchive:
+  ansible.builtin.unarchive:
     src: "/var/cache/aws-downloads/{{ aws_filename_actual }}"
     dest: /usr/local/
-    remote_src: yes
+    remote_src: true
   when: aws_version_instalada != aws_url_version
   become: true
   tags:
@@ -110,8 +106,8 @@
     - aws
 
 - name: devops | aws | corre instalador
-  command: |
-     ./install --update
+  ansible.builtin.command: |
+    ./install --update
   args:
     chdir: /usr/local/aws
   when: aws_version_instalada != aws_url_version
@@ -119,4 +115,3 @@
   tags:
     - devops
     - aws
-

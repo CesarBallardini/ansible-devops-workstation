@@ -2,7 +2,7 @@
 # See https://github.com/ericchiang/pup/releases for release versions
 
 - name: paquetes generales
-  apt:
+  ansible.builtin.apt:
     name:
       - jq
       - git
@@ -14,46 +14,43 @@
   tags:
     - pup
 
-
 - name: pup | version actual instalada
-  shell: |
-     LANG=C /usr/local/bin/pup --version
+  ansible.builtin.shell: |
+    LANG=C /usr/local/bin/pup --version
   register: reg_pup_version
   failed_when: false
   changed_when: false
   tags:
     - pup
 
-
-- set_fact:
+- ansible.builtin.set_fact:
     pup_version_instalada: "{{ reg_pup_version.rc == 0 and reg_pup_version.stdout or false }}"
     pup_version: "0.4.0"
   tags:
     - pup
 
-- set_fact:
+- ansible.builtin.set_fact:
     pup_url_actual: "https://github.com/ericchiang/pup/releases/download/v{{ pup_version }}/pup_v{{ pup_version }}_linux_amd64.zip"
   tags:
     - pup
 
 - name: pup | descarga paquete
-  get_url:
+  ansible.builtin.get_url:
     url: "{{ pup_url_actual }}"
     dest: "/tmp/pup_v{{ pup_version }}_linux_amd64.zip"
-    force: yes
+    force: true
   become: true
   when: pup_version_instalada != pup_version
   tags:
     - pup
 
 - name: pup | instala binario
-  unarchive:
+  ansible.builtin.unarchive:
     src: "/tmp/pup_v{{ pup_version }}_linux_amd64.zip"
     dest: /usr/local/bin
-    remote_src: yes
-    mode: '0755'
+    remote_src: true
+    mode: "0755"
   become: true
   when: pup_version_instalada != pup_version
   tags:
     - pup
-

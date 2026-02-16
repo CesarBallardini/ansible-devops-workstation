@@ -1,10 +1,9 @@
 ---
 - hosts: utn
+
   tasks:
-
-  - include_tasks: tasks/paquetes_utn.yml
-    tags:
-      - prolog
-      - racket
-      - pharo
-
+    - ansible.builtin.include_tasks: tasks/paquetes_utn.yml
+      tags:
+        - prolog
+        - racket
+        - pharo

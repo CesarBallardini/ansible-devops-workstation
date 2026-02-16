@@ -1,11 +1,10 @@
 ---
-
-## 
+# # 
 # lanza una imagen fresca en el directorio actual:
 # cp /opt/pharo/Pharo12*.image ./Pharo.image && cp /opt/pharo/Pharo12*.changes ./Pharo.changes && cp /opt/pharo/Pharo*.sources . && /opt/pharo/pharo &
 
 - name: utn | instala prolog
-  apt:
+  ansible.builtin.apt:
     name:
       - swi-prolog-doc
     state: present
@@ -15,9 +14,8 @@
     - utn
     - prolog
 
-
 - name: utn | instala prolog
-  apt:
+  ansible.builtin.apt:
     name:
       - swi-prolog-nox
       - gprolog
@@ -32,9 +30,9 @@
 # The apt-key command has been deprecated and suggests to ‘manage keyring files in trusted.gpg.d instead’.
 
 - name: utn | racket | agrega clave del repo
-  get_url:
-    url: 'https://keyserver.ubuntu.com/pks/lookup?op=get&search=0x3C9A6980F827E01E'
-    mode: '0644'
+  ansible.builtin.get_url:
+    url: "https://keyserver.ubuntu.com/pks/lookup?op=get&search=0x3C9A6980F827E01E"
+    mode: "0644"
     dest: /usr/share/keyrings/racket.asc
     force: true
   become: true
@@ -43,34 +41,34 @@
     - racket
 
 - name: utn | racket | agrego repo Racket cuando no tengo acceso a protocolo hkp
-  apt_repository:
-    #repo: "ppa:plt/racket" # en redes con acceso a protocolo hkp
-    repo: "deb  [arch=amd64 signed-by=/usr/share/keyrings/racket.asc] https://ppa.launchpadcontent.net/plt/racket/ubuntu  {{ ansible_facts['distribution_release'] }} main"
+  ansible.builtin.apt_repository:
+    # repo: "ppa:plt/racket" # en redes con acceso a protocolo hkp
+    repo: "deb  [arch=amd64 signed-by=/usr/share/keyrings/racket.asc] https://ppa.launchpadcontent.net/plt/racket/ubuntu  {{ ansible_facts['distribution_release']
+      }} main"
     state: present
-    update_cache: yes
+    update_cache: true
     filename: racket
-    mode: 0644
+    mode: "0644"
   become: true
   # FIXME: 2022-05-22: no hay ppa racket
-  when:  ansible_facts['distribution'] == "Ubuntu" and ansible_facts['distribution_version'] is version('22.04', operator='lt', strict=True)
+  when: ansible_facts['distribution'] == "Ubuntu" and ansible_facts['distribution_version'] is version('22.04', operator='lt', strict=True)
   register: reg_add_ppa_racket
   tags:
     - utn
     - racket
 
-
 - name: utn | racket | actualizo lista paquetes .deb
-  apt:
-    update_cache: yes
+  ansible.builtin.apt:
+    update_cache: true
     cache_valid_time: 3600
   become: true
   when: reg_add_ppa_racket is changed
   tags:
     - utn
     - racket
- 
+
 - name: utn | racket | instala Racket Scheme
-  apt:
+  ansible.builtin.apt:
     name:
       - racket
       - racket-doc
@@ -86,9 +84,8 @@
 # correr una copia local en el directorio actual con:
 # cp /opt/pharo/Pharo12*.image ./Pharo.image && cp /opt/pharo/Pharo12*.changes ./Pharo.changes && cp /opt/pharo/Pharo*.sources . && /opt/pharo/pharo &
 
-
 - name: utn | pharo | Verifico si existe instalacion de pharo
-  shell: |
+  ansible.builtin.shell: |
     pushd /tmp/ >/dev/null
     cp /opt/pharo/Pharo{{ pharo_main_version }}*.image .
     cp /opt/pharo/Pharo{{ pharo_main_version }}*.sources .
@@ -96,7 +93,6 @@
          | sed -e "s/\[version\] *'Pharo\([0-9]*\.[0-9]*\)\.[0-9]*.*/\1/"
     rm -f Pharo*.image
     popd >/dev/null
-
   args:
     executable: /bin/bash
   register: reg_pharo_version_instalada
@@ -106,19 +102,17 @@
     - utn
     - pharo
 
-
-- debug: msg="Pharo, version instalada - {{ reg_pharo_version_instalada.stdout }}"
+- ansible.builtin.debug: msg="Pharo, version instalada - {{ reg_pharo_version_instalada.stdout }}"
   tags:
     - utn
     - pharo
-- debug: msg="Pharo, version deseada   - {{ pharo_version }}"
+- ansible.builtin.debug: msg="Pharo, version deseada   - {{ pharo_version }}"
   tags:
     - utn
     - pharo
-
 
 - name: utn | pharo | directorio de instalacion se elimina al cambiar de version de Pharo
-  file:
+  ansible.builtin.file:
     path: "{{ pharo_home_directory }}/"
     state: absent
   when: reg_pharo_version_instalada.rc != 0 or reg_pharo_version_instalada.stdout != pharo_version
@@ -127,9 +121,8 @@
     - utn
     - pharo
 
-
 - name: utn | pharo | asegura existe directorio de instalacion y descargas para pharo
-  file:
+  ansible.builtin.file:
     path: "{{ item }}"
     state: directory
     owner: root
@@ -143,22 +136,21 @@
     - pharo
 
 - name: utn | pharo | directorio de imagenes cualquiera puede escribirlo
-  file:
+  ansible.builtin.file:
     path: "{{ pharo_home_directory }}/images"
     state: directory
     owner: root
     group: root
-    mode: 0657
+    mode: "0657"
   become: true
   tags:
     - utn
     - pharo
 
-
 # imagen: https://files.pharo.org/get-files/80/pharo64.zip
 # imagen: https://files.pharo.org/get-files/120/pharoImage-x86_64.zip
 - name: utn | pharo | Descarga imagen Pharo
-  get_url:
+  ansible.builtin.get_url:
     url: "https://files.pharo.org/get-files/{{ pharo_version_family }}/pharoImage-x86_64.zip"
     dest: "{{ pharo_home_directory }}/downloads/pharoImage-x86_64.zip"
   when: reg_pharo_version_instalada.rc != 0 or reg_pharo_version_instalada.stdout != pharo_version
@@ -167,12 +159,10 @@
     - utn
     - pharo
 
-
-
 # vm:  https://files.pharo.org/get-files/80/pharo64-linux-stable.zip
 # vm:  https://files.pharo.org/get-files/120/pharo-vm-Linux-x86_64-stable.zip
 - name: utn | pharo | Descarga VM Pharo
-  get_url:
+  ansible.builtin.get_url:
     url: "http://files.pharo.org/get-files/{{ pharo_version_family }}/pharo-vm-Linux-x86_64-stable.zip"
     dest: "{{ pharo_home_directory }}/downloads/pharo64-linux-stable.zip"
   when: reg_pharo_version_instalada.rc != 0 or reg_pharo_version_instalada.stdout != pharo_version
@@ -181,12 +171,11 @@
     - utn
     - pharo
 
-
 - name: utn | pharo | descomprime la VM Pharo
-  unarchive:
+  ansible.builtin.unarchive:
     src: "{{ pharo_home_directory }}/downloads/pharo64-linux-stable.zip"
     dest: "{{ pharo_home_directory }}"
-    remote_src: yes
+    remote_src: true
   when: reg_pharo_version_instalada.rc != 0 or reg_pharo_version_instalada.stdout != pharo_version
   become: true
   tags:
@@ -194,10 +183,10 @@
     - pharo
 
 - name: utn | pharo | descomprime la imagen Pharo
-  unarchive:
+  ansible.builtin.unarchive:
     src: "{{ pharo_home_directory }}/downloads/pharoImage-x86_64.zip"
     dest: "{{ pharo_home_directory }}"
-    remote_src: yes
+    remote_src: true
   when: reg_pharo_version_instalada.rc != 0 or reg_pharo_version_instalada.stdout != pharo_version
   become: true
   tags:
@@ -205,7 +194,7 @@
     - pharo
 
 - name: utn | pharo | Pharo copia las imagenes originales al directorio de trabajo
-  shell: |
+  ansible.builtin.shell: |
     cp {{ pharo_home_directory }}/Pharo{{ pharo_version }}*-64bit-*.image {{ pharo_home_directory }}/images/Pharo.image
     chmod o+rw {{ pharo_home_directory }}/images/Pharo.image
 
@@ -222,5 +211,3 @@
   tags:
     - utn
     - pharo
-
-

@@ -1,7 +1,6 @@
 ---
-
 - name: telegram-desktop | instala desde snap
-  snap:
+  community.general.snap:
     name: telegram-desktop
   become: true
   tags:

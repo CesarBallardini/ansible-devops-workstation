@@ -1,8 +1,8 @@
 ---
-- set_fact:
-#    msteams_version_deseada: '1.3.00.5153'  # la que funciona con shared screen https://docs.microsoft.com/en-us/answers/questions/42095/sharing-screen-not-working-anymore-bug.html
-#    msteams_version_deseada: '1.3.00.25560' # ultima al 2020-11-24 funciona con shared screen
-    msteams_version_deseada: ''
+- ansible.builtin.set_fact:
+    #    msteams_version_deseada: '1.3.00.5153'  # la que funciona con shared screen https://docs.microsoft.com/en-us/answers/questions/42095/sharing-screen-not-working-anymore-bug.html
+    #    msteams_version_deseada: '1.3.00.25560' # ultima al 2020-11-24 funciona con shared screen
+    msteams_version_deseada: ""
   tags:
     - msteams
 
@@ -10,75 +10,69 @@
 # The apt-key command has been deprecated and suggests to ‘manage keyring files in trusted.gpg.d instead’.
 
 - name: msteams | agrega clave del repo
-  get_url:
-    url: 'https://packages.microsoft.com/keys/microsoft.asc'
-    mode: '0644'
+  ansible.builtin.get_url:
+    url: "https://packages.microsoft.com/keys/microsoft.asc"
+    mode: "0644"
     dest: /usr/share/keyrings/msteams.asc
     force: true
   become: true
   tags:
     - msteams
 
-
 - name: msteams | agrego repo
-  apt_repository:
+  ansible.builtin.apt_repository:
     repo: "deb [arch=amd64 signed-by=/usr/share/keyrings/msteams.asc] https://packages.microsoft.com/repos/ms-teams stable main"
     state: present
-    update_cache: yes
+    update_cache: true
     filename: teams
   become: true
   register: reg_add_repo_teams
   tags:
     - msteams
 
-
 - name: msteams | agrego pin
-  template:
+  ansible.builtin.template:
     src: msteams-preference.j2
     dest: "/etc/apt/preferences.d/teams"
-    mode: 0644
+    mode: "0644"
   become: true
   when: msteams_version_deseada != ''
   tags:
     - msteams
 
 - name: msteams | elimino pin
-  file:
+  ansible.builtin.file:
     path: "/etc/apt/preferences.d/teams"
     state: "{{ 'absent' if msteams_version_deseada == '' else 'file' }}"
   become: true
   tags:
     - msteams
 
-
 - name: msteams | actualizo lista paquetes .deb
-  apt:
-    update_cache: yes
+  ansible.builtin.apt:
+    update_cache: true
     cache_valid_time: 3600
   become: true
   when: reg_add_repo_teams is changed
   tags:
     - msteams
 
-
 - name: msteams | instala version dada de msteams
-  apt:
+  ansible.builtin.apt:
     name: teams={{ msteams_version_deseada }}
     state: latest
-    force: yes
+    force: true
   become: true
   when: msteams_version_deseada != ""
   tags:
     - msteams
 
-
 - name: msteams | instala ultima version de msteams
-  apt:
+  ansible.builtin.apt:
     name: teams
     state: latest
-    force: yes
+    force: true
   become: true
   when: msteams_version_deseada == ''
   tags:
     - msteams
-

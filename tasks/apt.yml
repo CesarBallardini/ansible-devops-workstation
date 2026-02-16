@@ -1,6 +1,6 @@
 ---
 - name: apt | fix corrida anterior que quedo colgada
-  shell: >
+  ansible.builtin.shell: >
     killall dpkg ;
     sleep 2 ;
     killall -9 dpkg ;
@@ -15,28 +15,27 @@
   tags:
     - apt
 
-
 #  echo 'Acquire::Languages "none";' | sudo tee /etc/apt/apt.conf.d/00languages
 - name: apt | Elimina APT languages
-  copy:
+  ansible.builtin.copy:
     dest: "/etc/apt/apt.conf.d/00languages"
     content: 'Acquire::Languages "none";'
   become: true
   tags:
     - apt
 
-
 - name: apt | Pone en blanco a sources.list
-  copy:
+  ansible.builtin.copy:
     dest: /etc/apt/sources.list
-    content: ''
-    mode: 0644
-    force: yes
+    content: ""
+    mode: "0644"
+    force: true
   become: true
   tags:
     - apt
 
-- include_tasks: agrego_repositorio.yml
+- name: apt | agrega repositorios
+  ansible.builtin.include_tasks: agrego_repositorio.yml
   loop: "{{ apt_repositories }}"
   loop_control:
     loop_var: un_repo
@@ -44,8 +43,8 @@
     - apt
 
 - name: apt | actualizo lista paquetes .deb
-  apt:
-    update_cache: yes
+  ansible.builtin.apt:
+    update_cache: true
   become: true
   changed_when: false
   tags:
@@ -54,7 +53,7 @@
 # https://bugs.launchpad.net/ubuntu/+source/ansible/+bug/1833013/comments/6
 # https://github.com/hashicorp/vagrant/issues/10914
 - name: apt | fix error libssl1.1 que solicita intervencion interactiva
-  shell: >
+  ansible.builtin.shell: >
     dpkg-reconfigure libc6 ;
     export DEBIAN_FRONTEND=noninteractive ;
     export DEBCONF_NONINTERACTIVE_SEEN=true ;
@@ -66,10 +65,8 @@
 
     apt-get -q --option \"Dpkg::Options::=--force-confold\" install libssl1.1 -y
   # TODO: 22.04 viene con libssl3, ya no trae más libssl1, eliminar mas adelante
-  when:  ansible_facts['distribution'] == "Ubuntu" and ansible_facts['distribution_version'] is version('22.04', operator='lt', strict=True)
+  when: ansible_facts['distribution'] == "Ubuntu" and ansible_facts['distribution_version'] is version('22.04', operator='lt', strict=True)
   become: true
   changed_when: false
   tags:
     - apt
-
-

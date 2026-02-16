@@ -1,5 +1,4 @@
 ---
-
 # http://liveusb.info/dotclear/
 # http://liveusb.info/dotclear/index.php?pages/install
 
@@ -7,48 +6,47 @@
 # The apt-key command has been deprecated and suggests to ‘manage keyring files in trusted.gpg.d instead’.
 
 - name: liveUSB-multiboot | agrega clave del repo
-  get_url:
-    url: 'http://liveusb.info/multisystem/depot/multisystem.asc'
-    mode: '0644'
+  ansible.builtin.get_url:
+    url: "http://liveusb.info/multisystem/depot/multisystem.asc"
+    mode: "0644"
     dest: /usr/share/keyrings/liveusb-multiboot.asc
     force: true
   become: true
-  tags:
-  tags: [ multiboot ]
+  tags: [multiboot]
 
 
 - name: liveUSB-multiboot | agrego repo
-  apt_repository:
-    repo: 'deb [arch=amd64 signed-by=/usr/share/keyrings/liveusb-multiboot.asc] http://liveusb.info/multisystem/depot all main'
+  ansible.builtin.apt_repository:
+    repo: "deb [arch=amd64 signed-by=/usr/share/keyrings/liveusb-multiboot.asc] http://liveusb.info/multisystem/depot all main"
     state: present
-    update_cache: yes
+    update_cache: true
     filename: liveUSB-multiboot
   become: true
   register: reg_add_ppa_liveusb_multiboot
-  tags: [ multiboot ]
+  tags: [multiboot]
 
 
 - name: liveUSB-multiboot | actualizo lista paquetes .deb
-  apt:
-    update_cache: yes
+  ansible.builtin.apt:
+    update_cache: true
     cache_valid_time: 3600
   become: true
   when: reg_add_ppa_liveusb_multiboot is changed
-  tags: [ multiboot ]
-  
+  tags: [multiboot]
+
 - name: liveUSB-multiboot | instala paquete
-  apt:
-    name:  multisystem
+  ansible.builtin.apt:
+    name: multisystem
     state: present
   become: true
-  tags: [ multiboot ]
+  tags: [multiboot]
 
 
 #  ## Users Xubuntu / Lubuntu,
 #
-# Under Xubuntu / Lubuntu drag and drop in the multisystem window does not work, 
-# add iso doing right click file copy on your iso file 
-# and in the area of drag and drop of multisystem, use ctrl + v and press enter. 
+# Under Xubuntu / Lubuntu drag and drop in the multisystem window does not work,
+# add iso doing right click file copy on your iso file
+# and in the area of drag and drop of multisystem, use ctrl + v and press enter.
 # Another solution: use multi-selection interface, the big green button at the bottom right.
 
 #  ## After installation,
