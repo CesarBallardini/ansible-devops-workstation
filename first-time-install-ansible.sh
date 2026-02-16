@@ -12,6 +12,7 @@
 #   1. Installs uv (if not already installed)
 #   2. Creates a Python venv at ~/.ansible-venv/
 #   3. Installs Ansible and ansible-lint in the venv
+#   4. Installs Ansible Galaxy roles and collections (if requirements.yml exists)
 #
 
 set -e

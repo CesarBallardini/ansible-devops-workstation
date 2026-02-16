@@ -44,8 +44,8 @@ jobs:
 
       - name: Create venv and install Ansible
         run: |
-          ./first-time-install-ansible.sh --venv .venv
-          echo "${{ github.workspace }}/.venv/bin" >> "$GITHUB_PATH"
+          ./first-time-install-ansible.sh
+          echo "$HOME/.ansible-venv/bin" >> "$GITHUB_PATH"
 
       - name: Create ansible.cfg
         run: |
