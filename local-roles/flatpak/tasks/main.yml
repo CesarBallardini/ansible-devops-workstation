@@ -12,9 +12,9 @@
 
 - name: flatpak | Add the flathub flatpak repository remote to the system installation
   community.general.flatpak_remote:
-    name: flathub
+    name: "{{ flatpak_repo_name }}"
     state: present
-    flatpakrepo_url: https://flathub.org/repo/flathub.flatpakrepo
+    flatpakrepo_url: "{{ flatpak_repo_url }}"
     #method: user
   become: true
   tags:

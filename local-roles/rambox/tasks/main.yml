@@ -27,7 +27,7 @@
   ansible.builtin.shell: |
     curl --silent --fail \
       ${GITHUB_TOKEN:+-H "Authorization: token ${GITHUB_TOKEN}"} \
-      https://api.github.com/repos/ramboxapp/community-edition/releases/latest \
+      https://api.github.com/repos/{{ rambox_github_repo }}/releases/latest \
     | jq -r ".tag_name // empty"
   register: reg_rambox_url_version
   changed_when: false
@@ -49,7 +49,7 @@
     - rambox
 
 - ansible.builtin.set_fact:
-    rambox_url_actual: "https://github.com/ramboxapp/community-edition/releases/download/{{ rambox_url_version }}/Rambox-{{ rambox_url_version }}-linux-amd64.deb"
+    rambox_url_actual: "https://github.com/{{ rambox_github_repo }}/releases/download/{{ rambox_url_version }}/Rambox-{{ rambox_url_version }}-linux-amd64.deb"
   when: rambox_url_version | length > 0
   tags:
     - rambox

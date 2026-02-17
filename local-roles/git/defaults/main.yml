@@ -1,3 +1,3 @@
 ---
 install_git: true
-git_user_name: "{{ devops_user_name | default(ansible_user_id) }}"
+git_user_name: "{{ devops_user_name | default(ansible_facts['user_id']) }}"

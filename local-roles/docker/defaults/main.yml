@@ -1,2 +1,10 @@
 ---
 install_docker: true
+
+docker_user_name: "{{ devops_user_name | default(ansible_user_id) }}"
+
+docker_packages:
+  - docker-ce
+  - docker-ce-cli
+  - containerd.io
+  - docker-compose-plugin  # compose v2

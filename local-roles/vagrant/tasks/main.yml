@@ -72,18 +72,6 @@
     vagrant_version_instalada: "{{ reg_vagrant_version.rc == 0 and reg_vagrant_version.stdout or false }}"
     vagrant_url_actual: "{{ reg_vagrant_url_actual.stdout }}"
     vagrant_url_version: "{{ reg_vagrant_url_version.stdout }}"
-    vagrant_plugins_deseados:
-      # - hostmanager
-      - vagrant-cachier
-      - vagrant-disksize
-      #- vagrant-hostmanager
-      - vagrant-mutate
-      - vagrant-proxyconf
-      - vagrant-reload
-      - vagrant-share
-      - vagrant-vbguest
-      #- vagrant-lxc
-      #- vagrant-libvirt
   tags:
     - devops
     - vagrant
@@ -133,7 +121,7 @@
   register: reg_plugins_instalados
   changed_when: false
   become: true
-  become_user: "{{ devops_user_name }}"
+  become_user: "{{ vagrant_user_name }}"
   tags:
     - devops
     - vagrant
@@ -143,7 +131,7 @@
   ansible.builtin.command: "vagrant plugin install {{ item }}"
   loop: "{{ (vagrant_plugins_deseados | difference(reg_plugins_instalados.stdout_lines)) }}"
   become: true
-  become_user: "{{ devops_user_name }}"
+  become_user: "{{ vagrant_user_name }}"
   tags:
     - devops
     - vagrant
@@ -175,7 +163,7 @@
       end
 
   become: true
-  become_user: "{{ devops_user_name }}"
+  become_user: "{{ vagrant_user_name }}"
   tags:
     - devops
     - vagrant
@@ -184,7 +172,7 @@
   ansible.builtin.command: vagrant plugin repair
   changed_when: false
   become: true
-  become_user: "{{ devops_user_name }}"
+  become_user: "{{ vagrant_user_name }}"
   tags:
     - devops
     - vagrant
@@ -193,7 +181,7 @@
   ansible.builtin.command: vagrant plugin update
   changed_when: false
   become: true
-  become_user: "{{ devops_user_name }}"
+  become_user: "{{ vagrant_user_name }}"
   tags:
     - devops
     - vagrant

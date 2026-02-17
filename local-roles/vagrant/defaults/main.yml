@@ -1,2 +1,17 @@
 ---
 install_vagrant: true
+
+vagrant_user_name: "{{ devops_user_name | default(ansible_user_id) }}"
+
+vagrant_plugins_deseados:
+  # - hostmanager
+  - vagrant-cachier
+  - vagrant-disksize
+  #- vagrant-hostmanager
+  - vagrant-mutate
+  - vagrant-proxyconf
+  - vagrant-reload
+  - vagrant-share
+  - vagrant-vbguest
+  #- vagrant-lxc
+  #- vagrant-libvirt

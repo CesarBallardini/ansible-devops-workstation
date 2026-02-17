@@ -1,2 +1,9 @@
 ---
 install_pharo: true
+
+pharo_version_family: "120"
+pharo_version: "12.0"
+pharo_main_version: "12"
+pharo_home_directory: /opt/pharo
+
+pharo_download_base_url: "https://files.pharo.org/get-files/{{ pharo_version_family }}"

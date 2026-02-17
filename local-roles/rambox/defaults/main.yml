@@ -1,2 +1,4 @@
 ---
 install_rambox: true
+
+rambox_github_repo: ramboxapp/community-edition

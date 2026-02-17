@@ -14,11 +14,6 @@
   tags:
     - zoom
 
-- ansible.builtin.set_fact:
-    zoom_download_dir: /usr/local/zoom_download
-  tags:
-    - zoom
-
 - name: zoom | version actual instalada
   ansible.builtin.shell: |
     LANG=C dpkg-query --showformat='${Version}\n' --show zoom
@@ -41,7 +36,7 @@
 
 - name: zoom | descarga paquete
   ansible.builtin.get_url:
-    url: "https://zoom.us/client/latest/zoom_amd64.deb"
+    url: "{{ zoom_download_url }}"
     dest: "{{ zoom_download_dir }}/zoom_amd64.deb"
     force: true
   become: true

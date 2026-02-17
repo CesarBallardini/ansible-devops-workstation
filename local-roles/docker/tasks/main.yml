@@ -63,12 +63,7 @@
 
 - name: devops | docker | instala docker-ce
   ansible.builtin.apt:
-    name:
-      - docker-ce
-      - docker-ce-cli
-      - containerd.io
-      - docker-compose-plugin # para compose v2, 18.04, 20.04, 22.04
-      #- docker-compose         # para compose v1, 18.04, 20.04
+    name: "{{ docker_packages }}"
     state: present
   become: true
   tags:
@@ -85,7 +80,7 @@
 
 - name: devops | docker | "Add users to 'docker' group."
   ansible.builtin.user:
-    name: "{{ devops_user_name }}"
+    name: "{{ docker_user_name }}"
     groups:
       - docker
     append: true

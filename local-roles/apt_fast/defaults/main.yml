@@ -1,2 +1,6 @@
 ---
 install_apt_fast: true
+
+apt_fast_apt_manager: apt-get
+apt_fast_downloader: aria2c
+apt_fast_max_downloads: "5"

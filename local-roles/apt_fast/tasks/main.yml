@@ -11,7 +11,7 @@
   ansible.builtin.debconf:
     name: apt-fast
     question: apt-fast/aptmanager
-    value: apt-get
+    value: "{{ apt_fast_apt_manager }}"
     vtype: select
   become: true
   tags:
@@ -22,7 +22,7 @@
   ansible.builtin.debconf:
     name: apt-fast
     question: apt-fast/downloader
-    value: aria2c
+    value: "{{ apt_fast_downloader }}"
     vtype: select
   become: true
   tags:
@@ -40,11 +40,11 @@
     - apt
     - apt-fast
 
-- name: apt-fast | dlflag
+- name: apt-fast | maxdownloads
   ansible.builtin.debconf:
     name: apt-fast
     question: apt-fast/maxdownloads
-    value: "5"
+    value: "{{ apt_fast_max_downloads }}"
     vtype: string
   become: true
   tags:

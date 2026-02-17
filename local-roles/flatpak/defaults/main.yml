@@ -1,4 +1,7 @@
 ---
 install_flatpak: true
 
+flatpak_repo_name: flathub
+flatpak_repo_url: "https://flathub.org/repo/flathub.flatpakrepo"
+
 flatpak_remove: []

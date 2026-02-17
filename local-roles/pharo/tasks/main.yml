@@ -72,7 +72,7 @@
 # imagen: https://files.pharo.org/get-files/120/pharoImage-x86_64.zip
 - name: utn | pharo | Descarga imagen Pharo
   ansible.builtin.get_url:
-    url: "https://files.pharo.org/get-files/{{ pharo_version_family }}/pharoImage-x86_64.zip"
+    url: "{{ pharo_download_base_url }}/pharoImage-x86_64.zip"
     dest: "{{ pharo_home_directory }}/downloads/pharoImage-x86_64.zip"
   when: reg_pharo_version_instalada.rc != 0 or reg_pharo_version_instalada.stdout != pharo_version
   become: true
@@ -84,7 +84,7 @@
 # vm:  https://files.pharo.org/get-files/120/pharo-vm-Linux-x86_64-stable.zip
 - name: utn | pharo | Descarga VM Pharo
   ansible.builtin.get_url:
-    url: "http://files.pharo.org/get-files/{{ pharo_version_family }}/pharo-vm-Linux-x86_64-stable.zip"
+    url: "{{ pharo_download_base_url }}/pharo-vm-Linux-x86_64-stable.zip"
     dest: "{{ pharo_home_directory }}/downloads/pharo64-linux-stable.zip"
   when: reg_pharo_version_instalada.rc != 0 or reg_pharo_version_instalada.stdout != pharo_version
   become: true

@@ -10,7 +10,7 @@
 
 - name: mise-en-place | download GPG key
   ansible.builtin.get_url:
-    url: "https://mise.jdx.dev/gpg-key.pub"
+    url: "{{ mise_gpg_key_url }}"
     dest: /usr/share/keyrings/mise-archive-keyring.asc
     mode: "0644"
   become: true
@@ -27,7 +27,7 @@
 
 - name: mise-en-place | Add Mise repository to sources list
   ansible.builtin.apt_repository:
-    repo: "deb [signed-by=/etc/apt/keyrings/mise-archive-keyring.gpg arch=amd64] https://mise.jdx.dev/deb stable main"
+    repo: "{{ mise_apt_repo }}"
     state: present
     filename: mise-in-place
     update_cache: true
