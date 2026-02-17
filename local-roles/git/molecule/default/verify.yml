@@ -1,0 +1,34 @@
+---
+- name: Verify
+  hosts: all
+  become: true
+
+  tasks:
+    - name: Gather package facts
+      ansible.builtin.package_facts:
+        manager: auto
+
+    - name: Assert git is installed
+      ansible.builtin.assert:
+        that:
+          - "'git' in ansible_facts.packages"
+
+    - name: Check git-prompt.sh exists
+      ansible.builtin.stat:
+        path: /root/.git-prompt.sh
+      register: git_prompt
+
+    - name: Assert git-prompt.sh exists
+      ansible.builtin.assert:
+        that:
+          - git_prompt.stat.exists
+
+    - name: Check bashrc contains git-prompt source
+      ansible.builtin.command: grep -c "source ~/.git-prompt.sh" /root/.bashrc
+      register: bashrc_grep
+      changed_when: false
+
+    - name: Assert bashrc contains git-prompt source
+      ansible.builtin.assert:
+        that:
+          - bashrc_grep.rc == 0

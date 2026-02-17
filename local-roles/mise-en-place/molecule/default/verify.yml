@@ -1,0 +1,34 @@
+---
+- name: Verify
+  hosts: all
+  become: true
+
+  tasks:
+    - name: Gather package facts
+      ansible.builtin.package_facts:
+        manager: auto
+
+    - name: Assert mise is installed
+      ansible.builtin.assert:
+        that:
+          - "'mise' in ansible_facts.packages"
+
+    - name: Check mise binary exists
+      ansible.builtin.stat:
+        path: /usr/bin/mise
+      register: mise_binary
+
+    - name: Assert mise binary exists
+      ansible.builtin.assert:
+        that:
+          - mise_binary.stat.exists
+
+    - name: Check APT sources file exists
+      ansible.builtin.stat:
+        path: /etc/apt/sources.list.d/mise-in-place.list
+      register: mise_sources
+
+    - name: Assert APT sources file exists
+      ansible.builtin.assert:
+        that:
+          - mise_sources.stat.exists

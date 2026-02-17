@@ -1,0 +1,25 @@
+---
+- name: Verify
+  hosts: all
+  become: true
+
+  tasks:
+    - name: Check APT sources file exists
+      ansible.builtin.stat:
+        path: /etc/apt/sources.list.d/liveUSB-multiboot.list
+      register: multiboot_sources
+
+    - name: Assert APT sources file exists
+      ansible.builtin.assert:
+        that:
+          - multiboot_sources.stat.exists
+
+    - name: Check GPG key exists
+      ansible.builtin.stat:
+        path: /usr/share/keyrings/liveusb-multiboot.asc
+      register: multiboot_key
+
+    - name: Assert GPG key exists
+      ansible.builtin.assert:
+        that:
+          - multiboot_key.stat.exists

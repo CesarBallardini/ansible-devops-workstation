@@ -1,5 +1,5 @@
 ---
-- name: Create keyrings directory if it doesn't exist
+- name: mise-en-place | Create keyrings directory if it doesn't exist
   ansible.builtin.file:
     path: /etc/apt/keyrings
     state: directory
@@ -25,7 +25,7 @@
   tags:
     - mise-en-place
 
-- name: Add Mise repository to sources list
+- name: mise-en-place | Add Mise repository to sources list
   ansible.builtin.apt_repository:
     repo: "deb [signed-by=/etc/apt/keyrings/mise-archive-keyring.gpg arch=amd64] https://mise.jdx.dev/deb stable main"
     state: present
@@ -35,7 +35,7 @@
   tags:
     - mise-en-place
 
-- name: Install or update Mise
+- name: mise-en-place | Install or update Mise
   ansible.builtin.apt:
     name: mise
     state: latest

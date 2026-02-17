@@ -1,0 +1,26 @@
+---
+- name: Verify
+  hosts: all
+  become: true
+
+  tasks:
+    - name: Gather package facts
+      ansible.builtin.package_facts:
+        manager: auto
+
+    - name: Assert openjdk-11-jdk is installed
+      ansible.builtin.assert:
+        that:
+          - "'openjdk-11-jdk' in ansible_facts.packages"
+
+    - name: Check netbeans snap is installed
+      ansible.builtin.command: snap list netbeans
+      register: netbeans_snap
+      failed_when: false
+      changed_when: false
+
+    - name: Assert netbeans snap is installed
+      ansible.builtin.assert:
+        that:
+          - netbeans_snap.rc == 0
+      ignore_errors: "{{ lookup('env', 'CI') | default(false) | bool }}"

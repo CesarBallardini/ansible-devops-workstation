@@ -1,10 +1,4 @@
 ---
-#  sudo add-apt-repository ppa:mc3man/trusty-media -y 
-#  sudo apt-fast update
-#  sudo apt-fast dist-upgrade -y
-#
-#  sudo apt-fast install ffmpeg -y
-#  sudo apt-fast install x264 key-mon graphicsmagick -y
 - name: ffmpeg | actualizo lista paquetes .deb
   ansible.builtin.apt:
     update_cache: true

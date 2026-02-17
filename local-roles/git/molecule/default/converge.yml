@@ -1,0 +1,9 @@
+---
+- name: Converge
+  hosts: all
+  become: true
+
+  roles:
+    - role: git
+      vars:
+        devops_user_name: root

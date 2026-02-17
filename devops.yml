@@ -58,7 +58,12 @@
         - devops
         - ansible
 
-    - ansible.builtin.include_tasks: tasks/devops_git.yml
+    - ansible.builtin.include_role:
+        name: git
+        apply:
+          tags:
+            - devops
+            - git
       tags:
         - devops
         - git

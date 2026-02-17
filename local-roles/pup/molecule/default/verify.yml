@@ -1,0 +1,25 @@
+---
+- name: Verify
+  hosts: all
+  become: true
+
+  tasks:
+    - name: Check pup binary exists
+      ansible.builtin.stat:
+        path: /usr/local/bin/pup
+      register: pup_binary
+
+    - name: Assert pup binary exists
+      ansible.builtin.assert:
+        that:
+          - pup_binary.stat.exists
+
+    - name: Check pup version
+      ansible.builtin.command: /usr/local/bin/pup --version
+      register: pup_version_check
+      changed_when: false
+
+    - name: Assert pup version is correct
+      ansible.builtin.assert:
+        that:
+          - "'0.4.0' in pup_version_check.stdout"

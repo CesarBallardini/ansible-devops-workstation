@@ -1,0 +1,2 @@
+---
+devops_user_name: "{{ ansible_user_id }}"

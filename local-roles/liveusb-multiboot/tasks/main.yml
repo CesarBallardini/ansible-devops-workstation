@@ -3,7 +3,7 @@
 # http://liveusb.info/dotclear/index.php?pages/install
 
 # https://docs.ansible.com/ansible/latest/collections/ansible/builtin/apt_key_module.html
-# The apt-key command has been deprecated and suggests to ‘manage keyring files in trusted.gpg.d instead’.
+# The apt-key command has been deprecated and suggests to 'manage keyring files in trusted.gpg.d instead'.
 
 - name: liveUSB-multiboot | agrega clave del repo
   ansible.builtin.get_url:

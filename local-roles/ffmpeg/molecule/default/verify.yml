@@ -1,0 +1,24 @@
+---
+- name: Verify
+  hosts: all
+  become: true
+
+  tasks:
+    - name: Gather package facts
+      ansible.builtin.package_facts:
+        manager: auto
+
+    - name: Assert ffmpeg is installed
+      ansible.builtin.assert:
+        that:
+          - "'ffmpeg' in ansible_facts.packages"
+
+    - name: Assert x264 is installed
+      ansible.builtin.assert:
+        that:
+          - "'x264' in ansible_facts.packages"
+
+    - name: Assert graphicsmagick is installed
+      ansible.builtin.assert:
+        that:
+          - "'graphicsmagick' in ansible_facts.packages"

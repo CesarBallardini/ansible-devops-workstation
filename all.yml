@@ -49,7 +49,11 @@
       become: true
 
     - name: all | pup Parsing HTML at the command line
-      ansible.builtin.include_tasks: tasks/instala_pup.yml
+      ansible.builtin.include_role:
+        name: pup
+        apply:
+          tags:
+            - pup
       tags: [pup]
 
     - name: all | mejora performance

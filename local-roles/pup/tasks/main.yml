@@ -1,7 +1,7 @@
 ---
 # See https://github.com/ericchiang/pup/releases for release versions
 
-- name: paquetes generales
+- name: pup | paquetes generales
   ansible.builtin.package:
     name:
       - jq
@@ -23,13 +23,14 @@
   tags:
     - pup
 
-- ansible.builtin.set_fact:
+- name: pup | set version facts
+  ansible.builtin.set_fact:
     pup_version_instalada: "{{ reg_pup_version.rc == 0 and reg_pup_version.stdout or false }}"
-    pup_version: "0.4.0"
   tags:
     - pup
 
-- ansible.builtin.set_fact:
+- name: pup | set download URL
+  ansible.builtin.set_fact:
     pup_url_actual: "https://github.com/ericchiang/pup/releases/download/v{{ pup_version }}/pup_v{{ pup_version }}_linux_amd64.zip"
   tags:
     - pup

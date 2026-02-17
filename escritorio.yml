@@ -12,7 +12,12 @@
     - ansible.builtin.include_tasks: tasks/instala_zoom.yml
       tags: [zoom]
 
-    - ansible.builtin.include_tasks: tasks/instala_ffmpeg.yml
+    - ansible.builtin.include_role:
+        name: ffmpeg
+        apply:
+          tags:
+            - ffmpeg
+            - video
       tags: [ffmpeg, video]
 
     - ansible.builtin.include_tasks: tasks/instala_openshot.yml
@@ -28,7 +33,12 @@
         - escritorio
         - eclipse
 
-    - ansible.builtin.include_tasks: tasks/dev_netbeans.yml
+    - ansible.builtin.include_role:
+        name: netbeans
+        apply:
+          tags:
+            - escritorio
+            - netbeans
       tags:
         - escritorio
         - netbeans
@@ -54,7 +64,12 @@
         - escritorio
         - microsoft_visualstudio_code
 
-    - ansible.builtin.include_tasks: tasks/install_mise-en-place.yml
+    - ansible.builtin.include_role:
+        name: mise-en-place
+        apply:
+          tags:
+            - escritorio
+            - mise-en-place
       tags:
         - escritorio
         - mise-en-place
@@ -70,8 +85,11 @@
     - ansible.builtin.include_tasks: tasks/instala_rambox.yml
       tags: [rambox]
 
-    # - include_tasks: tasks/liveusb-multiboot.yml # no funciona correctamente sobre ubuntu 18.04 (2019/02/06)
-    # tags: [ multiboot ]
+    # - ansible.builtin.include_role:  # no funciona correctamente sobre ubuntu 18.04 (2019/02/06)
+    #     name: liveusb-multiboot
+    #     apply:
+    #       tags: [multiboot]
+    #   tags: [multiboot]
 
 #    - ansible.builtin.include_role:
 #        name: claude_code
