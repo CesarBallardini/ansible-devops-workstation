@@ -65,6 +65,7 @@ ocs_ssl: true
 ocs_ca_file: ''
 ocs_nosoftware: 1
 ocs_now: false
+ocs_apt_repository: "deb http://deb.ocsinventory-ng.org/{{ ansible_facts['distribution'] | lower }} {{ ocs_apt_release | default('stable') }} main"
 
 goss_version_actual: ''
 

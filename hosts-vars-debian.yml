@@ -131,6 +131,7 @@ ocs_ssl: true
 ocs_ca_file: ''
 ocs_nosoftware: 1
 ocs_now: false
+ocs_apt_repository: "deb http://deb.ocsinventory-ng.org/{{ ansible_facts['distribution'] | lower }} {{ ocs_apt_release | default('stable') }} main"
 
 # VMware ya no permite descargar directamente con curl y similares,
 # sino que obliga a pasar por https://www.vmware.com/products/workstation-pro/workstation-pro-evaluation.html
