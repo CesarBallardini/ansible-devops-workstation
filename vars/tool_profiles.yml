@@ -15,102 +15,120 @@
 #     - bitwarden
 
 tool_profiles:
-  full:                          # Everything (backward compat default)
-    - escritorio
-    - zoom
-    - ffmpeg
-    - openshot
-    - snap
-    - eclipse
-    - netbeans
-    - telegram_desktop
-    - slack
-    - bitwarden
-    - microsoft_visualstudio_code
-    - mise_en_place
-    - sshfs_fuse
-    - rambox
-    - aws
+  cesar:
     - ansible
+    - aws
+    - bitwarden
+    - docker
+    - escritorio
+    - ffmpeg
     - git
     - git_credential_manager
-    - terraform
-    - terraform_docs
-    - terragrunt
-    - virtualbox
-    - vagrant
-    - packer
-    - goss
-    - govc
-    - docker
+    - microsoft_visualstudio_code
+    - mise_en_place
+    - openshot
+    - pharo
     - prolog
     - racket
-    - pharo
-    - tn3270_emulator
-    - flatpak
-    - codium
-    - tinyproxy
-
-  developer:                     # Software developer desktop
-    - escritorio
-    - snap
-    - microsoft_visualstudio_code
-    - codium
-    - mise_en_place
-    - sshfs_fuse
-    - bitwarden
-    - git
-    - git_credential_manager
-    - docker
-    - terraform
-    - terraform_docs
-    - terragrunt
-
-  sysadmin:                      # Infrastructure/ops
-    - escritorio
+    - slack
     - snap
     - sshfs_fuse
-    - bitwarden
-    - aws
-    - ansible
-    - git
-    - git_credential_manager
-    - terraform
-    - terraform_docs
-    - terragrunt
-    - virtualbox
+    - telegram_desktop
     - vagrant
-    - packer
+    - virtualbox
+    - zoom
+
+  full:                          # Everything (backward compat default)
+    - ansible
+    - aws
+    - bitwarden
+    - codium
+    - docker
+    - eclipse
+    - escritorio
+    - ffmpeg
+    - flatpak
+    - git
+    - git_credential_manager
     - goss
     - govc
-    - docker
+    - microsoft_visualstudio_code
+    - mise_en_place
+    - netbeans
+    - openshot
+    - packer
+    - pharo
+    - prolog
+    - racket
+    - rambox
+    - slack
+    - snap
+    - sshfs_fuse
+    - telegram_desktop
+    - terraform
+    - terraform_docs
+    - terragrunt
     - tinyproxy
+    - tn3270_emulator
+    - vagrant
+    - virtualbox
+    - zoom
+
+  developer:                     # Software developer desktop
+    - bitwarden
+    - docker
+    - escritorio
+    - git
+    - git_credential_manager
+    - microsoft_visualstudio_code
+    - mise_en_place
+    - slack
+    - snap
+    - sshfs_fuse
+    - vagrant
+    - virtualbox
+    - zoom
+
+  sysadmin:                      # Infrastructure/ops
+    - ansible
+    - aws
+    - bitwarden
+    - docker
+    - escritorio
+    - git
+    - git_credential_manager
+    - goss
+    - govc
+    - packer
+    - slack
+    - snap
+    - sshfs_fuse
+    - terraform
+    - terraform_docs
+    - terragrunt
+    - tinyproxy
+    - vagrant
+    - virtualbox
+    - zoom
 
   academic:                      # UTN courses
     - escritorio
-    - snap
     - microsoft_visualstudio_code
-    - sshfs_fuse
+    - pharo
     - prolog
     - racket
-    - pharo
+    - snap
+    - sshfs_fuse
 
-  minimal:                       # Just base desktop
+  minimal_desktop:               # Just base desktop
+    - bitwarden
     - escritorio
     - snap
     - sshfs_fuse
-    - bitwarden
-
-  communication:                 # Messaging apps
-    - telegram_desktop
-    - slack
-    - rambox
-    - zoom
 
   video:                         # Media production
     - ffmpeg
     - openshot
-    - zoom
 
 # Snap packages per tool identifier
 # When a tool is in active_tools, its snap packages are included in snap_install.
