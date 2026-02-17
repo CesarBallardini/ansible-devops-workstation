@@ -179,9 +179,9 @@
 #        - claude-code
 
     - ansible.builtin.include_role:
-        name: emulador_3270
+        name: tn3270_emulator
         apply:
-          tags: [emulador_3270]
-      when: install_emulador_3270 | bool
-      tags: [emulador_3270]
+          tags: [tn3270_emulator]
+      when: install_tn3270_emulator | bool
+      tags: [tn3270_emulator]
       # se usa para conectarse a minis y mainframes IBM

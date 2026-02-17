@@ -4,4 +4,4 @@
   become: true
 
   roles:
-    - role: emulador_3270
+    - role: tn3270_emulator

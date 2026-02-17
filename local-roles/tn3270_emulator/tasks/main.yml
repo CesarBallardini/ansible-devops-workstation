@@ -1,5 +1,5 @@
 ---
-- name: emulador_3270 | instala paquetes
+- name: tn3270_emulator | instala paquetes
   ansible.builtin.apt:
     name:
       - c3270
@@ -7,4 +7,4 @@
       - x3270
       - xfonts-x3270-misc
   become: true
-  tags: [emulador_3270]
+  tags: [tn3270_emulator]

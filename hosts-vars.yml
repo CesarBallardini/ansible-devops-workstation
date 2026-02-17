@@ -191,7 +191,7 @@ workstation_download_url: https://download3.vmware.com/software/wkst/file/VMware
 #install_mise_en_place: true
 #install_sshfs_fuse: true
 #install_rambox: true
-#install_emulador_3270: true
+#install_tn3270_emulator: true
 #install_flatpak: true
 #install_codium: true
 # DevOps:

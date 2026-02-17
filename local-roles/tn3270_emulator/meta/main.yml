@@ -1,6 +1,6 @@
 ---
 galaxy_info:
-  role_name: emulador_3270
+  role_name: tn3270_emulator
   author: CesarBallardini
   description: Install 3270 terminal emulators for IBM mini/mainframe connectivity
   min_ansible_version: "2.17"

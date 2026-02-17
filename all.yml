@@ -69,7 +69,7 @@
         install_mise_en_place: "{{ 'mise_en_place' in active_tools }}"
         install_sshfs_fuse: "{{ 'sshfs_fuse' in active_tools }}"
         install_rambox: "{{ 'rambox' in active_tools }}"
-        install_emulador_3270: "{{ 'emulador_3270' in active_tools }}"
+        install_tn3270_emulator: "{{ 'tn3270_emulator' in active_tools }}"
         install_flatpak: "{{ 'flatpak' in active_tools }}"
         install_codium: "{{ 'codium' in active_tools }}"
         install_aws: "{{ 'aws' in active_tools }}"
