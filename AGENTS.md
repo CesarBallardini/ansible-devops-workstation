@@ -68,6 +68,33 @@ Common package issues to check:
 - PPAs that lack builds for the new release (e.g., Racket PPA, Unetbootin PPA)
 - Library conflicts (e.g., fuse vs fuse3)
 
+## Profile-Based Tool Selection
+
+Hosts can select which tools to install via named profiles instead of getting everything.
+
+**Architecture**:
+- Profile definitions live in `vars/tool_profiles.yml` (single source of truth)
+- `all.yml` loads profiles and computes `active_tools` via `set_fact` (persists across all plays)
+- Each `include_tasks`/`include_role` in `escritorio.yml`, `devops.yml`, `utn.yml`, and `site.yml` (tinyproxy) has a `when: "'tool' in active_tools"` guard
+- If `active_profiles` is undefined, all tools install (backward compatible)
+
+**Host variables**:
+- `active_profiles`: list of profile names (e.g., `[developer, communication]`)
+- `extra_tools`: additional tool identifiers beyond selected profiles (default: `[]`)
+- `skip_tools`: tool identifiers to exclude (default: `[]`)
+
+**Available profiles**: `full`, `developer`, `sysadmin`, `academic`, `minimal`, `communication`, `video`
+
+**Adding a new tool**:
+1. Add the tool identifier to appropriate profiles in `vars/tool_profiles.yml`
+2. Add `when: "'tool_id' in active_tools"` to its `include_tasks`/`include_role`
+3. Document in `CLAUDE.md`, `AGENTS.md`, `LLM.txt`
+
+**Adding a new profile**:
+1. Add the profile definition to `vars/tool_profiles.yml`
+2. Update the "Available profiles" comments in all inventory files
+3. Document in `CLAUDE.md`, `AGENTS.md`, `LLM.txt`
+
 ## Overview
 
 This is an Ansible playbook repository for provisioning a DevOps workstation on Ubuntu 22.04/24.04/26.04 and Debian 13 (Trixie)/14 (Forky). It includes playbooks for desktop applications, DevOps tools, UTN educational tools, and proxy configuration.

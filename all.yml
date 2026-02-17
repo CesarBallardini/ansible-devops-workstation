@@ -82,3 +82,34 @@
         locales_default:
           lang: es_AR.UTF-8
         #lc_all: C
+
+    # --- Profile-based tool selection ---
+    - name: all | load tool profile definitions
+      ansible.builtin.include_vars:
+        file: vars/tool_profiles.yml
+      tags: [always]
+
+    - name: all | compute active_tools from profiles
+      ansible.builtin.set_fact:
+        active_tools: >-
+          {{ (active_profiles | map('extract', tool_profiles) | flatten
+              | union(extra_tools | default([]))
+              | difference(skip_tools | default([])))
+              | unique | list }}
+      when: active_profiles is defined
+      tags: [always]
+
+    - name: all | default active_tools to full profile (backward compatible)
+      ansible.builtin.set_fact:
+        active_tools: >-
+          {{ tool_profiles['full']
+              | difference(skip_tools | default([]))
+              | unique | list }}
+      when: active_profiles is not defined
+      tags: [always]
+
+    - name: all | display active_tools
+      ansible.builtin.debug:
+        msg: "Active tools: {{ active_tools }}"
+        verbosity: 1
+      tags: [always]

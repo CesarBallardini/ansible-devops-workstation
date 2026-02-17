@@ -52,6 +52,25 @@ The CI and local bootstrap use the same script, keeping them in sync.
   inventario/                     Production inventory (separate git repo)
   vagrant-inventory/              Vagrant multi-distro testing inventory
 
+## Profile-Based Tool Selection
+
+Hosts select which tools to install via named profiles defined in vars/tool_profiles.yml.
+
+Host variables:
+  active_profiles   List of profile names (when undefined, ALL tools install)
+  extra_tools       Additional tool identifiers beyond selected profiles (default: [])
+  skip_tools        Tool identifiers to exclude (default: [])
+
+Available profiles: full, developer, sysadmin, academic, minimal, communication, video
+
+How it works:
+  1. all.yml loads vars/tool_profiles.yml and computes active_tools via set_fact
+  2. Each include_tasks/include_role has a when: "'tool' in active_tools" guard
+  3. If active_profiles is undefined, active_tools defaults to full profile
+
+Example:
+  ansible-playbook -i hosts site.yml --extra-vars '{"active_profiles": ["developer", "communication"]}'
+
 ## Playbook Targets
 
 Each playbook targets a different host group:
@@ -66,6 +85,7 @@ Each playbook targets a different host group:
   devops_*.yml    DevOps tools (docker, terraform, vagrant, etc.)
   instala_*.yml   Desktop/general apps (zoom, chrome, etc.)
   paquetes_*.yml  Package groups
+  utn_*.yml       UTN educational tools (prolog, racket, pharo)
   dev_*.yml       IDEs (eclipse, netbeans)
 
 ## Inventory Model

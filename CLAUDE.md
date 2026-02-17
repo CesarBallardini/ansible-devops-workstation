@@ -99,7 +99,7 @@ The `hosts` file defines groups: `devops_group` (all 5 VMs), `devops_group_ubunt
 
 `Vagrantfile` is a symlink to `Vagrantfile.ubuntu22.04`. Use `VAGRANT_VAGRANTFILE=Vagrantfile.debian13 vagrant up` for a specific distro. Ubuntu boxes use `bento/ubuntu-*`; Debian boxes use `bento/debian-*` (official `debian/*` boxes only provide libvirt).
 
-**Task files** (`tasks/`): Each tool has its own task file (e.g., `devops_docker.yml`, `devops_terraform.yml`, `instala_zoom.yml`). Naming convention: `devops_*.yml` for DevOps tools, `instala_*.yml` for desktop/general apps, `paquetes_*.yml` for package groups, `dev_*.yml` for IDEs.
+**Task files** (`tasks/`): Each tool has its own task file (e.g., `devops_docker.yml`, `devops_terraform.yml`, `instala_zoom.yml`). Naming convention: `devops_*.yml` for DevOps tools, `instala_*.yml` for desktop/general apps, `paquetes_*.yml` for package groups, `utn_*.yml` for UTN educational tools, `dev_*.yml` for IDEs.
 
 **External roles** (via `requirements.yml`): `vmware-workstation`, `locales`, `ocsinventory-agent`. Installed into `roles/`.
 
@@ -141,6 +141,35 @@ When adding or modifying inventory variables, keep all three sources in sync:
 1. `hosts-vars.yml` / `hosts-vars-debian.yml` (canonical templates with placeholders)
 2. `inventario/host_vars/localhost` (production values)
 3. `vagrant-inventory/group_vars/devops_group` + `host_vars/<hostname>` (Vagrant testing)
+
+## Profile-Based Tool Selection
+
+Hosts can select which tools to install via profiles instead of getting everything. Defined in `vars/tool_profiles.yml`.
+
+**Variables** (set in host_vars or extra-vars):
+- **`active_profiles`**: List of profile names (e.g., `[developer, communication]`). When undefined, ALL tools install (backward compatible).
+- **`extra_tools`**: Additional tool identifiers to add beyond the selected profiles. Default: `[]`
+- **`skip_tools`**: Tool identifiers to exclude even if selected by profiles. Default: `[]`
+
+**Available profiles**: `full`, `developer`, `sysadmin`, `academic`, `minimal`, `communication`, `video`
+
+**How it works**:
+1. `all.yml` loads `vars/tool_profiles.yml` and computes `active_tools` via `set_fact` (persists across all plays)
+2. Each `include_tasks`/`include_role` in `escritorio.yml`, `devops.yml`, `utn.yml`, and `site.yml` (tinyproxy) has a `when: "'tool' in active_tools"` guard
+3. If `active_profiles` is not defined, `active_tools` defaults to the `full` profile (all tools)
+
+**Tool identifiers** match existing Ansible tags: `escritorio`, `zoom`, `ffmpeg`, `openshot`, `snap`, `eclipse`, `netbeans`, `telegram_desktop`, `slack`, `bitwarden`, `microsoft_visualstudio_code`, `mise-en-place`, `sshfs-fuse`, `rambox`, `aws`, `ansible`, `git`, `git-credential-manager`, `terraform`, `terraform-docs`, `terragrunt`, `virtualbox`, `vagrant`, `packer`, `goss`, `govc`, `docker`, `prolog`, `racket`, `pharo`, `tinyproxy`
+
+**Example usage**:
+```bash
+# Install only developer + communication tools
+ansible-playbook -i hosts site.yml --extra-vars '{"active_profiles": ["developer", "communication"]}'
+
+# Minimal install plus docker, but skip bitwarden
+ansible-playbook -i hosts site.yml --extra-vars '{"active_profiles": ["minimal"], "extra_tools": ["docker"], "skip_tools": ["bitwarden"]}'
+```
+
+When adding or modifying profiles, keep `vars/tool_profiles.yml` as the single source of truth. When adding new tools, add the tool identifier to the appropriate profiles and add a `when:` guard to the include.
 
 ## GITHUB_TOKEN Support
 

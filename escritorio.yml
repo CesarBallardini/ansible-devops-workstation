@@ -7,9 +7,11 @@
     # sudo service systemd-timesyncd restart
 
     - ansible.builtin.include_tasks: tasks/paquetes_de_escritorio.yml
+      when: "'escritorio' in active_tools"
       tags: [escritorio]
 
     - ansible.builtin.include_tasks: tasks/instala_zoom.yml
+      when: "'zoom' in active_tools"
       tags: [zoom]
 
     - ansible.builtin.include_role:
@@ -18,17 +20,21 @@
           tags:
             - ffmpeg
             - video
+      when: "'ffmpeg' in active_tools"
       tags: [ffmpeg, video]
 
     - ansible.builtin.include_tasks: tasks/instala_openshot.yml
+      when: "'openshot' in active_tools"
       tags: [openshot, video]
 
     - ansible.builtin.include_tasks: tasks/instala_snap.yml
+      when: "'snap' in active_tools"
       tags:
         - escritorio
         - snap
 
     - ansible.builtin.include_tasks: tasks/dev_eclipse.yml
+      when: "'eclipse' in active_tools"
       tags:
         - escritorio
         - eclipse
@@ -39,27 +45,32 @@
           tags:
             - escritorio
             - netbeans
+      when: "'netbeans' in active_tools"
       tags:
         - escritorio
         - netbeans
 
     - ansible.builtin.include_tasks: tasks/instala_telegram_desktop.yml
+      when: "'telegram_desktop' in active_tools"
       tags:
         - escritorio
         - telegram_desktop
 
     - ansible.builtin.include_tasks: tasks/instala_slack.yml
+      when: "'slack' in active_tools"
       tags:
         - escritorio
         - slack
 
     - ansible.builtin.include_tasks: tasks/instala_bitwarden.yml
+      when: "'bitwarden' in active_tools"
       tags:
         - escritorio
         - bitwarden
 
     # Microsoft VisualStudio Code es version privativa, usaba VSCodium, el fork libre, me canse de los plugins que solo funcionan en vscode
     - ansible.builtin.include_tasks: tasks/instala_microsoft_visualstudio_code.yml
+      when: "'microsoft_visualstudio_code' in active_tools"
       tags:
         - escritorio
         - microsoft_visualstudio_code
@@ -70,19 +81,22 @@
           tags:
             - escritorio
             - mise-en-place
+      when: "'mise-en-place' in active_tools"
       tags:
         - escritorio
         - mise-en-place
 
 #  - include_tasks: tasks/instala_codium.yml
-#    tags: 
+#    tags:
 #      - escritorio
 #      - codium
 
     - ansible.builtin.include_tasks: tasks/sshfs-fuse.yml
+      when: "'sshfs-fuse' in active_tools"
       tags: [escritorio]
 
     - ansible.builtin.include_tasks: tasks/instala_rambox.yml
+      when: "'rambox' in active_tools"
       tags: [rambox]
 
     # - ansible.builtin.include_role:  # no funciona correctamente sobre ubuntu 18.04 (2019/02/06)

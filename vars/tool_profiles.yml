@@ -1,0 +1,109 @@
+---
+# Profile-based tool selection
+#
+# Each profile maps to a list of tool identifiers.
+# Hosts select profiles via 'active_profiles' variable.
+# Tool identifiers match existing Ansible tags and are used in when: guards.
+#
+# Usage in host_vars:
+#   active_profiles:
+#     - developer
+#     - communication
+#   extra_tools:
+#     - docker
+#   skip_tools:
+#     - bitwarden
+
+tool_profiles:
+  full:                          # Everything (backward compat default)
+    - escritorio
+    - zoom
+    - ffmpeg
+    - openshot
+    - snap
+    - eclipse
+    - netbeans
+    - telegram_desktop
+    - slack
+    - bitwarden
+    - microsoft_visualstudio_code
+    - mise-en-place
+    - sshfs-fuse
+    - rambox
+    - aws
+    - ansible
+    - git
+    - git-credential-manager
+    - terraform
+    - terraform-docs
+    - terragrunt
+    - virtualbox
+    - vagrant
+    - packer
+    - goss
+    - govc
+    - docker
+    - prolog
+    - racket
+    - pharo
+    - tinyproxy
+
+  developer:                     # Software developer desktop
+    - escritorio
+    - snap
+    - microsoft_visualstudio_code
+    - mise-en-place
+    - sshfs-fuse
+    - bitwarden
+    - git
+    - git-credential-manager
+    - docker
+    - terraform
+    - terraform-docs
+    - terragrunt
+
+  sysadmin:                      # Infrastructure/ops
+    - escritorio
+    - snap
+    - sshfs-fuse
+    - bitwarden
+    - aws
+    - ansible
+    - git
+    - git-credential-manager
+    - terraform
+    - terraform-docs
+    - terragrunt
+    - virtualbox
+    - vagrant
+    - packer
+    - goss
+    - govc
+    - docker
+    - tinyproxy
+
+  academic:                      # UTN courses
+    - escritorio
+    - snap
+    - microsoft_visualstudio_code
+    - sshfs-fuse
+    - prolog
+    - racket
+    - pharo
+
+  minimal:                       # Just base desktop
+    - escritorio
+    - snap
+    - sshfs-fuse
+    - bitwarden
+
+  communication:                 # Messaging apps
+    - telegram_desktop
+    - slack
+    - rambox
+    - zoom
+
+  video:                         # Media production
+    - ffmpeg
+    - openshot
+    - zoom

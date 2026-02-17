@@ -1,0 +1,11 @@
+---
+- name: utn | racket | instala Racket Scheme
+  ansible.builtin.package:
+    name:
+      - racket
+      - racket-doc
+    state: present
+  become: true
+  tags:
+    - utn
+    - racket

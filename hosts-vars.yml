@@ -158,3 +158,14 @@ goss_version_actual: ''
 # para conseguir el URL del paquete
 # URL hoy (2021-06-13) es:
 workstation_download_url: https://download3.vmware.com/software/wkst/file/VMware-Workstation-Full-16.1.2-17966106.x86_64.bundle
+
+# Profile-based tool selection
+# Uncomment active_profiles to enable selective installation.
+# When undefined, ALL tools install (backward compatible).
+# Available profiles: full, developer, sysadmin, academic, minimal, communication, video
+# See vars/tool_profiles.yml for details.
+#active_profiles:
+#  - developer
+#  - communication
+#extra_tools: []
+#skip_tools: []

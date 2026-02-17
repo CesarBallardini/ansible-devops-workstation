@@ -12,8 +12,13 @@
 - import_playbook: devops.yml
 
 - hosts: tinyproxy
-  roles:
-    - role: tinyproxy
+  tasks:
+    - name: tinyproxy | instala y configura tinyproxy
+      ansible.builtin.include_role:
+        name: tinyproxy
+        apply:
+          tags: [tinyproxy, proxy]
+      when: "'tinyproxy' in active_tools"
       tags: [tinyproxy, proxy]
 
 - import_playbook: ocsinventory-agent.yml

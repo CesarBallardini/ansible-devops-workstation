@@ -49,11 +49,13 @@
 #        - vmware-workstation
 
     - ansible.builtin.include_tasks: tasks/devops_aws.yml
+      when: "'aws' in active_tools"
       tags:
         - devops
         - aws
 
     - ansible.builtin.include_tasks: tasks/devops_ansible.yml
+      when: "'ansible' in active_tools"
       tags:
         - devops
         - ansible
@@ -64,34 +66,41 @@
           tags:
             - devops
             - git
+      when: "'git' in active_tools"
       tags:
         - devops
         - git
 
     - ansible.builtin.include_tasks: tasks/devops_git_credential_manager.yml
+      when: "'git-credential-manager' in active_tools"
       tags:
         - devops
         - git-credential-manager
 
     - ansible.builtin.include_tasks: tasks/devops_terraform.yml
+      when: "'terraform' in active_tools"
       tags:
         - devops
         - terraform
 
     - ansible.builtin.include_tasks: tasks/devops_terraform_docs.yml
+      when: "'terraform-docs' in active_tools"
       tags:
         - devops
         - terraform
         - terraform-docs
 
     - ansible.builtin.include_tasks: tasks/devops_terragrunt.yml
+      when: "'terragrunt' in active_tools"
       tags:
         - devops
         - terraform
         - terragrunt
 
     - ansible.builtin.include_tasks: tasks/devops_virtualbox.yml
-      when: hay_virtualizacion_register is succeeded
+      when:
+        - "'virtualbox' in active_tools"
+        - hay_virtualizacion_register is succeeded
       vars:
         virtualbox_old_packages_to_remove:
           - virtualbox-dkms
@@ -105,7 +114,9 @@
         - virtualbox
 
     - ansible.builtin.include_tasks: tasks/devops_virtualbox.yml
-      when: hay_virtualizacion_register is failed
+      when:
+        - "'virtualbox' in active_tools"
+        - hay_virtualizacion_register is failed
       vars:
         virtualbox_old_packages_to_remove:
           - virtualbox-dkms
@@ -119,26 +130,31 @@
         - virtualbox
 
     - ansible.builtin.include_tasks: tasks/devops_vagrant.yml
+      when: "'vagrant' in active_tools"
       tags:
         - devops
         - vagrant
 
     - ansible.builtin.include_tasks: tasks/devops_packer.yml
+      when: "'packer' in active_tools"
       tags:
         - devops
         - packer
 
     - ansible.builtin.include_tasks: tasks/devops_goss.yml
+      when: "'goss' in active_tools"
       tags:
         - devops
         - goss
 
     - ansible.builtin.include_tasks: tasks/devops_govc.yml
+      when: "'govc' in active_tools"
       tags:
         - devops
         - govc
 
     - ansible.builtin.include_tasks: tasks/devops_docker.yml
+      when: "'docker' in active_tools"
       tags:
         - devops
         - docker

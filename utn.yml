@@ -2,8 +2,14 @@
 - hosts: utn
 
   tasks:
-    - ansible.builtin.include_tasks: tasks/paquetes_utn.yml
-      tags:
-        - prolog
-        - racket
-        - pharo
+    - ansible.builtin.include_tasks: tasks/utn_prolog.yml
+      when: "'prolog' in active_tools"
+      tags: [utn, prolog]
+
+    - ansible.builtin.include_tasks: tasks/utn_racket.yml
+      when: "'racket' in active_tools"
+      tags: [utn, racket]
+
+    - ansible.builtin.include_tasks: tasks/utn_pharo.yml
+      when: "'pharo' in active_tools"
+      tags: [utn, pharo]

@@ -1,0 +1,22 @@
+---
+- name: utn | instala prolog documentacion
+  ansible.builtin.package:
+    name:
+      - swi-prolog-doc
+    state: present
+  become: true
+  tags:
+    - utn
+    - prolog
+
+- name: utn | instala prolog
+  ansible.builtin.package:
+    name:
+      - swi-prolog-nox
+      - gprolog
+      - gprolog-doc
+    state: present
+  become: true
+  tags:
+    - utn
+    - prolog
