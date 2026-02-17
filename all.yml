@@ -24,6 +24,79 @@
         state: present
       become: true
 
+    # --- Profile-based tool selection ---
+    - name: all | load tool profile definitions
+      ansible.builtin.include_vars:
+        file: vars/tool_profiles.yml
+      tags: [always]
+
+    - name: all | compute active_tools from profiles
+      ansible.builtin.set_fact:
+        active_tools: >-
+          {{ (active_profiles | map('extract', tool_profiles) | flatten
+              | union(extra_tools | default([]))
+              | difference(skip_tools | default([])))
+              | unique | list }}
+      when: active_profiles is defined
+      tags: [always]
+
+    - name: all | default active_tools to full profile (backward compatible)
+      ansible.builtin.set_fact:
+        active_tools: >-
+          {{ tool_profiles['full']
+              | difference(skip_tools | default([]))
+              | unique | list }}
+      when: active_profiles is not defined
+      tags: [always]
+
+    - name: all | compute install variables from active_tools
+      ansible.builtin.set_fact:
+        install_apt: true
+        install_apt_fast: true
+        install_actualiza_sistema: true
+        install_mejora_performance: true
+        install_escritorio: "{{ 'escritorio' in active_tools }}"
+        install_zoom: "{{ 'zoom' in active_tools }}"
+        install_ffmpeg: "{{ 'ffmpeg' in active_tools }}"
+        install_openshot: "{{ 'openshot' in active_tools }}"
+        install_snap: "{{ 'snap' in active_tools }}"
+        install_eclipse: "{{ 'eclipse' in active_tools }}"
+        install_netbeans: "{{ 'netbeans' in active_tools }}"
+        install_telegram_desktop: "{{ 'telegram_desktop' in active_tools }}"
+        install_slack: "{{ 'slack' in active_tools }}"
+        install_bitwarden: "{{ 'bitwarden' in active_tools }}"
+        install_microsoft_visualstudio_code: "{{ 'microsoft_visualstudio_code' in active_tools }}"
+        install_mise_en_place: "{{ 'mise_en_place' in active_tools }}"
+        install_sshfs_fuse: "{{ 'sshfs_fuse' in active_tools }}"
+        install_rambox: "{{ 'rambox' in active_tools }}"
+        install_emulador_3270: "{{ 'emulador_3270' in active_tools }}"
+        install_flatpak: "{{ 'flatpak' in active_tools }}"
+        install_codium: "{{ 'codium' in active_tools }}"
+        install_aws: "{{ 'aws' in active_tools }}"
+        install_ansible: "{{ 'ansible' in active_tools }}"
+        install_git: "{{ 'git' in active_tools }}"
+        install_git_credential_manager: "{{ 'git_credential_manager' in active_tools }}"
+        install_terraform: "{{ 'terraform' in active_tools }}"
+        install_terraform_docs: "{{ 'terraform_docs' in active_tools }}"
+        install_terragrunt: "{{ 'terragrunt' in active_tools }}"
+        install_virtualbox: "{{ 'virtualbox' in active_tools }}"
+        install_vagrant: "{{ 'vagrant' in active_tools }}"
+        install_packer: "{{ 'packer' in active_tools }}"
+        install_goss: "{{ 'goss' in active_tools }}"
+        install_govc: "{{ 'govc' in active_tools }}"
+        install_docker: "{{ 'docker' in active_tools }}"
+        install_prolog: "{{ 'prolog' in active_tools }}"
+        install_racket: "{{ 'racket' in active_tools }}"
+        install_pharo: "{{ 'pharo' in active_tools }}"
+        install_tinyproxy: "{{ 'tinyproxy' in active_tools }}"
+      tags: [always]
+
+    - name: all | display active_tools
+      ansible.builtin.debug:
+        msg: "Active tools: {{ active_tools }}"
+        verbosity: 1
+      tags: [always]
+
     - name: all | configura APT
       ansible.builtin.include_role:
         name: apt
@@ -98,72 +171,3 @@
         locales_default:
           lang: es_AR.UTF-8
         #lc_all: C
-
-    # --- Profile-based tool selection ---
-    - name: all | load tool profile definitions
-      ansible.builtin.include_vars:
-        file: vars/tool_profiles.yml
-      tags: [always]
-
-    - name: all | compute active_tools from profiles
-      ansible.builtin.set_fact:
-        active_tools: >-
-          {{ (active_profiles | map('extract', tool_profiles) | flatten
-              | union(extra_tools | default([]))
-              | difference(skip_tools | default([])))
-              | unique | list }}
-      when: active_profiles is defined
-      tags: [always]
-
-    - name: all | default active_tools to full profile (backward compatible)
-      ansible.builtin.set_fact:
-        active_tools: >-
-          {{ tool_profiles['full']
-              | difference(skip_tools | default([]))
-              | unique | list }}
-      when: active_profiles is not defined
-      tags: [always]
-
-    - name: all | compute install variables from active_tools
-      ansible.builtin.set_fact:
-        install_escritorio: "{{ 'escritorio' in active_tools }}"
-        install_zoom: "{{ 'zoom' in active_tools }}"
-        install_ffmpeg: "{{ 'ffmpeg' in active_tools }}"
-        install_openshot: "{{ 'openshot' in active_tools }}"
-        install_snap: "{{ 'snap' in active_tools }}"
-        install_eclipse: "{{ 'eclipse' in active_tools }}"
-        install_netbeans: "{{ 'netbeans' in active_tools }}"
-        install_telegram_desktop: "{{ 'telegram_desktop' in active_tools }}"
-        install_slack: "{{ 'slack' in active_tools }}"
-        install_bitwarden: "{{ 'bitwarden' in active_tools }}"
-        install_microsoft_visualstudio_code: "{{ 'microsoft_visualstudio_code' in active_tools }}"
-        install_mise_en_place: "{{ 'mise_en_place' in active_tools }}"
-        install_sshfs_fuse: "{{ 'sshfs_fuse' in active_tools }}"
-        install_rambox: "{{ 'rambox' in active_tools }}"
-        install_emulador_3270: "{{ 'emulador_3270' in active_tools }}"
-        install_flatpak: "{{ 'flatpak' in active_tools }}"
-        install_codium: "{{ 'codium' in active_tools }}"
-        install_aws: "{{ 'aws' in active_tools }}"
-        install_ansible: "{{ 'ansible' in active_tools }}"
-        install_git: "{{ 'git' in active_tools }}"
-        install_git_credential_manager: "{{ 'git_credential_manager' in active_tools }}"
-        install_terraform: "{{ 'terraform' in active_tools }}"
-        install_terraform_docs: "{{ 'terraform_docs' in active_tools }}"
-        install_terragrunt: "{{ 'terragrunt' in active_tools }}"
-        install_virtualbox: "{{ 'virtualbox' in active_tools }}"
-        install_vagrant: "{{ 'vagrant' in active_tools }}"
-        install_packer: "{{ 'packer' in active_tools }}"
-        install_goss: "{{ 'goss' in active_tools }}"
-        install_govc: "{{ 'govc' in active_tools }}"
-        install_docker: "{{ 'docker' in active_tools }}"
-        install_prolog: "{{ 'prolog' in active_tools }}"
-        install_racket: "{{ 'racket' in active_tools }}"
-        install_pharo: "{{ 'pharo' in active_tools }}"
-        install_tinyproxy: "{{ 'tinyproxy' in active_tools }}"
-      tags: [always]
-
-    - name: all | display active_tools
-      ansible.builtin.debug:
-        msg: "Active tools: {{ active_tools }}"
-        verbosity: 1
-      tags: [always]
