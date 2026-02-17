@@ -1,8 +1,0 @@
----
-- name: slack | instala desde snap
-  community.general.snap:
-    name: slack
-  become: true
-  ignore_errors: "{{ lookup('env', 'CI') | default(false) | bool }}"  # community.general.snap module crashes on GitHub Actions runners where snapd cannot query the snap store
-  tags:
-    - slack

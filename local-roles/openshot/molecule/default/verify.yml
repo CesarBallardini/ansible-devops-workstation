@@ -1,0 +1,19 @@
+---
+- name: Verify
+  hosts: all
+  become: true
+
+  tasks:
+    - name: Gather package facts
+      ansible.builtin.package_facts:
+        manager: auto
+
+    - name: Assert openshot-qt is installed
+      ansible.builtin.assert:
+        that:
+          - "'openshot-qt' in ansible_facts.packages"
+
+    - name: Assert python3-openshot is installed
+      ansible.builtin.assert:
+        that:
+          - "'python3-openshot' in ansible_facts.packages"

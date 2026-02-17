@@ -46,6 +46,7 @@ tool_profiles:
     - prolog
     - racket
     - pharo
+    - emulador_3270
     - tinyproxy
 
   developer:                     # Software developer desktop

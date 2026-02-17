@@ -1,0 +1,8 @@
+---
+- name: telegram-desktop | instala desde snap
+  community.general.snap:
+    name: telegram-desktop
+  become: true
+  ignore_errors: "{{ lookup('env', 'CI') | default(false) | bool }}"
+  tags:
+    - telegram-desktop

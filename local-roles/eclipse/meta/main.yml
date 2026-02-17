@@ -1,0 +1,23 @@
+---
+galaxy_info:
+  role_name: eclipse
+  author: CesarBallardini
+  description: Install Eclipse IDE via snap
+  min_ansible_version: "2.17"
+  license: MIT
+  platforms:
+    - name: Ubuntu
+      versions:
+        - jammy
+        - noble
+        - resolute
+    - name: Debian
+      versions:
+        - trixie
+        - forky
+  galaxy_tags:
+    - snap
+    - eclipse
+    - ide
+
+dependencies: []

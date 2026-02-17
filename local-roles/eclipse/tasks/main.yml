@@ -1,0 +1,9 @@
+---
+- name: eclipse | instala desde snap
+  community.general.snap:
+    name: eclipse
+    classic: true
+  become: true
+  ignore_errors: "{{ lookup('env', 'CI') | default(false) | bool }}"
+  tags:
+    - eclipse

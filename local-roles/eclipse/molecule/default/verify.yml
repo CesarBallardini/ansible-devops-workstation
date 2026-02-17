@@ -1,0 +1,17 @@
+---
+- name: Verify
+  hosts: all
+  become: true
+
+  tasks:
+    - name: Check eclipse snap is installed
+      ansible.builtin.command: snap list eclipse
+      register: eclipse_snap
+      failed_when: false
+      changed_when: false
+
+    - name: Assert eclipse snap is installed
+      ansible.builtin.assert:
+        that:
+          - eclipse_snap.rc == 0
+      ignore_errors: "{{ lookup('env', 'CI') | default(false) | bool }}"

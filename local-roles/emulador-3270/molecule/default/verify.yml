@@ -1,0 +1,19 @@
+---
+- name: Verify
+  hosts: all
+  become: true
+
+  tasks:
+    - name: Gather package facts
+      ansible.builtin.package_facts:
+        manager: auto
+
+    - name: Assert c3270 is installed
+      ansible.builtin.assert:
+        that:
+          - "'c3270' in ansible_facts.packages"
+
+    - name: Assert x3270 is installed
+      ansible.builtin.assert:
+        that:
+          - "'x3270' in ansible_facts.packages"
