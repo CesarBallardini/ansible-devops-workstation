@@ -1,7 +1,7 @@
 ---
 install_docker: true
 
-docker_user_name: "{{ devops_user_name | default(ansible_user_id) }}"
+docker_user_name: "{{ devops_user_name | default(ansible_facts['user_id']) }}"
 
 docker_packages:
   - docker-ce
