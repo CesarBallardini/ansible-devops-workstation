@@ -14,4 +14,4 @@
       ansible.builtin.assert:
         that:
           - eclipse_snap.rc == 0
-      ignore_errors: "{{ lookup('env', 'CI') | default(false) | bool }}"
+      ignore_errors: "{{ lookup('env', 'CI') | default(false, boolean=true) | bool }}"

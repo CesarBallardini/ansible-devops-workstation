@@ -4,6 +4,6 @@
     name: eclipse
     classic: true
   become: true
-  ignore_errors: "{{ lookup('env', 'CI') | default(false) | bool }}"
+  ignore_errors: "{{ lookup('env', 'CI') | default(false, boolean=true) | bool }}"
   tags:
     - eclipse

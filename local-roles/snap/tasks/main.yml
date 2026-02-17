@@ -65,7 +65,7 @@
   loop: "{{ snap_install }}"
   when: snap_install | length > 0
   become: true
-  ignore_errors: "{{ lookup('env', 'CI') | default(false) | bool }}"
+  ignore_errors: "{{ lookup('env', 'CI') | default(false, boolean=true) | bool }}"
   tags:
     - snap
 
@@ -76,6 +76,6 @@
   loop: "{{ snap_remove }}"
   when: snap_remove | length > 0
   become: true
-  ignore_errors: "{{ lookup('env', 'CI') | default(false) | bool }}"
+  ignore_errors: "{{ lookup('env', 'CI') | default(false, boolean=true) | bool }}"
   tags:
     - snap

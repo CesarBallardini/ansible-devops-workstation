@@ -193,7 +193,7 @@ Debian boxes use bento/ (official debian/ boxes only provide libvirt).
 - Prefer ansible.builtin.package over ansible.builtin.apt for stable package names
 - Use block/rescue for renamed packages, failed_when: false for removal lists
 - Use tasks/package_available.yml for packages that may not exist on all distributions
-- Snap tasks use ignore_errors: "{{ lookup('env', 'CI') | default(false) | bool }}" -- the community.general.snap module crashes on GitHub Actions runners; errors are still fatal on real desktops
+- Snap tasks use ignore_errors: "{{ lookup('env', 'CI') | default(false, boolean=true) | bool }}" -- the community.general.snap module crashes on GitHub Actions runners; errors are still fatal on real desktops
 - Linting: .ansible-lint with profile: basic
 
 ## Inventory Variable Conventions

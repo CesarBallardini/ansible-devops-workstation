@@ -130,5 +130,4 @@ flatpak_packages:
     - com.calibre_ebook.calibre
     - com.dropbox.Client
     - com.jetbrains.IntelliJ-IDEA-Community
-    - io.atom.Atom
     - com.jetbrains.WebStorm

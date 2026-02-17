@@ -136,7 +136,6 @@ workstation_download_url: https://download3.vmware.com/software/wkst/file/VMware
 #  - com.calibre_ebook.calibre
 #  - com.dropbox.Client
 #  - com.jetbrains.IntelliJ-IDEA-Community
-#  - io.atom.Atom
 #  - com.jetbrains.WebStorm
 #flatpak_remove: []
 

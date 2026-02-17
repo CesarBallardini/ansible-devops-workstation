@@ -125,7 +125,7 @@ The `hosts` file defines groups: `devops_group` (all 5 VMs), `devops_group_ubunt
 - Use package availability checks (`tasks/package_available.yml`) for optional packages that may disappear in future releases or not exist on Debian (e.g., `libreoffice-style-elementary`, `libreoffice-style-tango`)
 - Ubuntu-only PPAs (Launchpad) must be wrapped with `when: ansible_facts['distribution'] == 'Ubuntu'`; on Debian, packages are typically available from standard repos
 - Ubuntu-only packages (e.g., `ubuntu-restricted-extras`, `indicator-cpufreq`, `zram-config`, `linux-headers-lowlatency`) must have Ubuntu-only conditionals; use Debian equivalents where they exist (e.g., `zram-tools`)
-- Snap tasks use `ignore_errors: "{{ lookup('env', 'CI') | default(false) | bool }}"` because the `community.general.snap` module crashes on GitHub Actions runners where snapd cannot query the snap store
+- Snap tasks use `ignore_errors: "{{ lookup('env', 'CI') | default(false, boolean=true) | bool }}"` because the `community.general.snap` module crashes on GitHub Actions runners where snapd cannot query the snap store
 - Linting: `.ansible-lint` configured with `profile: basic`, several rules skipped (see file for details)
 
 ## Inventory Variable Conventions

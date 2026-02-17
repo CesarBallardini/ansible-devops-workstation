@@ -51,7 +51,7 @@ The codebase uses several techniques to handle package changes across Ubuntu ver
 - **`failed_when: false`** on package removal lists (packages that no longer exist don't cause failures)
 - **`ansible.builtin.package`** for stable packages (jq, git, curl, vim, etc.) instead of `ansible.builtin.apt`
 - **`tasks/package_available.yml`** for optional packages that may disappear or not exist on Debian (checks `apt-cache pkgnames` before install)
-- **CI-conditional `ignore_errors`** on snap tasks: `ignore_errors: "{{ lookup('env', 'CI') | default(false) | bool }}"` because the `community.general.snap` module crashes on GitHub Actions runners where snapd cannot query the snap store. Errors are still fatal on real desktop machines.
+- **CI-conditional `ignore_errors`** on snap tasks: `ignore_errors: "{{ lookup('env', 'CI') | default(false, boolean=true) | bool }}"` because the `community.general.snap` module crashes on GitHub Actions runners where snapd cannot query the snap store. Errors are still fatal on real desktop machines.
 
 When adding new packages:
 - If the package name is stable across releases, use `ansible.builtin.package`
@@ -325,7 +325,7 @@ ansible-inventory -i vagrant-inventory/ --list
 ### Error Handling
 - Use `failed_when:` for conditional failure
 - Use `ignore_errors: yes` sparingly, with comment explaining why
-- For snap tasks in CI, use `ignore_errors: "{{ lookup('env', 'CI') | default(false) | bool }}"` to tolerate snap store failures on GitHub Actions while still catching errors on real desktops
+- For snap tasks in CI, use `ignore_errors: "{{ lookup('env', 'CI') | default(false, boolean=true) | bool }}"` to tolerate snap store failures on GitHub Actions while still catching errors on real desktops
 - Use `register:` with `failed_when:` for error handling
 - Always use `become: true` for privileged operations
 

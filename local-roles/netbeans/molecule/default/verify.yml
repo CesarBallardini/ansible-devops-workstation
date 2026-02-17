@@ -23,4 +23,4 @@
       ansible.builtin.assert:
         that:
           - netbeans_snap.rc == 0
-      ignore_errors: "{{ lookup('env', 'CI') | default(false) | bool }}"
+      ignore_errors: "{{ lookup('env', 'CI') | default(false, boolean=true) | bool }}"

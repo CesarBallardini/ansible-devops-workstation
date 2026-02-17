@@ -206,6 +206,5 @@ goss_version_actual: ''
 #  - com.calibre_ebook.calibre
 #  - com.dropbox.Client
 #  - com.jetbrains.IntelliJ-IDEA-Community
-#  - io.atom.Atom
 #  - com.jetbrains.WebStorm
 #flatpak_remove: []
