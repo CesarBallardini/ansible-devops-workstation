@@ -4,5 +4,6 @@ inventario/
 roles/
 tmp/
 .vagrant/
+.claude/settings.local.json
 
 Vagrantfile

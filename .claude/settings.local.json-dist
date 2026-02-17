@@ -1,0 +1,23 @@
+{
+  "permissions": {
+    "allow": [
+      "WebSearch",
+      "WebFetch(domain:raw.githubusercontent.com)",
+      "WebFetch(domain:api.github.com)",
+      "WebFetch(domain:github.com)",
+      "WebFetch(domain:docs.ansible.com)",
+      "WebFetch(domain:galaxy.ansible.com)",
+      "WebFetch(domain:app.vagrantup.com)",
+      "WebFetch(domain:portal.cloud.hashicorp.com)",
+      "WebFetch(domain:wiki.debian.org)",
+      "WebFetch(domain:bugs.debian.org)",
+      "WebFetch(domain:launchpad.net)",
+      "WebFetch(domain:packages.ubuntu.com)",
+      "Bash(curl:*)",
+      "Bash(grep:*)",
+      "Bash(ls:*)",
+      "Bash(wc:*)",
+      "Bash(/usr/local/venv/bin/ansible-lint:*)"
+    ]
+  }
+}
