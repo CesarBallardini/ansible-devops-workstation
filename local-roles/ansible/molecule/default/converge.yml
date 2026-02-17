@@ -1,0 +1,10 @@
+---
+- name: Converge
+  hosts: all
+  become: true
+
+  roles:
+    - role: ansible
+      vars:
+        ansible_venv_path: "{{ ansible_env.HOME }}/.ansible-venv"
+        ansible_version_deseada: ""

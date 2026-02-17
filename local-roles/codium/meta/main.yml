@@ -1,0 +1,23 @@
+---
+galaxy_info:
+  role_name: codium
+  author: CesarBallardini
+  description: Install VSCodium, the free/libre fork of VS Code without Microsoft telemetry
+  min_ansible_version: "2.17"
+  license: MIT
+  platforms:
+    - name: Ubuntu
+      versions:
+        - jammy
+        - noble
+        - resolute
+    - name: Debian
+      versions:
+        - trixie
+        - forky
+  galaxy_tags:
+    - codium
+    - vscodium
+    - ide
+
+dependencies: []

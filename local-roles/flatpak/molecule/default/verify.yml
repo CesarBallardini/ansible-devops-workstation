@@ -1,0 +1,15 @@
+---
+- name: Verify
+  hosts: all
+  gather_facts: true
+  tasks:
+    - name: Gather package facts
+      ansible.builtin.package_facts:
+        manager: apt
+
+    - name: Assert flatpak is installed
+      ansible.builtin.assert:
+        that:
+          - "'flatpak' in ansible_facts.packages"
+        fail_msg: "flatpak is not installed"
+        success_msg: "flatpak is installed"

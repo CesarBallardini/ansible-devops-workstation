@@ -1,0 +1,15 @@
+---
+- name: Verify
+  hosts: all
+  become: true
+
+  tasks:
+    - name: Check apt sources.list exists
+      ansible.builtin.stat:
+        path: /etc/apt/sources.list
+      register: sources_list
+
+    - name: Assert sources.list exists
+      ansible.builtin.assert:
+        that:
+          - sources_list.stat.exists

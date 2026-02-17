@@ -1,0 +1,15 @@
+---
+- name: Verify
+  hosts: all
+  become: true
+
+  tasks:
+    - name: Check system is updated (apt-get check)
+      ansible.builtin.command: apt-get check
+      register: apt_check
+      changed_when: false
+
+    - name: Assert no broken packages
+      ansible.builtin.assert:
+        that:
+          - apt_check.rc == 0

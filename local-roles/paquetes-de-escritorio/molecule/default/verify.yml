@@ -1,0 +1,19 @@
+---
+- name: Verify
+  hosts: all
+  become: true
+
+  tasks:
+    - name: Gather package facts
+      ansible.builtin.package_facts:
+        manager: auto
+
+    - name: Assert google-chrome-stable is installed
+      ansible.builtin.assert:
+        that:
+          - "'google-chrome-stable' in ansible_facts.packages"
+
+    - name: Assert vim is installed
+      ansible.builtin.assert:
+        that:
+          - "'vim' in ansible_facts.packages"

@@ -1,0 +1,23 @@
+---
+galaxy_info:
+  role_name: pharo
+  author: CesarBallardini
+  description: Install Pharo Smalltalk VM and image
+  min_ansible_version: "2.17"
+  license: MIT
+  platforms:
+    - name: Ubuntu
+      versions:
+        - jammy
+        - noble
+        - resolute
+    - name: Debian
+      versions:
+        - trixie
+        - forky
+  galaxy_tags:
+    - pharo
+    - smalltalk
+    - education
+
+dependencies: []

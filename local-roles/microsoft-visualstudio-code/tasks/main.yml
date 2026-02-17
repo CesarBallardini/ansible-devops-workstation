@@ -1,0 +1,57 @@
+---
+# sudo apt update
+# sudo apt install software-properties-common apt-transport-https wget
+# wget -q https://packages.microsoft.com/keys/microsoft.asc -O- | sudo apt-key add -
+# sudo add-apt-repository "deb [arch=amd64] https://packages.microsoft.com/repos/vscode stable main"
+# sudo apt update
+# sudo apt install code
+
+- name: microsoft_visualstudio_code | actualizo lista paquetes .deb
+  ansible.builtin.apt:
+    update_cache: true
+    cache_valid_time: 3600
+  become: true
+  tags:
+    - microsoft_visualstudio_code
+
+- name: microsoft_visualstudio_code | asegura dependencias
+  ansible.builtin.apt:
+    name:
+      - software-properties-common
+      - apt-transport-https
+    state: present
+  become: true
+  tags:
+    - microsoft_visualstudio_code
+
+# https://docs.ansible.com/ansible/latest/collections/ansible/builtin/apt_key_module.html
+# The apt-key command has been deprecated and suggests to 'manage keyring files in trusted.gpg.d instead'.
+
+- name: microsoft_visualstudio_code | agrega clave del repo
+  ansible.builtin.get_url:
+    url: "https://packages.microsoft.com/keys/microsoft.asc"
+    mode: "0644"
+    dest: /usr/share/keyrings/microsoft.asc
+    force: true
+  become: true
+  tags:
+    - microsoft_visualstudio_code
+
+- name: microsoft_visualstudio_code | agrego repo
+  ansible.builtin.apt_repository:
+    repo: "deb [arch=amd64 signed-by=/usr/share/keyrings/microsoft.asc] https://packages.microsoft.com/repos/vscode stable main"
+    state: present
+    update_cache: true
+    filename: vscode
+  become: true
+  tags:
+    - microsoft_visualstudio_code
+
+- name: microsoft_visualstudio_code | instala microsoft_visualstudio_code
+  ansible.builtin.apt:
+    name:
+      - code
+    state: present
+  become: true
+  tags:
+    - microsoft_visualstudio_code

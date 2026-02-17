@@ -1,0 +1,16 @@
+---
+- name: Verify
+  hosts: all
+  become: true
+
+  tasks:
+    - name: Check vagrant exists
+      ansible.builtin.command: vagrant --version
+      register: vagrant_check
+      failed_when: false
+      changed_when: false
+
+    - name: Assert vagrant is installed
+      ansible.builtin.assert:
+        that:
+          - vagrant_check.rc == 0

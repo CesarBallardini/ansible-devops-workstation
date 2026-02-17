@@ -1,0 +1,15 @@
+---
+- name: Verify
+  hosts: all
+  become: true
+
+  tasks:
+    - name: Check ansible venv exists
+      ansible.builtin.stat:
+        path: "{{ ansible_env.HOME }}/.ansible-venv/bin/activate"
+      register: venv_stat
+
+    - name: Assert ansible venv exists
+      ansible.builtin.assert:
+        that:
+          - venv_stat.stat.exists

@@ -1,0 +1,14 @@
+---
+- name: Verify
+  hosts: all
+  become: true
+
+  tasks:
+    - name: Gather package facts
+      ansible.builtin.package_facts:
+        manager: auto
+
+    - name: Assert preload is installed
+      ansible.builtin.assert:
+        that:
+          - "'preload' in ansible_facts.packages"

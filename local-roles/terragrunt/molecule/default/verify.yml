@@ -1,0 +1,16 @@
+---
+- name: Verify
+  hosts: all
+  become: true
+
+  tasks:
+    - name: Check terragrunt exists
+      ansible.builtin.command: /usr/local/bin/terragrunt --version
+      register: terragrunt_check
+      failed_when: false
+      changed_when: false
+
+    - name: Assert terragrunt is installed
+      ansible.builtin.assert:
+        that:
+          - terragrunt_check.rc == 0

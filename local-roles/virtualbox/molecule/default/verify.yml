@@ -1,0 +1,14 @@
+---
+- name: Verify
+  hosts: all
+  become: true
+
+  tasks:
+    - name: Gather package facts
+      ansible.builtin.package_facts:
+        manager: auto
+
+    - name: Assert virtualbox is installed
+      ansible.builtin.assert:
+        that:
+          - "'virtualbox-7.0' in ansible_facts.packages"

@@ -1,0 +1,23 @@
+---
+galaxy_info:
+  role_name: sshfs-fuse
+  author: CesarBallardini
+  description: Install and configure SSHFS and FUSE
+  min_ansible_version: "2.17"
+  license: MIT
+  platforms:
+    - name: Ubuntu
+      versions:
+        - jammy
+        - noble
+        - resolute
+    - name: Debian
+      versions:
+        - trixie
+        - forky
+  galaxy_tags:
+    - sshfs
+    - fuse
+    - filesystem
+
+dependencies: []

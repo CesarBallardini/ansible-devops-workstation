@@ -47,12 +47,15 @@ tool_profiles:
     - racket
     - pharo
     - emulador_3270
+    - flatpak
+    - codium
     - tinyproxy
 
   developer:                     # Software developer desktop
     - escritorio
     - snap
     - microsoft_visualstudio_code
+    - codium
     - mise-en-place
     - sshfs-fuse
     - bitwarden

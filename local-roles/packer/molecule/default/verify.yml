@@ -1,0 +1,16 @@
+---
+- name: Verify
+  hosts: all
+  become: true
+
+  tasks:
+    - name: Check packer exists
+      ansible.builtin.command: /usr/local/bin/packer --version
+      register: packer_check
+      failed_when: false
+      changed_when: false
+
+    - name: Assert packer is installed
+      ansible.builtin.assert:
+        that:
+          - packer_check.rc == 0

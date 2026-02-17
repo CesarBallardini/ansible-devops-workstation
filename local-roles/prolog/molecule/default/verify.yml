@@ -1,0 +1,19 @@
+---
+- name: Verify
+  hosts: all
+  become: true
+
+  tasks:
+    - name: Gather package facts
+      ansible.builtin.package_facts:
+        manager: auto
+
+    - name: Assert swi-prolog-nox is installed
+      ansible.builtin.assert:
+        that:
+          - "'swi-prolog-nox' in ansible_facts.packages"
+
+    - name: Assert gprolog is installed
+      ansible.builtin.assert:
+        that:
+          - "'gprolog' in ansible_facts.packages"

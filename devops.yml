@@ -48,14 +48,24 @@
 #        - devops
 #        - vmware-workstation
 
-    - ansible.builtin.include_tasks: tasks/devops_aws.yml
-      when: "'aws' in active_tools"
+    - ansible.builtin.include_role:
+        name: aws
+        apply:
+          tags:
+            - devops
+            - aws
+      when: install_aws | bool
       tags:
         - devops
         - aws
 
-    - ansible.builtin.include_tasks: tasks/devops_ansible.yml
-      when: "'ansible' in active_tools"
+    - ansible.builtin.include_role:
+        name: ansible
+        apply:
+          tags:
+            - devops
+            - ansible
+      when: install_ansible | bool
       tags:
         - devops
         - ansible
@@ -66,40 +76,67 @@
           tags:
             - devops
             - git
-      when: "'git' in active_tools"
+      when: install_git | bool
       tags:
         - devops
         - git
 
-    - ansible.builtin.include_tasks: tasks/devops_git_credential_manager.yml
-      when: "'git-credential-manager' in active_tools"
+    - ansible.builtin.include_role:
+        name: git-credential-manager
+        apply:
+          tags:
+            - devops
+            - git-credential-manager
+      when: install_git_credential_manager | bool
       tags:
         - devops
         - git-credential-manager
 
-    - ansible.builtin.include_tasks: tasks/devops_terraform.yml
-      when: "'terraform' in active_tools"
+    - ansible.builtin.include_role:
+        name: terraform
+        apply:
+          tags:
+            - devops
+            - terraform
+      when: install_terraform | bool
       tags:
         - devops
         - terraform
 
-    - ansible.builtin.include_tasks: tasks/devops_terraform_docs.yml
-      when: "'terraform-docs' in active_tools"
+    - ansible.builtin.include_role:
+        name: terraform-docs
+        apply:
+          tags:
+            - devops
+            - terraform
+            - terraform-docs
+      when: install_terraform_docs | bool
       tags:
         - devops
         - terraform
         - terraform-docs
 
-    - ansible.builtin.include_tasks: tasks/devops_terragrunt.yml
-      when: "'terragrunt' in active_tools"
+    - ansible.builtin.include_role:
+        name: terragrunt
+        apply:
+          tags:
+            - devops
+            - terraform
+            - terragrunt
+      when: install_terragrunt | bool
       tags:
         - devops
         - terraform
         - terragrunt
 
-    - ansible.builtin.include_tasks: tasks/devops_virtualbox.yml
+    - ansible.builtin.include_role:
+        name: virtualbox
+        apply:
+          tags:
+            - devops
+            - virtualbox
       when:
-        - "'virtualbox' in active_tools"
+        - install_virtualbox | bool
         - hay_virtualizacion_register is succeeded
       vars:
         virtualbox_old_packages_to_remove:
@@ -113,9 +150,14 @@
         - devops
         - virtualbox
 
-    - ansible.builtin.include_tasks: tasks/devops_virtualbox.yml
+    - ansible.builtin.include_role:
+        name: virtualbox
+        apply:
+          tags:
+            - devops
+            - virtualbox
       when:
-        - "'virtualbox' in active_tools"
+        - install_virtualbox | bool
         - hay_virtualizacion_register is failed
       vars:
         virtualbox_old_packages_to_remove:
@@ -129,32 +171,57 @@
         - devops
         - virtualbox
 
-    - ansible.builtin.include_tasks: tasks/devops_vagrant.yml
-      when: "'vagrant' in active_tools"
+    - ansible.builtin.include_role:
+        name: vagrant
+        apply:
+          tags:
+            - devops
+            - vagrant
+      when: install_vagrant | bool
       tags:
         - devops
         - vagrant
 
-    - ansible.builtin.include_tasks: tasks/devops_packer.yml
-      when: "'packer' in active_tools"
+    - ansible.builtin.include_role:
+        name: packer
+        apply:
+          tags:
+            - devops
+            - packer
+      when: install_packer | bool
       tags:
         - devops
         - packer
 
-    - ansible.builtin.include_tasks: tasks/devops_goss.yml
-      when: "'goss' in active_tools"
+    - ansible.builtin.include_role:
+        name: goss
+        apply:
+          tags:
+            - devops
+            - goss
+      when: install_goss | bool
       tags:
         - devops
         - goss
 
-    - ansible.builtin.include_tasks: tasks/devops_govc.yml
-      when: "'govc' in active_tools"
+    - ansible.builtin.include_role:
+        name: govc
+        apply:
+          tags:
+            - devops
+            - govc
+      when: install_govc | bool
       tags:
         - devops
         - govc
 
-    - ansible.builtin.include_tasks: tasks/devops_docker.yml
-      when: "'docker' in active_tools"
+    - ansible.builtin.include_role:
+        name: docker
+        apply:
+          tags:
+            - devops
+            - docker
+      when: install_docker | bool
       tags:
         - devops
         - docker

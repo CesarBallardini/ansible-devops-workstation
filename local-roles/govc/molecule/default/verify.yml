@@ -1,0 +1,16 @@
+---
+- name: Verify
+  hosts: all
+  become: true
+
+  tasks:
+    - name: Check govc exists
+      ansible.builtin.command: /usr/local/bin/govc version
+      register: govc_check
+      failed_when: false
+      changed_when: false
+
+    - name: Assert govc is installed
+      ansible.builtin.assert:
+        that:
+          - govc_check.rc == 0

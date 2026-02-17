@@ -1,0 +1,337 @@
+---
+# https://docs.ansible.com/ansible/latest/collections/ansible/builtin/apt_key_module.html
+# The apt-key command has been deprecated and suggests to 'manage keyring files in trusted.gpg.d instead'.
+
+- name: escritorio | agrega clave del repo Google Chrome
+  ansible.builtin.get_url:
+    url: https://dl-ssl.google.com/linux/linux_signing_key.pub
+    mode: "0644"
+    dest: /usr/share/keyrings/google-chrome.asc
+    force: true
+  become: true
+  tags:
+    - escritorio
+
+- name: escritorio | agrego repo google chrome
+  ansible.builtin.apt_repository:
+    repo: "deb [arch=amd64 signed-by=/usr/share/keyrings/google-chrome.asc] http://dl.google.com/linux/chrome/deb/ stable main"
+    state: present
+    filename: google-chrome
+    update_cache: true
+  become: true
+  tags:
+    - escritorio
+
+- name: escritorio | actualizo lista paquetes .deb
+  ansible.builtin.apt:
+    update_cache: true
+    cache_valid_time: 3600
+  become: true
+  tags:
+    - escritorio
+
+- name: escritorio | libdvd-pkg config 1
+  ansible.builtin.debconf:
+    name: libdvd-pkg
+    question: libdvd-pkg/build
+    value: "True"
+    vtype: boolean
+  become: true
+  changed_when: false
+  tags:
+    - escritorio
+
+- name: escritorio | libdvd-pkg config 2
+  ansible.builtin.debconf:
+    name: libdvd-pkg
+    question: libdvd-pkg/first-install
+    value: ""
+    vtype: note
+  become: true
+  tags:
+    - escritorio
+
+- name: escritorio | libdvd-pkg config 3
+  ansible.builtin.debconf:
+    name: libdvd-pkg
+    question: libdvd-pkg/upgrade
+    value: ""
+    vtype: note
+  become: true
+  tags:
+    - escritorio
+
+- name: escritorio | libdvd-pkg config 4
+  ansible.builtin.debconf:
+    name: libdvd-pkg
+    question: libdvd-pkg/post-invoke_hook-remove
+    value: "False"
+    vtype: boolean
+  become: true
+  changed_when: false
+  tags:
+    - escritorio
+
+- name: escritorio | libdvd-pkg config 5
+  ansible.builtin.debconf:
+    name: libdvd-pkg
+    question: libdvd-pkg/post-invoke_hook-install
+    value: "True"
+    vtype: boolean
+  become: true
+  changed_when: false
+  tags:
+    - escritorio
+
+- name: escritorio | ttf-mscorefonts-installer
+  ansible.builtin.debconf:
+    name: ttf-mscorefonts-installer
+    question: msttcorefonts/accepted-mscorefonts-eula
+    value: "True"
+    vtype: boolean
+  become: true
+  changed_when: false
+  tags:
+    - escritorio
+
+- name: escritorio | completa instalacion de idiomas (Ubuntu only)
+  ansible.builtin.shell: |
+    apt install -y $(check-language-support)
+  become: true
+  changed_when: false
+  when: ansible_facts['distribution'] == 'Ubuntu'
+  tags:
+    - escritorio
+
+- name: escritorio | instala paquetes de servidor
+  ansible.builtin.package:
+    name:
+      - cgroup-tools
+      - cmake
+      - debconf-utils
+      - deborphan
+      - dnsmasq
+      - inetutils-traceroute
+      - iotop
+      - iproute2
+      - gawk
+      - htop
+      - mc
+      - plocate
+      - nocache
+      - openssh-server
+      - pv
+      - rar
+      - rdiff-backup
+      - screen
+      - sshpass
+      - unrar
+    state: present
+  become: true
+  tags:
+    - escritorio
+
+- name: escritorio | instala varios
+  ansible.builtin.apt:
+    name:
+      - exfatprogs
+      - python-is-python3
+    state: present
+  become: true
+  tags:
+    - escritorio
+
+- name: escritorio | instala varios
+  ansible.builtin.apt:
+    name:
+      - axel
+      - bchunk
+      - convmv
+      - dia
+      - eog
+      - exfat-fuse
+      #- fdupes
+      - flameshot
+      - google-chrome-stable
+      - gpm
+      - graphviz
+      - ipcalc
+      - libavcodec-extra
+      - libnotify-bin
+      #- libdvd-pkg
+      - makepasswd
+      - mate-utils
+      - minicom
+      - mplayer
+      - nmap
+      - ntfs-3g
+      - odt2txt
+      - pulseaudio-utils # needed for zoom audio share
+      - recode
+      - tree
+      - ttf-mscorefonts-installer
+      - vim
+      - wv
+      - x11-xkb-utils
+      - xauth
+      - xscreensaver
+      - "{{ 'zram-config' if ansible_facts['distribution'] == 'Ubuntu' else 'zram-tools' }}"
+      #- gnome-tweak-tool
+    state: present
+  become: true
+  tags:
+    - escritorio
+
+- name: escritorio | check available optional desktop packages
+  ansible.builtin.include_tasks: package_available.yml
+  vars:
+    optional_packages:
+      - antiword
+      - djview4
+      - elinks
+      - xchm
+      - xournal
+  tags:
+    - escritorio
+
+- name: escritorio | instala paquetes opcionales de escritorio
+  ansible.builtin.apt:
+    name: "{{ available_optional_packages }}"
+    state: present
+  when: available_optional_packages | length > 0
+  become: true
+  tags:
+    - escritorio
+
+- name: escritorio | instala libreoffice
+  ansible.builtin.apt:
+    name:
+      - libreoffice-base-core
+      - libreoffice-calc
+      - libreoffice-common
+      - libreoffice-core
+      - libreoffice-draw
+      - libreoffice-gnome
+      - libreoffice-gtk3
+      - libreoffice-help-en-gb
+      - libreoffice-help-en-us
+      - libreoffice-help-es
+      - libreoffice-impress
+      - libreoffice-java-common
+      - libreoffice-l10n-en-gb
+      - libreoffice-l10n-en-za
+      - libreoffice-l10n-es
+      - libreoffice-math
+      - libreoffice-ogltrans
+      - libreoffice-style-breeze
+      - libreoffice-writer
+    state: present
+  become: true
+  tags:
+    - escritorio
+
+- name: escritorio | check available optional libreoffice style packages
+  ansible.builtin.include_tasks: package_available.yml
+  vars:
+    optional_packages:
+      - libreoffice-style-elementary
+      - libreoffice-style-tango
+  tags:
+    - escritorio
+
+- name: escritorio | instala estilos opcionales de libreoffice
+  ansible.builtin.apt:
+    name: "{{ available_optional_packages }}"
+    state: present
+  when: available_optional_packages | length > 0
+  become: true
+  tags:
+    - escritorio
+
+- name: escritorio | elimina varios
+  ansible.builtin.apt:
+    name:
+      - avahi-daemon
+      - bamfdaemon
+      - cups-browsed
+      - deja-dup
+      - empathy
+      - evolution-data-server
+      - gnome-software
+      - indicator-messages
+      - libreoffice-qt5 # https://ask.libreoffice.org/t/blank-pdf-when-i-export-from-librewriter/64728/3
+      - libzeitgeist-1.0-1
+      - libzeitgeist-2.0-0
+      - modemmanager
+      - telepathy-indicator
+    state: absent
+  failed_when: false
+  become: true
+  tags:
+    - escritorio
+
+# http://duncanlock.net/blog/2013/05/03/how-to-set-your-compose-key-on-xfce-xubuntu-lxde-linux/
+# http://wiki.linuxquestions.org/wiki/List_of_Keysyms_Recognised_by_Xmodmap
+# /usr/share/X11/locale/en_US.UTF-8/Compose lista de simbolos para Compose
+# http://wiki.linuxquestions.org/wiki/List_of_keysyms
+# FIXME: para arreglarlo a nivel sistema modificar en /etc/default/keyboard XKBOPTIONS="compose:paus"
+#
+# https://wiki.archlinux.org/index.php/Linux_console_(Espa%C3%B1ol)/Keyboard_configuration_(Espa%C3%B1ol)
+# localectl status
+# https://wiki.archlinux.org/index.php/Keyboard_input
+# https://wiki.archlinux.org/index.php/Xorg/Keyboard_configuration#Configuring_compose_key
+# grep "compose:" /usr/share/X11/xkb/rules/base.lst
+# setxkbmap -print -verbose 10
+
+- name: escritorio | activa tecla de Compose
+  ansible.builtin.shell: setxkbmap -option "compose:paus"
+  failed_when: false
+  changed_when: false
+  tags:
+    - escritorio
+
+## http://rg3.github.io/youtube-dl/download.html
+#- name: escritorio | instala youtube-dl
+#  shell: |
+#      if [ ! -f /usr/local/bin/youtube-dl ] ; then
+#        curl -L https://yt-dl.org/downloads/latest/youtube-dl -o /usr/local/bin/youtube-dl
+#        chmod a+rx /usr/local/bin/youtube-dl
+#      fi
+#
+#  changed_when: false
+#  become: true
+#  tags:
+#    - escritorio
+
+#- name: escritorio | actualiza youtube-dl
+#  command: python3 /usr/local/bin/youtube-dl --update
+#  changed_when: false
+#  become: true
+#  tags:
+#    - escritorio
+
+- name: escritorio | configura cgroup-tools en grub
+  ansible.builtin.lineinfile:
+    path: /etc/default/grub
+    regexp: "^GRUB_CMDLINE_LINUX_DEFAULT="
+    line: 'GRUB_CMDLINE_LINUX_DEFAULT="cgroup_enable=memory swapaccount=1"'
+    owner: root
+    group: root
+    mode: "0644"
+    validate: "sudo /usr/sbin/update-grub # %s"
+  become: true
+  tags:
+    - escritorio
+
+
+# FIXME:
+#
+#  sudo vi /usr/local/bin/gdmflexiserver
+#
+# #!/bin/sh
+# #
+# # replacement for missing gdmflexiserver in Ubuntu 1[48].04
+# #
+# dm-tool switch-to-greeter
+#
+#  sudo chmod a+rx  /usr/local/bin/gdmflexiserver

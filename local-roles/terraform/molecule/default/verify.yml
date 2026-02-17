@@ -1,0 +1,16 @@
+---
+- name: Verify
+  hosts: all
+  become: true
+
+  tasks:
+    - name: Check terraform exists
+      ansible.builtin.command: /usr/local/bin/terraform --version
+      register: terraform_check
+      failed_when: false
+      changed_when: false
+
+    - name: Assert terraform is installed
+      ansible.builtin.assert:
+        that:
+          - terraform_check.rc == 0

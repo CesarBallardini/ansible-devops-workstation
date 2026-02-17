@@ -1,0 +1,5 @@
+---
+install_sshfs_fuse: true
+fuse_restrict_access: true
+fuse_mount_max: 'default'
+fuse_user_allow_other: true

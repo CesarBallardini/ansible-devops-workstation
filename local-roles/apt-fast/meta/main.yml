@@ -1,0 +1,23 @@
+---
+galaxy_info:
+  role_name: apt-fast
+  author: CesarBallardini
+  description: Install and configure apt-fast download accelerator
+  min_ansible_version: "2.17"
+  license: MIT
+  platforms:
+    - name: Ubuntu
+      versions:
+        - jammy
+        - noble
+        - resolute
+    - name: Debian
+      versions:
+        - trixie
+        - forky
+  galaxy_tags:
+    - apt
+    - apt-fast
+    - performance
+
+dependencies: []

@@ -1,2 +1,2 @@
 ---
-# No configurable variables for this role
+install_mise_en_place: true

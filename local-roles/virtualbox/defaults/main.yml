@@ -1,0 +1,4 @@
+---
+install_virtualbox: true
+virtualbox_old_packages_to_remove: []
+virtualbox_version_to_install: "virtualbox-7.0"

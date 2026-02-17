@@ -6,12 +6,18 @@
     # template para /etc/systemd/timesyncd.conf poner los servidores NTP
     # sudo service systemd-timesyncd restart
 
-    - ansible.builtin.include_tasks: tasks/paquetes_de_escritorio.yml
-      when: "'escritorio' in active_tools"
+    - ansible.builtin.include_role:
+        name: paquetes-de-escritorio
+        apply:
+          tags: [escritorio]
+      when: install_escritorio | bool
       tags: [escritorio]
 
-    - ansible.builtin.include_tasks: tasks/instala_zoom.yml
-      when: "'zoom' in active_tools"
+    - ansible.builtin.include_role:
+        name: zoom
+        apply:
+          tags: [zoom]
+      when: install_zoom | bool
       tags: [zoom]
 
     - ansible.builtin.include_role:
@@ -20,18 +26,23 @@
           tags:
             - ffmpeg
             - video
-      when: "'ffmpeg' in active_tools"
+      when: install_ffmpeg | bool
       tags: [ffmpeg, video]
 
     - ansible.builtin.include_role:
         name: openshot
         apply:
           tags: [openshot, video]
-      when: "'openshot' in active_tools"
+      when: install_openshot | bool
       tags: [openshot, video]
 
-    - ansible.builtin.include_tasks: tasks/instala_snap.yml
-      when: "'snap' in active_tools"
+    - ansible.builtin.include_role:
+        name: snap
+        apply:
+          tags:
+            - escritorio
+            - snap
+      when: install_snap | bool
       tags:
         - escritorio
         - snap
@@ -42,7 +53,7 @@
           tags:
             - escritorio
             - eclipse
-      when: "'eclipse' in active_tools"
+      when: install_eclipse | bool
       tags:
         - escritorio
         - eclipse
@@ -53,7 +64,7 @@
           tags:
             - escritorio
             - netbeans
-      when: "'netbeans' in active_tools"
+      when: install_netbeans | bool
       tags:
         - escritorio
         - netbeans
@@ -64,7 +75,7 @@
           tags:
             - escritorio
             - telegram_desktop
-      when: "'telegram_desktop' in active_tools"
+      when: install_telegram_desktop | bool
       tags:
         - escritorio
         - telegram_desktop
@@ -75,7 +86,7 @@
           tags:
             - escritorio
             - slack
-      when: "'slack' in active_tools"
+      when: install_slack | bool
       tags:
         - escritorio
         - slack
@@ -86,14 +97,19 @@
           tags:
             - escritorio
             - bitwarden
-      when: "'bitwarden' in active_tools"
+      when: install_bitwarden | bool
       tags:
         - escritorio
         - bitwarden
 
     # Microsoft VisualStudio Code es version privativa, usaba VSCodium, el fork libre, me canse de los plugins que solo funcionan en vscode
-    - ansible.builtin.include_tasks: tasks/instala_microsoft_visualstudio_code.yml
-      when: "'microsoft_visualstudio_code' in active_tools"
+    - ansible.builtin.include_role:
+        name: microsoft-visualstudio-code
+        apply:
+          tags:
+            - escritorio
+            - microsoft_visualstudio_code
+      when: install_microsoft_visualstudio_code | bool
       tags:
         - escritorio
         - microsoft_visualstudio_code
@@ -104,22 +120,45 @@
           tags:
             - escritorio
             - mise-en-place
-      when: "'mise-en-place' in active_tools"
+      when: install_mise_en_place | bool
       tags:
         - escritorio
         - mise-en-place
 
-#  - include_tasks: tasks/instala_codium.yml
-#    tags:
-#      - escritorio
-#      - codium
+    - ansible.builtin.include_role:
+        name: codium
+        apply:
+          tags:
+            - escritorio
+            - codium
+      when: install_codium | bool
+      tags:
+        - escritorio
+        - codium
 
-    - ansible.builtin.include_tasks: tasks/sshfs-fuse.yml
-      when: "'sshfs-fuse' in active_tools"
+    - ansible.builtin.include_role:
+        name: flatpak
+        apply:
+          tags:
+            - escritorio
+            - flatpak
+      when: install_flatpak | bool
+      tags:
+        - escritorio
+        - flatpak
+
+    - ansible.builtin.include_role:
+        name: sshfs-fuse
+        apply:
+          tags: [escritorio]
+      when: install_sshfs_fuse | bool
       tags: [escritorio]
 
-    - ansible.builtin.include_tasks: tasks/instala_rambox.yml
-      when: "'rambox' in active_tools"
+    - ansible.builtin.include_role:
+        name: rambox
+        apply:
+          tags: [rambox]
+      when: install_rambox | bool
       tags: [rambox]
 
     # - ansible.builtin.include_role:  # no funciona correctamente sobre ubuntu 18.04 (2019/02/06)
@@ -143,6 +182,6 @@
         name: emulador-3270
         apply:
           tags: [emulador_3270]
-      when: "'emulador_3270' in active_tools"
+      when: install_emulador_3270 | bool
       tags: [emulador_3270]
       # se usa para conectarse a minis y mainframes IBM

@@ -1,0 +1,23 @@
+---
+galaxy_info:
+  role_name: zoom
+  author: CesarBallardini
+  description: Install Zoom video conferencing client
+  min_ansible_version: "2.17"
+  license: MIT
+  platforms:
+    - name: Ubuntu
+      versions:
+        - jammy
+        - noble
+        - resolute
+    - name: Debian
+      versions:
+        - trixie
+        - forky
+  galaxy_tags:
+    - zoom
+    - video
+    - conferencing
+
+dependencies: []

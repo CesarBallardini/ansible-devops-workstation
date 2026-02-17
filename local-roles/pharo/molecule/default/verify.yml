@@ -1,0 +1,16 @@
+---
+- name: Verify
+  hosts: all
+  become: true
+
+  tasks:
+    - name: Check pharo directory exists
+      ansible.builtin.stat:
+        path: /opt/pharo
+      register: pharo_dir
+
+    - name: Assert pharo directory exists
+      ansible.builtin.assert:
+        that:
+          - pharo_dir.stat.exists
+          - pharo_dir.stat.isdir

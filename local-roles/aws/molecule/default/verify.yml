@@ -1,0 +1,16 @@
+---
+- name: Verify
+  hosts: all
+  become: true
+
+  tasks:
+    - name: Check aws CLI exists
+      ansible.builtin.command: /usr/local/bin/aws --version
+      register: aws_check
+      failed_when: false
+      changed_when: false
+
+    - name: Assert aws is installed
+      ansible.builtin.assert:
+        that:
+          - aws_check.rc == 0

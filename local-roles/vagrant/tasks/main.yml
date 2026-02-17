@@ -1,0 +1,200 @@
+---
+# Si vagrant_version_deseada es una cadena vacia, se instala la ultima version disponible
+#  en inventario/host_vars/localhost vagrant_version_deseada: "2.2.10"
+
+- name: devops | paquetes generales
+  ansible.builtin.package:
+    name:
+      - jq
+      - git
+      - wget
+      - curl
+      - unzip
+    state: present
+  become: true
+  tags:
+    - devops
+    - vagrant
+
+- name: devops | lista de productos de hashicorp
+  ansible.builtin.get_url:
+    url: https://releases.hashicorp.com/index.json
+    dest: /tmp/hashicorp_index.json
+  changed_when: false
+  retries: 10
+  delay: 5
+  register: hashicorp_result
+  until: hashicorp_result is succeeded
+  tags:
+    - devops
+    - vagrant
+
+- name: devops | vagrant | version actual instalada
+  ansible.builtin.shell: |
+    LANG=C vagrant --version | sed -n  -e "s/Vagrant[ ]*\([0-9\.]*\)/\1/p"
+  register: reg_vagrant_version
+  failed_when: false
+  changed_when: false
+  tags:
+    - devops
+    - vagrant
+
+- name: devops | vagrant | busca URL de la version actual
+  ansible.builtin.shell: |
+    cat /tmp/hashicorp_index.json \
+         | jq '{vagrant}' \
+         | egrep "linux.*amd64" \
+         | sort -rV \
+         | awk -F[\"] '{print $4}' \
+         | grep 'vagrant_[0-9]*\.[0-9]*\.[0-9]*'_ \
+         | head -n1
+  register: reg_vagrant_url_actual
+  changed_when: false
+  tags:
+    - devops
+    - vagrant
+
+- name: devops | vagrant | busca el nombre de la version actual
+  ansible.builtin.shell: |
+    cat /tmp/hashicorp_index.json \
+         |  jq '.vagrant.versions| .[] | .version' \
+         | sort -rV \
+         | sed -n  's/\("[0-9]*\.[0-9]*\.[0-9]*"\)/\1/p' \
+         | head -n1  \
+         | tr -d '"'
+  register: reg_vagrant_url_version
+  changed_when: false
+  tags:
+    - devops
+    - vagrant
+
+- ansible.builtin.set_fact:
+    vagrant_version_instalada: "{{ reg_vagrant_version.rc == 0 and reg_vagrant_version.stdout or false }}"
+    vagrant_url_actual: "{{ reg_vagrant_url_actual.stdout }}"
+    vagrant_url_version: "{{ reg_vagrant_url_version.stdout }}"
+    vagrant_plugins_deseados:
+      # - hostmanager
+      - vagrant-cachier
+      - vagrant-disksize
+      #- vagrant-hostmanager
+      - vagrant-mutate
+      - vagrant-proxyconf
+      - vagrant-rekey-ssh
+      - vagrant-reload
+      - vagrant-share
+      - vagrant-vbguest
+      #- vagrant-lxc
+      #- vagrant-libvirt
+  tags:
+    - devops
+    - vagrant
+
+- ansible.builtin.set_fact:
+    vagrant_version_a_instalar: "{{ vagrant_version_deseada | d('')  if vagrant_version_deseada | d('') != '' else  vagrant_url_version }}"
+  tags:
+    - devops
+    - vagrant
+
+- ansible.builtin.debug: msg="Vagrant, version instalada  - {{ vagrant_version_instalada }}"
+  tags:
+    - devops
+    - vagrant
+- ansible.builtin.debug: msg="Vagrant, version deseada    - {{ vagrant_version_deseada | d() }}"
+  tags:
+    - devops
+    - vagrant
+- ansible.builtin.debug: msg="Vagrant, version a instalar - {{ vagrant_version_a_instalar }}"
+  tags:
+    - devops
+    - vagrant
+- ansible.builtin.debug: msg="Vagrant, url actual         - {{ vagrant_url_actual}}"
+  tags:
+    - devops
+    - vagrant
+- ansible.builtin.debug: msg="Vagrant, url version        - {{ vagrant_url_version}}"
+  tags:
+    - devops
+    - vagrant
+
+- name: devops | vagrant | instala paquete
+  ansible.builtin.apt:
+    # deb: "https://releases.hashicorp.com/vagrant/{{ vagrant_version_a_instalar }}/vagrant_{{ vagrant_version_a_instalar }}_x86_64.deb"
+    # from 2022-08-10: FIXME
+    deb: "https://releases.hashicorp.com/vagrant/{{ vagrant_version_a_instalar }}/vagrant_{{ vagrant_version_a_instalar }}-1_amd64.deb"
+    dpkg_options: force-downgrade
+    force: true
+  become: true
+  when: vagrant_version_instalada != vagrant_version_a_instalar
+  tags:
+    - devops
+    - vagrant
+
+- name: devops | vagrant | encuentra plugins instalados
+  ansible.builtin.shell: vagrant plugin list 2>/dev/null | sed -n -e 's/^\([^ ]*\) (.*)/\1/p'
+  register: reg_plugins_instalados
+  changed_when: false
+  become: true
+  become_user: "{{ devops_user_name }}"
+  tags:
+    - devops
+    - vagrant
+
+# https://github.com/hashicorp/vagrant/issues/13527 Vagrant plugins cannot be installed anymore for vagrant 2.4.2
+- name: devops | vagrant | instala plugins
+  ansible.builtin.command: "vagrant plugin install {{ item }}"
+  loop: "{{ (vagrant_plugins_deseados | difference(reg_plugins_instalados.stdout_lines)) }}"
+  become: true
+  become_user: "{{ devops_user_name }}"
+  tags:
+    - devops
+    - vagrant
+
+- name: devops | vagrant | configura plugin vagrant-proxyconf
+  ansible.builtin.copy:
+    dest: ~/.vagrant.d/Vagrantfile
+    content: |
+      Vagrant.configure("2") do |config|
+        $stderr.puts "proxyconf..."
+      #  if defined?(VagrantPlugins::ProxyConf)       # vagrant 1.2
+        if Vagrant.has_plugin?("vagrant-proxyconf")   # otros vagrant
+          $stderr.puts "se encontro el plugin proxyconf !"
+          if ENV["http_proxy"]
+            $stderr.puts "http_proxy: " + ENV["http_proxy"]
+            config.proxy.http     = ENV["http_proxy"]
+          end
+          if ENV["https_proxy"]
+            $stderr.puts "https_proxy: " + ENV["https_proxy"]
+            config.proxy.https    = ENV["https_proxy"]
+          end
+          if ENV["no_proxy"]
+            $stderr.puts "no_proxy: " + ENV["no_proxy"]
+            config.proxy.no_proxy = ENV["no_proxy"]
+          end
+        else
+          $stderr.puts "no se encontro el plugin proxyconf !"
+        end
+      end
+
+  become: true
+  become_user: "{{ devops_user_name }}"
+  tags:
+    - devops
+    - vagrant
+
+- name: devops | vagrant | plugin repair
+  ansible.builtin.command: vagrant plugin repair
+  changed_when: false
+  become: true
+  become_user: "{{ devops_user_name }}"
+  tags:
+    - devops
+    - vagrant
+
+- name: devops | vagrant | plugin update
+  ansible.builtin.command: vagrant plugin update
+  changed_when: false
+  become: true
+  become_user: "{{ devops_user_name }}"
+  tags:
+    - devops
+    - vagrant

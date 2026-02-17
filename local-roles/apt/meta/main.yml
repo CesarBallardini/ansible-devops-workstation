@@ -1,0 +1,23 @@
+---
+galaxy_info:
+  role_name: apt
+  author: CesarBallardini
+  description: Configure APT repositories and update package cache
+  min_ansible_version: "2.17"
+  license: MIT
+  platforms:
+    - name: Ubuntu
+      versions:
+        - jammy
+        - noble
+        - resolute
+    - name: Debian
+      versions:
+        - trixie
+        - forky
+  galaxy_tags:
+    - apt
+    - packages
+    - repositories
+
+dependencies: []

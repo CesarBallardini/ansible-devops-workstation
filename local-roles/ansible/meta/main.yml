@@ -1,0 +1,23 @@
+---
+galaxy_info:
+  role_name: ansible
+  author: CesarBallardini
+  description: Install and update Ansible in a uv-managed venv
+  min_ansible_version: "2.17"
+  license: MIT
+  platforms:
+    - name: Ubuntu
+      versions:
+        - jammy
+        - noble
+        - resolute
+    - name: Debian
+      versions:
+        - trixie
+        - forky
+  galaxy_tags:
+    - ansible
+    - automation
+    - devops
+
+dependencies: []

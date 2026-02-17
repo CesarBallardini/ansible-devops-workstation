@@ -1,0 +1,12 @@
+---
+- name: Converge
+  hosts: all
+  become: true
+
+  roles:
+    - role: pharo
+      vars:
+        pharo_version_family: "120"
+        pharo_version: "12.0"
+        pharo_main_version: "12"
+        pharo_home_directory: /opt/pharo

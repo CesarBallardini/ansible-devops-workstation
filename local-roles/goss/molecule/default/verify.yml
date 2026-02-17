@@ -1,0 +1,16 @@
+---
+- name: Verify
+  hosts: all
+  become: true
+
+  tasks:
+    - name: Check goss exists
+      ansible.builtin.command: /usr/local/bin/goss --version
+      register: goss_check
+      failed_when: false
+      changed_when: false
+
+    - name: Assert goss is installed
+      ansible.builtin.assert:
+        that:
+          - goss_check.rc == 0

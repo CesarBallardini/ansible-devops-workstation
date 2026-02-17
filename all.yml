@@ -25,15 +25,27 @@
       become: true
 
     - name: all | configura APT
-      ansible.builtin.include_tasks: tasks/apt.yml
+      ansible.builtin.include_role:
+        name: apt
+        apply:
+          tags: [apt]
+      when: install_apt | bool
       tags: [apt]
 
     - name: all | instala y configura apt_fast
-      ansible.builtin.include_tasks: tasks/instala_apt_fast.yml
+      ansible.builtin.include_role:
+        name: apt-fast
+        apply:
+          tags: [apt-fast, apt]
+      when: install_apt_fast | bool
       tags: [apt-fast, apt]
 
     - name: all | actualiza paquetes en sistema
-      ansible.builtin.include_tasks: tasks/actualiza_sistema.yml
+      ansible.builtin.include_role:
+        name: actualiza-sistema
+        apply:
+          tags: [apt, upgrade]
+      when: install_actualiza_sistema | bool
       tags: [apt, upgrade]
 
     - name: paquetes generales requisitos para instalar devops
@@ -57,7 +69,11 @@
       tags: [pup]
 
     - name: all | mejora performance
-      ansible.builtin.include_tasks: tasks/mejora_performance.yml
+      ansible.builtin.include_role:
+        name: mejora-performance
+        apply:
+          tags: [performance]
+      when: install_mejora_performance | bool
       tags: [performance]
 
 
@@ -106,6 +122,44 @@
               | difference(skip_tools | default([]))
               | unique | list }}
       when: active_profiles is not defined
+      tags: [always]
+
+    - name: all | compute install variables from active_tools
+      ansible.builtin.set_fact:
+        install_escritorio: "{{ 'escritorio' in active_tools }}"
+        install_zoom: "{{ 'zoom' in active_tools }}"
+        install_ffmpeg: "{{ 'ffmpeg' in active_tools }}"
+        install_openshot: "{{ 'openshot' in active_tools }}"
+        install_snap: "{{ 'snap' in active_tools }}"
+        install_eclipse: "{{ 'eclipse' in active_tools }}"
+        install_netbeans: "{{ 'netbeans' in active_tools }}"
+        install_telegram_desktop: "{{ 'telegram_desktop' in active_tools }}"
+        install_slack: "{{ 'slack' in active_tools }}"
+        install_bitwarden: "{{ 'bitwarden' in active_tools }}"
+        install_microsoft_visualstudio_code: "{{ 'microsoft_visualstudio_code' in active_tools }}"
+        install_mise_en_place: "{{ 'mise-en-place' in active_tools }}"
+        install_sshfs_fuse: "{{ 'sshfs-fuse' in active_tools }}"
+        install_rambox: "{{ 'rambox' in active_tools }}"
+        install_emulador_3270: "{{ 'emulador_3270' in active_tools }}"
+        install_flatpak: "{{ 'flatpak' in active_tools }}"
+        install_codium: "{{ 'codium' in active_tools }}"
+        install_aws: "{{ 'aws' in active_tools }}"
+        install_ansible: "{{ 'ansible' in active_tools }}"
+        install_git: "{{ 'git' in active_tools }}"
+        install_git_credential_manager: "{{ 'git-credential-manager' in active_tools }}"
+        install_terraform: "{{ 'terraform' in active_tools }}"
+        install_terraform_docs: "{{ 'terraform-docs' in active_tools }}"
+        install_terragrunt: "{{ 'terragrunt' in active_tools }}"
+        install_virtualbox: "{{ 'virtualbox' in active_tools }}"
+        install_vagrant: "{{ 'vagrant' in active_tools }}"
+        install_packer: "{{ 'packer' in active_tools }}"
+        install_goss: "{{ 'goss' in active_tools }}"
+        install_govc: "{{ 'govc' in active_tools }}"
+        install_docker: "{{ 'docker' in active_tools }}"
+        install_prolog: "{{ 'prolog' in active_tools }}"
+        install_racket: "{{ 'racket' in active_tools }}"
+        install_pharo: "{{ 'pharo' in active_tools }}"
+        install_tinyproxy: "{{ 'tinyproxy' in active_tools }}"
       tags: [always]
 
     - name: all | display active_tools
