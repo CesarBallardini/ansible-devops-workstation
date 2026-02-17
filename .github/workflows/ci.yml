@@ -48,10 +48,6 @@ jobs:
           ./first-time-install-ansible.sh
           echo "$HOME/.ansible-venv/bin" >> "$GITHUB_PATH"
 
-      - name: Create ansible.cfg
-        run: |
-          printf '[defaults]\ngathering = smart\nroles_path = roles/' > ansible.cfg
-
       - name: Ansible Lint
         run: ansible-lint site.yml
 

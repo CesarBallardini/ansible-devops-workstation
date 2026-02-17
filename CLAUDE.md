@@ -62,7 +62,7 @@ ansible-playbook -vv --syntax-check -i vagrant-inventory/ site.yml
 2. `escritorio.yml` -- Desktop apps: Chrome, LibreOffice, VS Code, Snap/Flatpak packages, IDEs (Eclipse, NetBeans), messaging (Telegram, Slack, MS Teams), mise-en-place. Targets `hosts: escritorio`.
 3. `utn.yml` -- Educational tools: SWI-Prolog, Racket, Pharo Smalltalk. Targets `hosts: utn`.
 4. `devops.yml` -- DevOps toolchain: VMware Workstation, AWS CLI, Ansible, Git, Terraform/Terragrunt/terraform-docs, VirtualBox, Vagrant, Packer, Goss, GOVC, Docker. Targets `hosts: devops`.
-5. `tinyproxy.yml` -- Local HTTP proxy. Targets `hosts: tinyproxy`.
+5. `local-roles/tinyproxy` -- Local HTTP proxy (role). Targets `hosts: tinyproxy`.
 6. `ocsinventory-agent.yml` -- OCS Inventory agent (conditionally installed when `ocs_server` is set). Targets `hosts: ocsinventoryagent`.
 
 **Inventory model**: Each playbook targets a different host group. Three inventory sources exist:
@@ -103,7 +103,7 @@ The `hosts` file defines groups: `devops_group` (all 5 VMs), `devops_group_ubunt
 
 **External roles** (via `requirements.yml`): `vmware-workstation`, `locales`, `ocsinventory-agent`. Installed into `roles/`.
 
-**Templates** (`templates/`): Jinja2 templates for `/etc/environment`, TinyProxy config, Docker HTTP proxy, fuse.conf, MS Teams preferences.
+**Templates** (`templates/`): Jinja2 templates for `/etc/environment`, Docker HTTP proxy, fuse.conf, MS Teams preferences. TinyProxy templates live in `local-roles/tinyproxy/templates/`.
 
 ## Code Style
 

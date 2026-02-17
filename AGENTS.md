@@ -80,7 +80,7 @@ This is an Ansible playbook repository for provisioning a DevOps workstation on 
 ├── escritorio.yml                # Desktop applications
 ├── devops.yml                    # DevOps tools (Docker, Terraform, etc.)
 ├── utn.yml                       # UTN educational tools
-├── tinyproxy.yml                 # Proxy configuration
+├── local-roles/tinyproxy/        # Proxy configuration (local role)
 ├── ocsinventory-agent.yml        # OCS Inventory agent
 ├── first-time-install-ansible.sh # Bootstrap: uv, venv, ansible, Galaxy deps
 ├── hosts                         # Inventory file

@@ -32,7 +32,7 @@ The CI and local bootstrap use the same script, keeping them in sync.
   escritorio.yml                  Desktop apps: Chrome, LibreOffice, VS Code, Snap/Flatpak, IDEs
   utn.yml                         Educational tools: SWI-Prolog, Racket, Pharo Smalltalk
   devops.yml                      DevOps toolchain: Docker, Terraform, VirtualBox, Vagrant, etc.
-  tinyproxy.yml                   Local HTTP proxy
+  local-roles/tinyproxy/          Local HTTP proxy (role)
   ocsinventory-agent.yml          OCS Inventory agent
   first-time-install-ansible.sh   Bootstrap script (uv, venv, ansible, Galaxy deps)
   requirements.yml                Ansible Galaxy roles and collections
@@ -59,7 +59,7 @@ Each playbook targets a different host group:
   escritorio.yml  -> hosts: escritorio
   utn.yml         -> hosts: utn
   devops.yml      -> hosts: devops
-  tinyproxy.yml   -> hosts: tinyproxy
+  (tinyproxy role via site.yml) -> hosts: tinyproxy
 
 ## Task File Naming
 

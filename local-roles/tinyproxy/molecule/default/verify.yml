@@ -1,0 +1,43 @@
+---
+- name: Verify
+  hosts: all
+  become: true
+
+  tasks:
+    - name: Gather package facts
+      ansible.builtin.package_facts:
+        manager: auto
+
+    - name: Assert tinyproxy is installed
+      ansible.builtin.assert:
+        that:
+          - "'tinyproxy' in ansible_facts.packages"
+
+    - name: Check tinyproxy.conf exists
+      ansible.builtin.stat:
+        path: /etc/tinyproxy/tinyproxy.conf
+      register: tinyproxy_conf
+
+    - name: Assert tinyproxy.conf exists
+      ansible.builtin.assert:
+        that:
+          - tinyproxy_conf.stat.exists
+
+    - name: Read tinyproxy.conf
+      ansible.builtin.slurp:
+        src: /etc/tinyproxy/tinyproxy.conf
+      register: tinyproxy_conf_content
+
+    - name: Assert config contains expected directives
+      ansible.builtin.assert:
+        that:
+          - "'Port 8888' in tinyproxy_conf_content.content | b64decode"
+          - "'Listen 0.0.0.0' in tinyproxy_conf_content.content | b64decode"
+
+    - name: Check tinyproxy service is enabled
+      ansible.builtin.service_facts:
+
+    - name: Assert tinyproxy service is enabled
+      ansible.builtin.assert:
+        that:
+          - "ansible_facts.services['tinyproxy.service'].status == 'enabled'"
