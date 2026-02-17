@@ -27,15 +27,15 @@ tool_profiles:
     - slack
     - bitwarden
     - microsoft_visualstudio_code
-    - mise-en-place
-    - sshfs-fuse
+    - mise_en_place
+    - sshfs_fuse
     - rambox
     - aws
     - ansible
     - git
-    - git-credential-manager
+    - git_credential_manager
     - terraform
-    - terraform-docs
+    - terraform_docs
     - terragrunt
     - virtualbox
     - vagrant
@@ -56,27 +56,27 @@ tool_profiles:
     - snap
     - microsoft_visualstudio_code
     - codium
-    - mise-en-place
-    - sshfs-fuse
+    - mise_en_place
+    - sshfs_fuse
     - bitwarden
     - git
-    - git-credential-manager
+    - git_credential_manager
     - docker
     - terraform
-    - terraform-docs
+    - terraform_docs
     - terragrunt
 
   sysadmin:                      # Infrastructure/ops
     - escritorio
     - snap
-    - sshfs-fuse
+    - sshfs_fuse
     - bitwarden
     - aws
     - ansible
     - git
-    - git-credential-manager
+    - git_credential_manager
     - terraform
-    - terraform-docs
+    - terraform_docs
     - terragrunt
     - virtualbox
     - vagrant
@@ -90,7 +90,7 @@ tool_profiles:
     - escritorio
     - snap
     - microsoft_visualstudio_code
-    - sshfs-fuse
+    - sshfs_fuse
     - prolog
     - racket
     - pharo
@@ -98,7 +98,7 @@ tool_profiles:
   minimal:                       # Just base desktop
     - escritorio
     - snap
-    - sshfs-fuse
+    - sshfs_fuse
     - bitwarden
 
   communication:                 # Messaging apps

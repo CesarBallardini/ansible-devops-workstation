@@ -7,7 +7,7 @@
     # sudo service systemd-timesyncd restart
 
     - ansible.builtin.include_role:
-        name: paquetes-de-escritorio
+        name: paquetes_de_escritorio
         apply:
           tags: [escritorio]
       when: install_escritorio | bool
@@ -70,7 +70,7 @@
         - netbeans
 
     - ansible.builtin.include_role:
-        name: telegram-desktop
+        name: telegram_desktop
         apply:
           tags:
             - escritorio
@@ -104,7 +104,7 @@
 
     # Microsoft VisualStudio Code es version privativa, usaba VSCodium, el fork libre, me canse de los plugins que solo funcionan en vscode
     - ansible.builtin.include_role:
-        name: microsoft-visualstudio-code
+        name: microsoft_visualstudio_code
         apply:
           tags:
             - escritorio
@@ -115,15 +115,15 @@
         - microsoft_visualstudio_code
 
     - ansible.builtin.include_role:
-        name: mise-en-place
+        name: mise_en_place
         apply:
           tags:
             - escritorio
-            - mise-en-place
+            - mise_en_place
       when: install_mise_en_place | bool
       tags:
         - escritorio
-        - mise-en-place
+        - mise_en_place
 
     - ansible.builtin.include_role:
         name: codium
@@ -148,7 +148,7 @@
         - flatpak
 
     - ansible.builtin.include_role:
-        name: sshfs-fuse
+        name: sshfs_fuse
         apply:
           tags: [escritorio]
       when: install_sshfs_fuse | bool
@@ -162,7 +162,7 @@
       tags: [rambox]
 
     # - ansible.builtin.include_role:  # no funciona correctamente sobre ubuntu 18.04 (2019/02/06)
-    #     name: liveusb-multiboot
+    #     name: liveusb_multiboot
     #     apply:
     #       tags: [multiboot]
     #   tags: [multiboot]
@@ -179,7 +179,7 @@
 #        - claude-code
 
     - ansible.builtin.include_role:
-        name: emulador-3270
+        name: emulador_3270
         apply:
           tags: [emulador_3270]
       when: install_emulador_3270 | bool

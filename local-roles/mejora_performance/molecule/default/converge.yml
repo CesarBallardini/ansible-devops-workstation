@@ -4,6 +4,6 @@
   become: true
 
   roles:
-    - role: git
+    - role: mejora_performance
       vars:
-        git_user_name: root
+        swappiness: 10

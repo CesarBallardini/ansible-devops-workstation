@@ -4,6 +4,4 @@
   become: true
 
   roles:
-    - role: git
-      vars:
-        git_user_name: root
+    - role: sshfs_fuse

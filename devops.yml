@@ -82,15 +82,15 @@
         - git
 
     - ansible.builtin.include_role:
-        name: git-credential-manager
+        name: git_credential_manager
         apply:
           tags:
             - devops
-            - git-credential-manager
+            - git_credential_manager
       when: install_git_credential_manager | bool
       tags:
         - devops
-        - git-credential-manager
+        - git_credential_manager
 
     - ansible.builtin.include_role:
         name: terraform
@@ -104,17 +104,17 @@
         - terraform
 
     - ansible.builtin.include_role:
-        name: terraform-docs
+        name: terraform_docs
         apply:
           tags:
             - devops
             - terraform
-            - terraform-docs
+            - terraform_docs
       when: install_terraform_docs | bool
       tags:
         - devops
         - terraform
-        - terraform-docs
+        - terraform_docs
 
     - ansible.builtin.include_role:
         name: terragrunt
