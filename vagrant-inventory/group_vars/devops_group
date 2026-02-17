@@ -47,9 +47,7 @@ fuse_restrict_access: False
 # FIXME: cuando .ansible_facts.ansible_devices.sda.rotational == 0 usar swappiness 1, sino 10
 # ansible localhost -i inventario/ -m setup | sed -e  "s/localhost | SUCCESS => //"  | jq ".ansible_facts.ansible_devices.sda.rotational"
 swappiness: "10"
-# FIXME: la maxima version posible en ubuntu 18.04
-#ansible_version_deseada: ''
-#ansible_version_deseada: '4.10.0'
+
 ansible_version_deseada: ''
 ansible_venv_path: '~/.ansible-venv'
 
@@ -68,7 +66,7 @@ ocs_ca_file: ''
 ocs_nosoftware: 1
 ocs_now: false
 
+goss_version_actual: ''
 
 workstation_download_url: https://download3.vmware.com/software/wkst/file/VMware-Workstation-Full-16.1.2-17966106.x86_64.bundle
 
-goss_version_actual: ''
