@@ -1,0 +1,199 @@
+# ansible-devops-workstation
+
+Ansible playbook repository that provisions DevOps workstations on Ubuntu 22.04/24.04/26.04 and Debian 13 (Trixie)/14 (Forky). Installs desktop apps, DevOps tools (Docker, Terraform, Vagrant, VirtualBox, etc.), UTN educational tools (Prolog, Racket, Pharo), and configures a TinyProxy instance.
+
+## Bootstrap
+
+A single script handles all setup for both local and CI environments:
+
+  ./first-time-install-ansible.sh                  # venv at ~/.ansible-venv
+  ./first-time-install-ansible.sh --venv /path     # custom venv path
+
+The script:
+  1. Installs uv (skips if already present)
+  2. Creates a Python venv
+  3. Installs Ansible and ansible-lint via uv pip
+  4. Installs Ansible Galaxy roles and collections from requirements.yml (if present)
+
+## CI
+
+GitHub Actions (.github/workflows/ci.yml) runs on push/PR to master:
+  1. astral-sh/setup-uv@v5 pre-installs uv (with caching/version pinning)
+  2. ./first-time-install-ansible.sh bootstraps the environment (venv at ~/.ansible-venv)
+  3. ansible-lint, syntax check, full playbook run, and idempotency check
+  4. GITHUB_TOKEN is passed as env var to avoid GitHub API rate limits
+
+The CI and local bootstrap use the same script, keeping them in sync.
+
+## Repository Structure
+
+  site.yml                        Main entry point (imports all playbooks in order)
+  all.yml                         Base system: APT repos, locales, apt-fast, system upgrade
+  escritorio.yml                  Desktop apps: Chrome, LibreOffice, VS Code, Snap/Flatpak, IDEs
+  utn.yml                         Educational tools: SWI-Prolog, Racket, Pharo Smalltalk
+  devops.yml                      DevOps toolchain: Docker, Terraform, VirtualBox, Vagrant, etc.
+  tinyproxy.yml                   Local HTTP proxy
+  ocsinventory-agent.yml          OCS Inventory agent
+  first-time-install-ansible.sh   Bootstrap script (uv, venv, ansible, Galaxy deps)
+  requirements.yml                Ansible Galaxy roles and collections
+  hosts                           Inventory template
+  hosts-vars.yml                  Variable template with placeholders (Ubuntu)
+  hosts-vars-debian.yml           Variable template with placeholders (Debian)
+  tasks/                          Individual task files per tool
+  templates/                      Jinja2 templates for config files
+  tests/                          Test playbooks and inventory
+  .github/workflows/ci.yml        GitHub Actions CI pipeline
+  Vagrantfile                     Symlink to Vagrantfile.ubuntu22.04
+  Vagrantfile.ubuntu22.04         Vagrant VM for Ubuntu 22.04 (devopsws-jammy)
+  Vagrantfile.ubuntu24.04         Vagrant VM for Ubuntu 24.04 (devopsws-noble)
+  Vagrantfile.ubuntu26.04         Vagrant VM for Ubuntu 26.04 (devopsws-resolute)
+  Vagrantfile.debian13            Vagrant VM for Debian 13 Trixie (devopsws-trixie)
+  Vagrantfile.debian14            Vagrant VM for Debian 14 Forky (devopsws-forky)
+  inventario/                     Production inventory (separate git repo)
+  vagrant-inventory/              Vagrant multi-distro testing inventory
+
+## Playbook Targets
+
+Each playbook targets a different host group:
+  all.yml         -> hosts: all
+  escritorio.yml  -> hosts: escritorio
+  utn.yml         -> hosts: utn
+  devops.yml      -> hosts: devops
+  tinyproxy.yml   -> hosts: tinyproxy
+
+## Task File Naming
+
+  devops_*.yml    DevOps tools (docker, terraform, vagrant, etc.)
+  instala_*.yml   Desktop/general apps (zoom, chrome, etc.)
+  paquetes_*.yml  Package groups
+  dev_*.yml       IDEs (eclipse, netbeans)
+
+## Inventory Model
+
+Three inventory sources exist, all must be kept in sync:
+
+1. hosts + hosts-vars.yml / hosts-vars-debian.yml
+   Canonical templates with placeholder values for quick runs with --extra-vars.
+
+2. inventario/ (separate git repo)
+   Production inventory with real machine-specific values.
+   Contains host_vars/localhost with actual IPs, user config, etc.
+
+3. vagrant-inventory/ (structured for multi-distro Vagrant testing)
+   Split into group_vars and per-distro host_vars:
+
+   vagrant-inventory/
+     ansible.cfg                    # gathering = smart
+     hosts                          # all 5 VMs, group definitions
+     group_vars/
+       devops_group                 # shared variables (proxy, OCS, pharo, goss, etc.)
+     host_vars/
+       devopsws-jammy               # Ubuntu 22.04 repo URLs
+       devopsws-noble               # Ubuntu 24.04 repo URLs
+       devopsws-resolute            # Ubuntu 26.04 repo URLs
+       devopsws-trixie              # Debian 13 repo URLs
+       devopsws-forky               # Debian 14 repo URLs
+
+   The hosts file defines:
+   - devops_group: all 5 VMs
+   - devops_group_ubuntu: jammy, noble, resolute
+   - devops_group_debian: trixie, forky
+   - Playbook target groups (escritorio, devops, utn, etc.) as :children of devops_group
+
+## Vagrant Testing
+
+One Vagrantfile per distribution, each with unique hostname and IP:
+
+  Vagrantfile.ubuntu22.04  -> devopsws-jammy     192.168.56.11  bento/ubuntu-22.04
+  Vagrantfile.ubuntu24.04  -> devopsws-noble     192.168.56.12  bento/ubuntu-24.04
+  Vagrantfile.ubuntu26.04  -> devopsws-resolute  192.168.56.13  bento/ubuntu-26.04
+  Vagrantfile.debian13     -> devopsws-trixie    192.168.56.14  bento/debian-13
+  Vagrantfile.debian14     -> devopsws-forky     192.168.56.15  bento/debian-14
+
+Vagrantfile is a symlink to Vagrantfile.ubuntu22.04.
+To test a specific distro: VAGRANT_VAGRANTFILE=Vagrantfile.debian13 vagrant up
+Debian boxes use bento/ (official debian/ boxes only provide libvirt).
+
+## Key Commands
+
+  # Syntax check
+  ansible-playbook -vv -i tests/inventory tests/test.yml --syntax-check
+
+  # Run tests locally (Ubuntu)
+  ansible-playbook -i tests/inventory tests/test.yml --connection=local --extra-vars @tests/hosts-vars.yml
+
+  # Run tests locally (Debian)
+  ansible-playbook -i tests/inventory tests/test.yml --connection=local --extra-vars @tests/hosts-vars-debian.yml
+
+  # Dry run
+  ansible-playbook -i hosts site.yml --check
+
+  # Run against localhost (Ubuntu)
+  ansible-playbook -vv -i hosts site.yml --limit localhost --extra-vars "@hosts-vars.yml"
+
+  # Run against localhost (Debian)
+  ansible-playbook -vv -i hosts site.yml --limit localhost --extra-vars "@hosts-vars-debian.yml"
+
+  # Run specific tags
+  ansible-playbook site.yml --tags apt,docker
+  ansible-playbook site.yml --skip-tags eclipse,netbeans,telegram-desktop
+
+  # Lint
+  ansible-lint site.yml
+
+  # Vagrant (specific distro)
+  VAGRANT_VAGRANTFILE=Vagrantfile.debian13 vagrant up
+
+  # Verify vagrant inventory
+  ansible-inventory -i vagrant-inventory/ --list
+
+## Code Conventions
+
+- YAML with 2-space indent, files start with ---
+- Every task has a name: field prefixed with component (e.g., "devops | git clone...")
+- Variable references always quoted: "{{ variable_name }}"
+- Variable names in snake_case
+- Tags on every included task file
+- Distribution conditionals use ansible_facts['distribution'] (not the deprecated ansible_distribution)
+- Ubuntu version conditionals: ansible_distribution_version is version('22.04', operator='ge', strict=True)
+- Distribution-aware URLs use: {{ ansible_facts['distribution'] | lower }} (e.g., Docker repo)
+- Ubuntu-only PPAs wrapped with: when: ansible_facts['distribution'] == 'Ubuntu'
+- Ubuntu-only packages (ubuntu-restricted-extras, indicator-cpufreq, zram-config, linux-headers-lowlatency) have Ubuntu conditionals; Debian equivalents used where they exist (e.g., zram-tools)
+- Prefer ansible.builtin.package over ansible.builtin.apt for stable package names
+- Use block/rescue for renamed packages, failed_when: false for removal lists
+- Use tasks/package_available.yml for packages that may not exist on all distributions
+- Snap tasks use ignore_errors: "{{ lookup('env', 'CI') | default(false) | bool }}" -- the community.general.snap module crashes on GitHub Actions runners; errors are still fatal on real desktops
+- Linting: .ansible-lint with profile: basic
+
+## Inventory Variable Conventions
+
+- devops_user_uid (not devops_uid): all tasks reference this name
+- Repo URL trailing slashes: security_repo_base_url and standard_repo_base_url must end with /
+  Ubuntu: "security.ubuntu.com/ubuntu/", "mirrors.edge.kernel.org/ubuntu/"
+  Debian: "security.debian.org/debian-security/", "deb.debian.org/debian/"
+- ansible_version_deseada: '' means install latest via uv, don't pin
+- goss_version_actual: '' means fetch latest from GitHub API
+- ocs_server: '' means don't install OCS Inventory agent
+- Pharo variables (pharo_version_family, pharo_version, pharo_main_version, pharo_home_directory) required for UTN playbook
+
+## GITHUB_TOKEN Support
+
+Tasks that call the GitHub API support GITHUB_TOKEN to avoid rate limits. The pattern:
+  curl --silent --fail \
+    ${GITHUB_TOKEN:+-H "Authorization: token ${GITHUB_TOKEN}"} \
+    https://api.github.com/repositories/.../releases/latest
+
+Affected tasks: devops_aws, devops_git_credential_manager, devops_goss, devops_govc,
+devops_terraform_docs, devops_terragrunt, instala_rambox.
+
+CI passes GITHUB_TOKEN via: env: GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+## Multi-Distribution Support
+
+Ubuntu and Debian are supported via:
+- Separate variable templates: hosts-vars.yml (Ubuntu) and hosts-vars-debian.yml (Debian)
+- Debian repos: deb.debian.org/debian/ with components main contrib non-free non-free-firmware
+- Ubuntu repos: ar.archive.ubuntu.com/ubuntu/ with components main restricted universe multiverse
+- Debian security: security.debian.org/debian-security/ (note the path differs from Ubuntu)
+- The agrego_repositorio.yml mechanism uses ansible_facts['distribution_release'] and works for both
+- Debian has no CI (GitHub Actions lacks Debian runners); test manually on Debian machines or via Vagrant
