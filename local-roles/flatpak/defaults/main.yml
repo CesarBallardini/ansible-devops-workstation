@@ -1,2 +1,4 @@
 ---
 install_flatpak: true
+
+flatpak_remove: []

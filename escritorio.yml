@@ -69,39 +69,6 @@
         - escritorio
         - netbeans
 
-    - ansible.builtin.include_role:
-        name: telegram_desktop
-        apply:
-          tags:
-            - escritorio
-            - telegram_desktop
-      when: install_telegram_desktop | bool
-      tags:
-        - escritorio
-        - telegram_desktop
-
-    - ansible.builtin.include_role:
-        name: slack
-        apply:
-          tags:
-            - escritorio
-            - slack
-      when: install_slack | bool
-      tags:
-        - escritorio
-        - slack
-
-    - ansible.builtin.include_role:
-        name: bitwarden
-        apply:
-          tags:
-            - escritorio
-            - bitwarden
-      when: install_bitwarden | bool
-      tags:
-        - escritorio
-        - bitwarden
-
     # Microsoft VisualStudio Code es version privativa, usaba VSCodium, el fork libre, me canse de los plugins que solo funcionan en vscode
     - ansible.builtin.include_role:
         name: microsoft_visualstudio_code

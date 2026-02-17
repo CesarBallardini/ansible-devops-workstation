@@ -75,20 +75,30 @@ Hosts can select which tools to install via named profiles instead of getting ev
 **Architecture**:
 - Profile definitions live in `vars/tool_profiles.yml` (single source of truth)
 - `all.yml` loads profiles and computes `active_tools` via `set_fact` (persists across all plays)
+- `all.yml` also computes `snap_install` and `flatpak_install` lists from `active_tools` using the `snap_packages`/`flatpak_packages` lookup maps in `vars/tool_profiles.yml`
 - Each `include_tasks`/`include_role` in `escritorio.yml`, `devops.yml`, `utn.yml`, and `site.yml` (tinyproxy) has a `when: "'tool' in active_tools"` guard
+- The snap and flatpak roles install/remove packages from the computed `snap_install`/`flatpak_install` lists
 - If `active_profiles` is undefined, all tools install (backward compatible)
 
 **Host variables**:
 - `active_profiles`: list of profile names (e.g., `[developer, communication]`)
 - `extra_tools`: additional tool identifiers beyond selected profiles (default: `[]`)
 - `skip_tools`: tool identifiers to exclude (default: `[]`)
+- `snap_install`/`flatpak_install`: computed from `active_tools`; can be overridden directly in host_vars to bypass profile computation
+- `snap_remove`/`flatpak_remove`: explicit package removal lists (default: `[]`)
+
+**Snap/Flatpak package maps** (in `vars/tool_profiles.yml`):
+- `snap_packages`: maps tool identifiers to snap package names (e.g., `bitwarden` -> `[bw, bitwarden]`, `slack` -> `[slack]`, `telegram_desktop` -> `[telegram-desktop]`)
+- `flatpak_packages`: maps tool identifiers to flatpak package names (e.g., `flatpak` -> `[com.calibre_ebook.calibre, ...]`)
+- `telegram_desktop`, `slack`, and `bitwarden` no longer have dedicated roles; their snap packages are installed via the snap role using these maps
 
 **Available profiles**: `full`, `developer`, `sysadmin`, `academic`, `minimal`, `communication`, `video`
 
 **Adding a new tool**:
 1. Add the tool identifier to appropriate profiles in `vars/tool_profiles.yml`
 2. Add `when: "'tool_id' in active_tools"` to its `include_tasks`/`include_role`
-3. Document in `CLAUDE.md`, `AGENTS.md`, `LLM.txt`
+3. If the tool installs via snap/flatpak, add entries to `snap_packages`/`flatpak_packages` maps in `vars/tool_profiles.yml` (no dedicated role needed)
+4. Document in `CLAUDE.md`, `AGENTS.md`, `LLM.txt`
 
 **Adding a new profile**:
 1. Add the profile definition to `vars/tool_profiles.yml`

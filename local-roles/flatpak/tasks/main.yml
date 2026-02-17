@@ -21,18 +21,12 @@
     - escritorio
     - flatpak
 
-- name: flatpak | Install the package from flathub for system
+- name: flatpak | Install packages from flathub
   community.general.flatpak:
     name: "{{ item }}"
     state: present
-    #method: user
-  loop:
-    - com.calibre_ebook.calibre
-    - com.dropbox.Client
-    - com.jetbrains.IntelliJ-IDEA-Community
-    - io.atom.Atom
-    #- org.libreoffice.LibreOffice
-    - com.jetbrains.WebStorm
+  loop: "{{ flatpak_install }}"
+  when: flatpak_install | length > 0
   become: true
   tags:
     - escritorio
@@ -49,15 +43,21 @@
 # https://developpaper.com/building-intellij-idea-license-server-on-ubuntu/
 #
 
-- name: flatpak | Update the package from flathub for system
+- name: flatpak | Update packages from flathub
   ansible.builtin.command: "flatpak update --assumeyes --app {{ item }}"
-  loop:
-    - com.calibre_ebook.calibre
-    - com.dropbox.Client
-    - com.jetbrains.IntelliJ-IDEA-Community
-    - io.atom.Atom
-    #- org.libreoffice.LibreOffice
-    - com.jetbrains.WebStorm
+  loop: "{{ flatpak_install }}"
+  when: flatpak_install | length > 0
+  become: true
+  tags:
+    - escritorio
+    - flatpak
+
+- name: flatpak | Remove flatpak packages
+  community.general.flatpak:
+    name: "{{ item }}"
+    state: absent
+  loop: "{{ flatpak_remove }}"
+  when: flatpak_remove | length > 0
   become: true
   tags:
     - escritorio

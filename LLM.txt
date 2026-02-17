@@ -65,8 +65,19 @@ Available profiles: full, developer, sysadmin, academic, minimal, communication,
 
 How it works:
   1. all.yml loads vars/tool_profiles.yml and computes active_tools via set_fact
-  2. Each include_tasks/include_role has a when: "'tool' in active_tools" guard
-  3. If active_profiles is undefined, active_tools defaults to full profile
+  2. all.yml also computes snap_install and flatpak_install lists from active_tools
+     using the snap_packages/flatpak_packages lookup maps in vars/tool_profiles.yml
+  3. Each include_tasks/include_role has a when: "'tool' in active_tools" guard
+  4. The snap and flatpak roles install/remove packages from the computed lists
+  5. If active_profiles is undefined, active_tools defaults to full profile
+
+Snap/Flatpak package maps (in vars/tool_profiles.yml):
+  snap_packages     Maps tool IDs to snap packages (e.g., bitwarden -> [bw, bitwarden])
+  flatpak_packages  Maps tool IDs to flatpak packages (e.g., flatpak -> [com.calibre_ebook.calibre, ...])
+  snap_install/flatpak_install are computed from active_tools; can be overridden in host_vars
+  snap_remove/flatpak_remove are explicit removal lists (default: [])
+  telegram_desktop, slack, and bitwarden no longer have dedicated roles; their snap
+  packages are installed via the snap role using these maps
 
 Example:
   ansible-playbook -i hosts site.yml --extra-vars '{"active_profiles": ["developer", "communication"]}'

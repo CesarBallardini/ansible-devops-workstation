@@ -1,2 +1,4 @@
 ---
 install_snap: true
+
+snap_remove: []

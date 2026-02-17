@@ -165,9 +165,6 @@ goss_version_actual: ''
 #install_snap: true
 #install_eclipse: true
 #install_netbeans: true
-#install_telegram_desktop: true
-#install_slack: true
-#install_bitwarden: true
 #install_microsoft_visualstudio_code: true
 #install_mise_en_place: true
 #install_sshfs_fuse: true
@@ -195,3 +192,20 @@ goss_version_actual: ''
 #install_pharo: true
 # Services:
 #install_tinyproxy: true
+
+# Snap/Flatpak package overrides (computed from profiles by default)
+# Uncomment to override the profile-computed lists for this host.
+# See vars/tool_profiles.yml -> snap_packages / flatpak_packages for defaults.
+#snap_install:
+#  - bw
+#  - bitwarden
+#  - slack
+#  - telegram-desktop
+#snap_remove: []
+#flatpak_install:
+#  - com.calibre_ebook.calibre
+#  - com.dropbox.Client
+#  - com.jetbrains.IntelliJ-IDEA-Community
+#  - io.atom.Atom
+#  - com.jetbrains.WebStorm
+#flatpak_remove: []

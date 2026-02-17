@@ -155,10 +155,20 @@ Hosts can select which tools to install via profiles instead of getting everythi
 
 **How it works**:
 1. `all.yml` loads `vars/tool_profiles.yml` and computes `active_tools` via `set_fact` (persists across all plays)
-2. Each `include_tasks`/`include_role` in `escritorio.yml`, `devops.yml`, `utn.yml`, and `site.yml` (tinyproxy) has a `when: "'tool' in active_tools"` guard
-3. If `active_profiles` is not defined, `active_tools` defaults to the `full` profile (all tools)
+2. `all.yml` also computes `snap_install` and `flatpak_install` lists from `active_tools` using the `snap_packages`/`flatpak_packages` lookup maps in `vars/tool_profiles.yml`
+3. Each `include_tasks`/`include_role` in `escritorio.yml`, `devops.yml`, `utn.yml`, and `site.yml` (tinyproxy) has a `when: "'tool' in active_tools"` guard
+4. The snap and flatpak roles install/remove packages from the computed `snap_install`/`flatpak_install` lists
+5. If `active_profiles` is not defined, `active_tools` defaults to the `full` profile (all tools)
 
 **Tool identifiers** match existing Ansible tags: `escritorio`, `zoom`, `ffmpeg`, `openshot`, `snap`, `eclipse`, `netbeans`, `telegram_desktop`, `slack`, `bitwarden`, `microsoft_visualstudio_code`, `mise-en-place`, `sshfs-fuse`, `rambox`, `aws`, `ansible`, `git`, `git-credential-manager`, `terraform`, `terraform-docs`, `terragrunt`, `virtualbox`, `vagrant`, `packer`, `goss`, `govc`, `docker`, `prolog`, `racket`, `pharo`, `tinyproxy`
+
+Note: `telegram_desktop`, `slack`, and `bitwarden` no longer have dedicated roles. Their snap packages are installed via the snap role using the `snap_packages` lookup map in `vars/tool_profiles.yml`.
+
+**Snap/Flatpak package maps** (`vars/tool_profiles.yml`):
+- `snap_packages`: Maps tool identifiers to snap package names (e.g., `bitwarden` -> `[bw, bitwarden]`)
+- `flatpak_packages`: Maps tool identifiers to flatpak package names (e.g., `flatpak` -> `[com.calibre_ebook.calibre, ...]`)
+- `snap_install`/`flatpak_install`: Computed from `active_tools` in `all.yml`. Can be overridden directly in host_vars.
+- `snap_remove`/`flatpak_remove`: Default `[]`, set in host_vars to explicitly remove packages.
 
 **Example usage**:
 ```bash
@@ -169,7 +179,7 @@ ansible-playbook -i hosts site.yml --extra-vars '{"active_profiles": ["developer
 ansible-playbook -i hosts site.yml --extra-vars '{"active_profiles": ["minimal"], "extra_tools": ["docker"], "skip_tools": ["bitwarden"]}'
 ```
 
-When adding or modifying profiles, keep `vars/tool_profiles.yml` as the single source of truth. When adding new tools, add the tool identifier to the appropriate profiles and add a `when:` guard to the include.
+When adding or modifying profiles, keep `vars/tool_profiles.yml` as the single source of truth. When adding new tools, add the tool identifier to the appropriate profiles and add a `when:` guard to the include. For snap/flatpak packages, add entries to `snap_packages`/`flatpak_packages` maps and they'll be automatically installed when the tool is active.
 
 ## GITHUB_TOKEN Support
 

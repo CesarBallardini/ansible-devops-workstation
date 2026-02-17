@@ -111,3 +111,24 @@ tool_profiles:
     - ffmpeg
     - openshot
     - zoom
+
+# Snap packages per tool identifier
+# When a tool is in active_tools, its snap packages are included in snap_install.
+snap_packages:
+  bitwarden:
+    - bw
+    - bitwarden
+  slack:
+    - slack
+  telegram_desktop:
+    - telegram-desktop
+
+# Flatpak packages per tool identifier
+# When a tool is in active_tools, its flatpak packages are included in flatpak_install.
+flatpak_packages:
+  flatpak:
+    - com.calibre_ebook.calibre
+    - com.dropbox.Client
+    - com.jetbrains.IntelliJ-IDEA-Community
+    - io.atom.Atom
+    - com.jetbrains.WebStorm

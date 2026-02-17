@@ -62,9 +62,6 @@
         install_snap: "{{ 'snap' in active_tools }}"
         install_eclipse: "{{ 'eclipse' in active_tools }}"
         install_netbeans: "{{ 'netbeans' in active_tools }}"
-        install_telegram_desktop: "{{ 'telegram_desktop' in active_tools }}"
-        install_slack: "{{ 'slack' in active_tools }}"
-        install_bitwarden: "{{ 'bitwarden' in active_tools }}"
         install_microsoft_visualstudio_code: "{{ 'microsoft_visualstudio_code' in active_tools }}"
         install_mise_en_place: "{{ 'mise_en_place' in active_tools }}"
         install_sshfs_fuse: "{{ 'sshfs_fuse' in active_tools }}"
@@ -89,6 +86,26 @@
         install_racket: "{{ 'racket' in active_tools }}"
         install_pharo: "{{ 'pharo' in active_tools }}"
         install_tinyproxy: "{{ 'tinyproxy' in active_tools }}"
+      tags: [always]
+
+    - name: all | compute snap_install from active_tools
+      ansible.builtin.set_fact:
+        snap_install: >-
+          {{ active_tools
+             | select('in', snap_packages)
+             | map('extract', snap_packages)
+             | flatten | unique | list }}
+      when: snap_install is not defined
+      tags: [always]
+
+    - name: all | compute flatpak_install from active_tools
+      ansible.builtin.set_fact:
+        flatpak_install: >-
+          {{ active_tools
+             | select('in', flatpak_packages)
+             | map('extract', flatpak_packages)
+             | flatten | unique | list }}
+      when: flatpak_install is not defined
       tags: [always]
 
     - name: all | display active_tools

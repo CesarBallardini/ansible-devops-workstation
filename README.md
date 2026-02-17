@@ -70,13 +70,10 @@ Some performance optimizations are considered for those working with low-end com
 │   ├── devops_vagrant.yml          # Vagrant
 │   ├── devops_virtualbox.yml       # VirtualBox
 │   ├── instala_apt_fast.yml        # apt-fast
-│   ├── instala_bitwarden.yml       # Bitwarden
 │   ├── instala_microsoft_visualstudio_code.yml
 │   ├── instala_openshot.yml        # OpenShot video editor
 │   ├── instala_rambox.yml          # Rambox
-│   ├── instala_slack.yml           # Slack
 │   ├── instala_snap.yml            # Snap packages
-│   ├── instala_telegram_desktop.yml
 │   ├── instala_zoom.yml            # Zoom
 │   ├── mejora_performance.yml      # Performance tuning
 │   ├── package_available.yml       # Package availability check helper
@@ -282,6 +279,23 @@ skip_tools: []
 | `video` | Media production | ffmpeg, openshot, zoom |
 
 Profiles can be combined. The final tool list is: `union(all selected profiles) + extra_tools - skip_tools`.
+
+**Snap/Flatpak packages** are driven by profiles via lookup maps in `vars/tool_profiles.yml`. When a tool identifier is active, its associated snap/flatpak packages are automatically installed by the snap and flatpak roles. For example, activating the `communication` profile installs `telegram-desktop`, `slack`, and other messaging snaps. You can also override the computed lists directly:
+
+```yaml
+# Override computed snap packages for this host
+snap_install:
+  - bw
+  - bitwarden
+  - slack
+snap_remove: []
+
+# Override computed flatpak packages for this host
+flatpak_install:
+  - com.calibre_ebook.calibre
+  - com.dropbox.Client
+flatpak_remove: []
+```
 
 **Examples:**
 
