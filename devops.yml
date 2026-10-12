@@ -48,7 +48,8 @@
 #        - devops
 #        - vmware-workstation
 
-    - ansible.builtin.include_role:
+    - name: devops | include aws role
+      ansible.builtin.include_role:
         name: aws
         apply:
           tags:
@@ -59,7 +60,8 @@
         - devops
         - aws
 
-    - ansible.builtin.include_role:
+    - name: devops | include ansible role
+      ansible.builtin.include_role:
         name: ansible
         apply:
           tags:
@@ -70,7 +72,8 @@
         - devops
         - ansible
 
-    - ansible.builtin.include_role:
+    - name: devops | include git role
+      ansible.builtin.include_role:
         name: git
         apply:
           tags:
@@ -81,7 +84,8 @@
         - devops
         - git
 
-    - ansible.builtin.include_role:
+    - name: devops | include git_credential_manager role
+      ansible.builtin.include_role:
         name: git_credential_manager
         apply:
           tags:
@@ -92,7 +96,8 @@
         - devops
         - git_credential_manager
 
-    - ansible.builtin.include_role:
+    - name: devops | include terraform role
+      ansible.builtin.include_role:
         name: terraform
         apply:
           tags:
@@ -103,7 +108,8 @@
         - devops
         - terraform
 
-    - ansible.builtin.include_role:
+    - name: devops | include terraform_docs role
+      ansible.builtin.include_role:
         name: terraform_docs
         apply:
           tags:
@@ -116,7 +122,8 @@
         - terraform
         - terraform_docs
 
-    - ansible.builtin.include_role:
+    - name: devops | include terragrunt role
+      ansible.builtin.include_role:
         name: terragrunt
         apply:
           tags:
@@ -129,7 +136,8 @@
         - terraform
         - terragrunt
 
-    - ansible.builtin.include_role:
+    - name: devops | include virtualbox role (hardware virtualization available)
+      ansible.builtin.include_role:
         name: virtualbox
         apply:
           tags:
@@ -150,7 +158,8 @@
         - devops
         - virtualbox
 
-    - ansible.builtin.include_role:
+    - name: devops | include virtualbox role (no hardware virtualization)
+      ansible.builtin.include_role:
         name: virtualbox
         apply:
           tags:

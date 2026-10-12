@@ -187,4 +187,4 @@
           - language-pack-es-base
         locales_default:
           lang: es_AR.UTF-8
-        #lc_all: C
+        # lc_all: C
