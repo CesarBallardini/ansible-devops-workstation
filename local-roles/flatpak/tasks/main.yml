@@ -28,6 +28,35 @@
   loop: "{{ flatpak_install }}"
   when: flatpak_install | length > 0
   become: true
+  register: flatpak_install_result
+  failed_when: false
+  tags:
+    - escritorio
+    - flatpak
+
+- name: flatpak | Build list of successfully installed packages
+  ansible.builtin.set_fact:
+    flatpak_installed: >-
+      {{ flatpak_install_result.results | default([])
+         | selectattr('rc', 'undefined')
+         | map(attribute='item') | list
+         + flatpak_install_result.results | default([])
+         | selectattr('rc', 'defined')
+         | selectattr('rc', 'eq', 0)
+         | map(attribute='item') | list }}
+  tags:
+    - escritorio
+    - flatpak
+
+- name: flatpak | Report failed installations
+  ansible.builtin.debug:
+    msg: "WARNING: Failed to install {{ item.item }}: {{ item.msg | default('unknown error') }}"
+  loop: "{{ flatpak_install_result.results | default([]) }}"
+  when:
+    - flatpak_install_result.results is defined
+    - item.rc is defined and item.rc != 0
+  loop_control:
+    label: "{{ item.item | default('unknown') }}"
   tags:
     - escritorio
     - flatpak
@@ -45,9 +74,10 @@
 
 - name: flatpak | Update packages from flathub
   ansible.builtin.command: "flatpak update --assumeyes --app {{ item }}"
-  loop: "{{ flatpak_install }}"
-  when: flatpak_install | length > 0
+  loop: "{{ flatpak_installed | default(flatpak_install) }}"
+  when: (flatpak_installed | default(flatpak_install)) | length > 0
   become: true
+  failed_when: false
   tags:
     - escritorio
     - flatpak
