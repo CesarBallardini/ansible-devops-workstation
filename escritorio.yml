@@ -52,7 +52,8 @@
         - escritorio
         - snap
 
-    - ansible.builtin.include_role:
+    - name: escritorio | include eclipse role
+      ansible.builtin.include_role:
         name: eclipse
         apply:
           tags:
@@ -63,7 +64,8 @@
         - escritorio
         - eclipse
 
-    - ansible.builtin.include_role:
+    - name: escritorio | include netbeans role
+      ansible.builtin.include_role:
         name: netbeans
         apply:
           tags:
@@ -75,7 +77,8 @@
         - netbeans
 
     # Microsoft VisualStudio Code es version privativa, usaba VSCodium, el fork libre, me canse de los plugins que solo funcionan en vscode
-    - ansible.builtin.include_role:
+    - name: escritorio | include microsoft_visualstudio_code role
+      ansible.builtin.include_role:
         name: microsoft_visualstudio_code
         apply:
           tags:
@@ -86,7 +89,8 @@
         - escritorio
         - microsoft_visualstudio_code
 
-    - ansible.builtin.include_role:
+    - name: escritorio | include mise_en_place role
+      ansible.builtin.include_role:
         name: mise_en_place
         apply:
           tags:
@@ -97,7 +101,8 @@
         - escritorio
         - mise_en_place
 
-    - ansible.builtin.include_role:
+    - name: escritorio | include codium role
+      ansible.builtin.include_role:
         name: codium
         apply:
           tags:
@@ -108,7 +113,8 @@
         - escritorio
         - codium
 
-    - ansible.builtin.include_role:
+    - name: escritorio | include flatpak role
+      ansible.builtin.include_role:
         name: flatpak
         apply:
           tags:
@@ -119,14 +125,16 @@
         - escritorio
         - flatpak
 
-    - ansible.builtin.include_role:
+    - name: escritorio | include sshfs_fuse role
+      ansible.builtin.include_role:
         name: sshfs_fuse
         apply:
           tags: [escritorio]
       when: install_sshfs_fuse | bool
       tags: [escritorio]
 
-    - ansible.builtin.include_role:
+    - name: escritorio | include rambox role
+      ansible.builtin.include_role:
         name: rambox
         apply:
           tags: [rambox]
@@ -150,7 +158,8 @@
 #        - escritorio
 #        - claude-code
 
-    - ansible.builtin.include_role:
+    - name: escritorio | include tn3270_emulator role
+      ansible.builtin.include_role:
         name: tn3270_emulator
         apply:
           tags: [tn3270_emulator]

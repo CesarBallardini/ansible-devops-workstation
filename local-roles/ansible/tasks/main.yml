@@ -33,7 +33,8 @@
     - devops
     - ansible
 
-- ansible.builtin.debug:
+- name: devops | ansible | show installed version
+  ansible.builtin.debug:
     msg: "Ansible installed version  - {{ ansible_version_instalada | default('none') }}"
   tags:
     - devops
