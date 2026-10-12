@@ -150,7 +150,11 @@ goss_version_actual: ''
 #  - developer
 #  - communication
 #extra_tools: []
-#skip_tools: []
+skip_tools:
+  - codium
+  - eclipse
+  - netbeans
+  - telegram_desktop
 
 # Per-tool install variables (computed from profiles, override with extra-vars)
 # Base system (always true by default, not controlled by profiles):
