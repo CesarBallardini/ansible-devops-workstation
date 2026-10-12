@@ -73,11 +73,23 @@
     - devops
     - virtualbox
 
-- name: virtualbox | instala virtualbox
+- name: virtualbox | instala virtualbox desde Oracle repo
   ansible.builtin.apt:
     name: "{{ virtualbox_version_to_install }}"
     state: present
   become: true
+  register: reg_install_vb_oracle
+  failed_when: false
+  tags:
+    - devops
+    - virtualbox
+
+- name: virtualbox | instala virtualbox desde repo Ubuntu/Debian
+  ansible.builtin.apt:
+    name: virtualbox
+    state: present
+  become: true
+  when: reg_install_vb_oracle is failed
   tags:
     - devops
     - virtualbox
@@ -121,7 +133,14 @@
 
 - name: virtualbox | Output installed extpacks
   ansible.builtin.debug:
-    msg: "{{ ext_pack_info['Version'] if ext_pack_info['Extension Packs'] != '0' else 'No hay extpacks instalados' }}"
+    msg: "{{ ext_pack_info['Version'] if ext_pack_info.get('Extension Packs', '0') != '0' and 'Version' in ext_pack_info else 'No hay extpacks instalados' }}"
+  tags:
+    - devops
+    - virtualbox
+
+- name: virtualbox | set extpack needs install fact
+  ansible.builtin.set_fact:
+    virtualbox_extpack_needs_install: "{{ ext_pack_info.get('Extension Packs', '0') == '0' or ext_pack_info.get('Version', '') != reg_virtualbox_version.stdout }}"
   tags:
     - devops
     - virtualbox
@@ -134,7 +153,7 @@
     force: true
     # checksum: "sha256:https://www.virtualbox.org/download/hashes/{{ reg_virtualbox_version.stdout }}/SHA256SUMS"
   register: reg_download_result
-  when: 'reg_extpack_list.stdout == "Extension Packs: 0" or ext_pack_info["Version"] != reg_virtualbox_version.stdout'
+  when: virtualbox_extpack_needs_install | bool
   tags:
     - devops
     - virtualbox
@@ -149,7 +168,7 @@
 
 - name: virtualbox | Install VirtualBox extension pack
   ansible.builtin.shell: "echo 'y' | VBoxManage extpack install --replace {{ reg_download_result.dest }}"
-  when: 'reg_extpack_list.stdout == "Extension Packs: 0" or ext_pack_info["Version"] != reg_virtualbox_version.stdout'
+  when: virtualbox_extpack_needs_install | bool
   become: true
   tags:
     - devops
