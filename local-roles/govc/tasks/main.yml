@@ -159,7 +159,7 @@
 
 - name: devops | govc | instala binario desde .tar.gz
   ansible.builtin.shell: |
-    tar xzf /tmp/{{ govc_url_a_descargar | basename }} --one-top-level=/usr/local/bin/ govc
+    tar xzf /tmp/{{ govc_url_a_descargar | basename }} -C /usr/local/bin/ govc
     chmod a+rx /usr/local/bin/govc
   become: true
   when: govc_version_a_instalar | length > 0 and govc_version_instalada != govc_version_a_instalar and govc_url_a_descargar.endswith('.tar.gz')

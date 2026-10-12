@@ -83,12 +83,18 @@
         name: "{{ virtualbox_version_to_install }}"
         state: present
       become: true
+    - name: virtualbox | mark Oracle install
+      ansible.builtin.set_fact:
+        virtualbox_from_oracle: true
   rescue:
     - name: virtualbox | instala virtualbox desde repo Ubuntu/Debian
       ansible.builtin.apt:
         name: virtualbox
         state: present
       become: true
+    - name: virtualbox | mark distro install
+      ansible.builtin.set_fact:
+        virtualbox_from_oracle: false
 
 - name: virtualbox | VirtualBox version
   ansible.builtin.shell: "VBoxManage --version 2>&1 | grep -oE '^[0-9]+\\.[0-9]+\\.[0-9]+' | head -1"
@@ -150,7 +156,7 @@
     force: true
     # checksum: "sha256:https://www.virtualbox.org/download/hashes/{{ reg_virtualbox_version.stdout }}/SHA256SUMS"
   register: reg_download_result
-  when: virtualbox_extpack_needs_install | bool
+  when: virtualbox_from_oracle and virtualbox_extpack_needs_install | bool
   tags:
     - devops
     - virtualbox
@@ -165,7 +171,7 @@
 
 - name: virtualbox | Install VirtualBox extension pack
   ansible.builtin.shell: "echo 'y' | VBoxManage extpack install --replace {{ reg_download_result.dest }}"
-  when: virtualbox_extpack_needs_install | bool
+  when: virtualbox_from_oracle and virtualbox_extpack_needs_install | bool
   become: true
   tags:
     - devops
@@ -176,6 +182,7 @@
     name: "{{ item }}"
     state: present
   become: true
+  failed_when: false
   loop:
     - vboxnetadp
     - vboxnetflt
