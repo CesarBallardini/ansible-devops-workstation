@@ -17,9 +17,9 @@ jobs:
       fail-fast: false
       matrix:
         os:
-          # - ubuntu-22.04
+          - ubuntu-22.04
           - ubuntu-24.04
-          # - ubuntu-26.04
+          - ubuntu-26.04
 
     steps:
       - name: Setup Node.js 24
