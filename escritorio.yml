@@ -6,21 +6,24 @@
     # template para /etc/systemd/timesyncd.conf poner los servidores NTP
     # sudo service systemd-timesyncd restart
 
-    - ansible.builtin.include_role:
+    - name: escritorio | include paquetes_de_escritorio role
+      ansible.builtin.include_role:
         name: paquetes_de_escritorio
         apply:
           tags: [escritorio]
       when: install_escritorio | bool
       tags: [escritorio]
 
-    - ansible.builtin.include_role:
+    - name: escritorio | include zoom role
+      ansible.builtin.include_role:
         name: zoom
         apply:
           tags: [zoom]
       when: install_zoom | bool
       tags: [zoom]
 
-    - ansible.builtin.include_role:
+    - name: escritorio | include ffmpeg role
+      ansible.builtin.include_role:
         name: ffmpeg
         apply:
           tags:
@@ -29,14 +32,16 @@
       when: install_ffmpeg | bool
       tags: [ffmpeg, video]
 
-    - ansible.builtin.include_role:
+    - name: escritorio | include openshot role
+      ansible.builtin.include_role:
         name: openshot
         apply:
           tags: [openshot, video]
       when: install_openshot | bool
       tags: [openshot, video]
 
-    - ansible.builtin.include_role:
+    - name: escritorio | include snap role
+      ansible.builtin.include_role:
         name: snap
         apply:
           tags:

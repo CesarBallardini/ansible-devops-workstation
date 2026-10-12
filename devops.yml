@@ -180,7 +180,8 @@
         - devops
         - virtualbox
 
-    - ansible.builtin.include_role:
+    - name: devops | include vagrant role
+      ansible.builtin.include_role:
         name: vagrant
         apply:
           tags:
@@ -191,7 +192,8 @@
         - devops
         - vagrant
 
-    - ansible.builtin.include_role:
+    - name: devops | include packer role
+      ansible.builtin.include_role:
         name: packer
         apply:
           tags:
@@ -202,7 +204,8 @@
         - devops
         - packer
 
-    - ansible.builtin.include_role:
+    - name: devops | include goss role
+      ansible.builtin.include_role:
         name: goss
         apply:
           tags:
@@ -213,7 +216,8 @@
         - devops
         - goss
 
-    - ansible.builtin.include_role:
+    - name: devops | include govc role
+      ansible.builtin.include_role:
         name: govc
         apply:
           tags:
@@ -224,7 +228,8 @@
         - devops
         - govc
 
-    - ansible.builtin.include_role:
+    - name: devops | include docker role
+      ansible.builtin.include_role:
         name: docker
         apply:
           tags:
