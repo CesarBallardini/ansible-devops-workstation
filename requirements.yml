@@ -5,9 +5,9 @@ roles:
   scm: git
   name: vmware-workstation
 
-#- src: https://github.com/CesarBallardini/ansible-locales
-- src: https://github.com/Oefenweb/ansible-locales
-  version: v1.0.41
+- src: https://github.com/CesarBallardini/ansible-locales
+#- src: https://github.com/Oefenweb/ansible-locales
+#  version: v1.0.41
   scm: git
   name: locales
 

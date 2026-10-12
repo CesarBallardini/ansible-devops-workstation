@@ -125,7 +125,6 @@
       - cgroup-tools
       - cmake
       - debconf-utils
-      - deborphan
       - dnsmasq
       - inetutils-traceroute
       - iotop
@@ -203,6 +202,7 @@
   vars:
     optional_packages:
       - antiword
+      - deborphan
       - djview4
       - elinks
       - xchm
