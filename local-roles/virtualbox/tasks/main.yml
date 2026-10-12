@@ -74,6 +74,9 @@
     - virtualbox
 
 - name: virtualbox | instala virtualbox
+  tags:
+    - devops
+    - virtualbox
   block:
     - name: virtualbox | instala virtualbox desde Oracle repo
       ansible.builtin.apt:
@@ -86,9 +89,6 @@
         name: virtualbox
         state: present
       become: true
-  tags:
-    - devops
-    - virtualbox
 
 - name: virtualbox | VirtualBox version
   ansible.builtin.shell: "VBoxManage --version 2>&1 | grep -oE '^[0-9]+\\.[0-9]+\\.[0-9]+' | head -1"
