@@ -150,7 +150,7 @@
       - dia
       - eog
       - exfat-fuse
-      #- fdupes
+      # - fdupes
       - flameshot
       - google-chrome-stable
       - gpm

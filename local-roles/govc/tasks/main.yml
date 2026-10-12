@@ -15,7 +15,8 @@
     - devops
     - govc
 
-- ansible.builtin.set_fact:
+- name: devops | govc | set desired version fact
+  ansible.builtin.set_fact:
     govc_version_deseada: ""
   tags:
     - devops
@@ -53,7 +54,8 @@
     - devops
     - govc
 
-- ansible.builtin.set_fact:
+- name: devops | govc | set installed version fact
+  ansible.builtin.set_fact:
     govc_version_instalada: "{{ reg_govc_version.rc == 0 and reg_govc_version.stdout or false }}"
     govc_url_version: "{{ govc_url_version | default('') }}"
   tags:
@@ -68,7 +70,8 @@
     - devops
     - govc
 
-- ansible.builtin.set_fact:
+- name: devops | govc | set version to install fact
+  ansible.builtin.set_fact:
     govc_version_a_instalar: "{{ govc_version_deseada | d('')  if govc_version_deseada | d('') != '' else  govc_url_version }}"
   tags:
     - devops
@@ -98,10 +101,10 @@
 # echo $RESP1  | jq -r '.[] | select(.tag_name == "v0.24.0").assets[] | select( .name == "govc_linux_amd64.gz").browser_download_url '
 #
 # echo $RESP1  | jq -r '.[] | select(.tag_name == "v0.25.0").assets[] | select( .name | test("govc_[lL]inux.*(x86_64|amd64)")).browser_download_url '
-#-> https://github.com/vmware/govmomi/releases/download/v0.25.0/govc_Linux_x86_64.tar.gz
+# -> https://github.com/vmware/govmomi/releases/download/v0.25.0/govc_Linux_x86_64.tar.gz
 #
 # echo $RESP1  | jq -r '.[] | select(.tag_name == "v0.24.0").assets[] | select( .name | test("govc_[lL]inux.*(x86_64|amd64)")).browser_download_url '
-#-> https://github.com/vmware/govmomi/releases/download/v0.24.0/govc_linux_amd64.gz
+# -> https://github.com/vmware/govmomi/releases/download/v0.24.0/govc_linux_amd64.gz
 #
 #
 - name: devops | govc | url a descargar
@@ -116,7 +119,8 @@
     - devops
     - govc
 
-- ansible.builtin.debug:
+- name: devops | govc | show download URL
+  ansible.builtin.debug:
     msg: "GOVC, URL a descargar - {{ reg_govc_url_a_descargar }}"
   when: govc_version_a_instalar | length > 0 and govc_version_instalada != govc_version_a_instalar
   tags:

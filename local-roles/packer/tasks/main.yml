@@ -64,7 +64,8 @@
     - devops
     - packer
 
-- ansible.builtin.set_fact:
+- name: devops | packer | set version facts
+  ansible.builtin.set_fact:
     packer_version_instalada: "{{ reg_packer_version.rc == 0 and reg_packer_version.stdout or false }}"
     packer_url_actual: "{{ reg_packer_url_actual.stdout }}"
     packer_url_version: "{{ reg_packer_url_version.stdout }}"

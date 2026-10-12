@@ -38,7 +38,8 @@
     - devops
     - goss
 
-- ansible.builtin.set_fact:
+- name: devops | goss | set version facts
+  ansible.builtin.set_fact:
     goss_version_instalada: "{{ reg_goss_version.rc == 0 and reg_goss_version.stdout or false }}"
     goss_url_version: "{{ reg_goss_url_version.stdout if reg_goss_url_version.stdout is match('^v[0-9]') else '' }}"
   tags:
@@ -53,7 +54,8 @@
     - devops
     - goss
 
-- ansible.builtin.set_fact:
+- name: devops | goss | set download URLs
+  ansible.builtin.set_fact:
     goss_url_actual: "https://github.com/aelsabbahy/goss/releases/download/{{ goss_url_version }}/goss-linux-amd64"
     dgoss_url_actual: "https://github.com/aelsabbahy/goss/releases/download/{{ goss_url_version }}/dgoss"
   when: goss_url_version | length > 0
