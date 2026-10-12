@@ -186,7 +186,7 @@ Debian boxes use bento/ (official debian/ boxes only provide libvirt).
 - Variable names in snake_case
 - Tags on every included task file
 - Distribution conditionals use ansible_facts['distribution'] (not the deprecated ansible_distribution)
-- Ubuntu version conditionals: ansible_distribution_version is version('22.04', operator='ge', strict=True)
+- Ubuntu version conditionals: ansible_facts['distribution_version'] is version('22.04', operator='ge', strict=True)
 - Distribution-aware URLs use: {{ ansible_facts['distribution'] | lower }} (e.g., Docker repo)
 - Ubuntu-only PPAs wrapped with: when: ansible_facts['distribution'] == 'Ubuntu'
 - Ubuntu-only packages (ubuntu-restricted-extras, indicator-cpufreq, zram-config, linux-headers-lowlatency) have Ubuntu conditionals; Debian equivalents used where they exist (e.g., zram-tools)

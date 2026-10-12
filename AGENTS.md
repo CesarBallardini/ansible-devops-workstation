@@ -342,7 +342,7 @@ ansible-inventory -i vagrant-inventory/ --list
 when: ansible_facts['distribution'] == "Ubuntu"
 when: ansible_facts['distribution'] == "Debian"
 # Version check:
-when: ansible_distribution_version is version('22.04', operator='ge', strict=True)
+when: ansible_facts['distribution_version'] is version('22.04', operator='ge', strict=True)
 ```
 
 ### Loops

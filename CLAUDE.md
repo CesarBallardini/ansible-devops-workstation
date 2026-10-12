@@ -115,7 +115,7 @@ The `hosts` file defines groups: `devops_group` (all 5 VMs), `devops_group_ubunt
 - Variable names in snake_case
 - Tags on every included task file for selective execution
 - Distribution conditionals use `ansible_facts['distribution']` (not the deprecated `ansible_distribution`): `when: ansible_facts['distribution'] == 'Ubuntu'`
-- Version conditionals use: `ansible_distribution_version is version('22.04', operator='ge', strict=True)`
+- Version conditionals use: `ansible_facts['distribution_version'] is version('22.04', operator='ge', strict=True)`
 - Distribution-aware URLs use: `{{ ansible_facts['distribution'] | lower }}` (e.g., Docker repo URL)
 - Codename detection uses: `{{ ansible_facts['distribution_release'] }}` (works for both Ubuntu and Debian)
 - Use `ansible.builtin.package` for packages with stable names across Ubuntu versions
