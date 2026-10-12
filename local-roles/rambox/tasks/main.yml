@@ -35,7 +35,8 @@
   tags:
     - rambox
 
-- ansible.builtin.set_fact:
+- name: rambox | set version facts
+  ansible.builtin.set_fact:
     rambox_version_instalada: "{{ reg_rambox_version.rc == 0 and reg_rambox_version.stdout or false }}"
     rambox_url_version: "{{ reg_rambox_url_version.stdout if reg_rambox_url_version.stdout | length > 0 else '' }}"
   tags:
@@ -48,16 +49,19 @@
   tags:
     - rambox
 
-- ansible.builtin.set_fact:
+- name: rambox | set download URL fact
+  ansible.builtin.set_fact:
     rambox_url_actual: "https://github.com/{{ rambox_github_repo }}/releases/download/{{ rambox_url_version }}/Rambox-{{ rambox_url_version }}-linux-amd64.deb"
   when: rambox_url_version | length > 0
   tags:
     - rambox
 
-- ansible.builtin.debug: msg="ramboxapp, version instalada - {{ rambox_version_instalada }}"
+- name: rambox | show installed version
+  ansible.builtin.debug: msg="ramboxapp, version instalada - {{ rambox_version_instalada }}"
   tags:
     - rambox
-- ansible.builtin.debug: msg="ramboxapp, url actual        - {{ rambox_url_actual }}"
+- name: rambox | show current URL
+  ansible.builtin.debug: msg="ramboxapp, url actual        - {{ rambox_url_actual }}"
   tags:
     - rambox
 - ansible.builtin.debug: msg="ramboxapp, url version       - {{ rambox_url_version }}"

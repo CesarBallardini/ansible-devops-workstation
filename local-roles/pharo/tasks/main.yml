@@ -23,11 +23,13 @@
     - utn
     - pharo
 
-- ansible.builtin.debug: msg="Pharo, version instalada - {{ reg_pharo_version_instalada.stdout }}"
+- name: utn | pharo | show installed version
+  ansible.builtin.debug: msg="Pharo, version instalada - {{ reg_pharo_version_instalada.stdout }}"
   tags:
     - utn
     - pharo
-- ansible.builtin.debug: msg="Pharo, version deseada   - {{ pharo_version }}"
+- name: utn | pharo | show desired version
+  ansible.builtin.debug: msg="Pharo, version deseada   - {{ pharo_version }}"
   tags:
     - utn
     - pharo
