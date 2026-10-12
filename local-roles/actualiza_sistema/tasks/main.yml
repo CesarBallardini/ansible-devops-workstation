@@ -34,7 +34,7 @@
     - apt
     - upgrade
 
-- name: actualiza | instala linux-headers-lowlatency (Ubuntu only)
+- name: actualiza | instala linux-headers-lowlatency (Ubuntu < 26.04)
   ansible.builtin.shell: |
     apt-fast install linux-headers-lowlatency -y
   become: true
@@ -43,7 +43,7 @@
     DEBCONF_NONINTERACTIVE_SEEN: "true"
     UCF_FORCE_CONFOLD: 1
   changed_when: false
-  when: ansible_facts['distribution'] == 'Ubuntu'
+  when: ansible_facts['distribution'] == 'Ubuntu' and ansible_distribution_version is version('26.04', operator='lt', strict=True)
   tags:
     - apt
     - upgrade
