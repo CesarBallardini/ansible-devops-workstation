@@ -42,7 +42,7 @@ wait_for_apt() {
 
 # Bootstrap (first time only)
 if [ ! -x "${ANSIBLE_VENV}"/bin/ansible-playbook ]; then
-  "${ANSIBLE_LOCAL_REPO}"/first-time-install-ansible.sh
+  "${ANSIBLE_LOCAL_REPO}"/bin/first-time-install-ansible.sh
 fi
 
 

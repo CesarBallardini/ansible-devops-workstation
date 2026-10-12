@@ -11,8 +11,8 @@ Ansible playbook repository that provisions DevOps workstations on Ubuntu 22.04/
 ```bash
 # Bootstrap: install uv, create venv, install Ansible + lint, install Galaxy roles/collections
 # (single entry point for both local and CI use)
-./first-time-install-ansible.sh                  # venv at ~/.ansible-venv
-./first-time-install-ansible.sh --venv /path     # custom venv path
+./bin/first-time-install-ansible.sh                  # venv at ~/.ansible-venv
+./bin/first-time-install-ansible.sh --venv /path     # custom venv path
 
 # Syntax check
 ansible-playbook -vv -i tests/inventory tests/test.yml --syntax-check
@@ -61,7 +61,7 @@ ansible-playbook -vv --syntax-check -i vagrant-inventory/ site.yml
 1. `all.yml` -- Base system: APT repos, locales, apt-fast, system upgrade, performance tuning. Targets `hosts: all`.
 2. `escritorio.yml` -- Desktop apps: Chrome, LibreOffice, VS Code, Snap/Flatpak packages, IDEs (Eclipse, NetBeans), messaging (Telegram, Slack, MS Teams), mise-en-place. Targets `hosts: escritorio`.
 3. `utn.yml` -- Educational tools: SWI-Prolog, Racket, Pharo Smalltalk. Targets `hosts: utn`.
-4. `devops.yml` -- DevOps toolchain: VMware Workstation, AWS CLI, Ansible, Git, Terraform/Terragrunt/terraform-docs, VirtualBox, Vagrant, Packer, Goss, GOVC, Docker. Targets `hosts: devops`.
+4. `devops.yml` -- DevOps toolchain: AWS CLI, Ansible, Git, Terraform/Terragrunt/terraform-docs, VirtualBox, Vagrant, Packer, Goss, GOVC, Docker. Targets `hosts: devops`.
 5. `local-roles/tinyproxy` -- Local HTTP proxy (role). Targets `hosts: tinyproxy`.
 6. `ocsinventory-agent.yml` -- OCS Inventory agent (conditionally installed when `ocs_server` is set). Targets `hosts: ocsinventoryagent`.
 
@@ -126,7 +126,7 @@ The `hosts` file defines groups: `devops_group` (all 5 VMs), `devops_group_ubunt
 - Ubuntu-only PPAs (Launchpad) must be wrapped with `when: ansible_facts['distribution'] == 'Ubuntu'`; on Debian, packages are typically available from standard repos
 - Ubuntu-only packages (e.g., `ubuntu-restricted-extras`, `indicator-cpufreq`, `zram-config`, `linux-headers-lowlatency`) must have Ubuntu-only conditionals; use Debian equivalents where they exist (e.g., `zram-tools`)
 - Snap tasks use `ignore_errors: "{{ lookup('env', 'CI') | default(false, boolean=true) | bool }}"` because the `community.general.snap` module crashes on GitHub Actions runners where snapd cannot query the snap store
-- Linting: `.ansible-lint` configured with `profile: basic`, several rules skipped (see file for details)
+- Linting: `.ansible-lint` configured with `profile: production`, several rules skipped (see file for details)
 
 ## Inventory Variable Conventions
 

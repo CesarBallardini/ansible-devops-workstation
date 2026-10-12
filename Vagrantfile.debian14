@@ -112,7 +112,7 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
 
     config.vm.provision "instala-ansible", type: "shell" do |s|
         s.privileged = false
-        s.inline = "cd /vagrant && ./first-time-install-ansible.sh"
+        s.inline = "cd /vagrant && ./bin/first-time-install-ansible.sh"
     end
     config.vm.provision "link-ansible", type: "shell" do |s|
         s.privileged = true

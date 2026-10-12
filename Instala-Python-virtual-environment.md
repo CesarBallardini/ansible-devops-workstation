@@ -2,16 +2,16 @@
 
 ## Método recomendado: usando `uv` y el script de bootstrap
 
-El script `first-time-install-ansible.sh` instala `uv`, crea un _virtual environment_ en `~/.ansible-venv` e instala Ansible y ansible-lint:
+El script `bin/first-time-install-ansible.sh` instala `uv`, crea un _virtual environment_ en `~/.ansible-venv` e instala Ansible y ansible-lint:
 
 ```bash
-./first-time-install-ansible.sh
+./bin/first-time-install-ansible.sh
 ```
 
 Si necesitas un path diferente para el venv:
 
 ```bash
-./first-time-install-ansible.sh --venv /ruta/al/venv
+./bin/first-time-install-ansible.sh --venv /ruta/al/venv
 ```
 
 Luego puedes correr Ansible desde ese entorno virtual:

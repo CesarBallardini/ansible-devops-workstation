@@ -6,8 +6,8 @@ Ansible playbook repository that provisions DevOps workstations on Ubuntu 22.04/
 
 A single script handles all setup for both local and CI environments:
 
-  ./first-time-install-ansible.sh                  # venv at ~/.ansible-venv
-  ./first-time-install-ansible.sh --venv /path     # custom venv path
+  ./bin/first-time-install-ansible.sh                  # venv at ~/.ansible-venv
+  ./bin/first-time-install-ansible.sh --venv /path     # custom venv path
 
 The script:
   1. Installs uv (skips if already present)
@@ -19,7 +19,7 @@ The script:
 
 GitHub Actions (.github/workflows/ci.yml) runs on push/PR to master:
   1. astral-sh/setup-uv@v5 pre-installs uv (with caching/version pinning)
-  2. ./first-time-install-ansible.sh bootstraps the environment (venv at ~/.ansible-venv)
+  2. ./bin/first-time-install-ansible.sh bootstraps the environment (venv at ~/.ansible-venv)
   3. ansible-lint, syntax check, full playbook run, and idempotency check
   4. GITHUB_TOKEN is passed as env var to avoid GitHub API rate limits
 
@@ -34,7 +34,9 @@ The CI and local bootstrap use the same script, keeping them in sync.
   devops.yml                      DevOps toolchain: Docker, Terraform, VirtualBox, Vagrant, etc.
   local-roles/tinyproxy/          Local HTTP proxy (role)
   ocsinventory-agent.yml          OCS Inventory agent
-  first-time-install-ansible.sh   Bootstrap script (uv, venv, ansible, Galaxy deps)
+  bin/
+    first-time-install-ansible.sh   Bootstrap script (uv, venv, ansible, Galaxy deps)
+    actualiza-katra1.sh             Update script for katra1 workstation
   requirements.yml                Ansible Galaxy roles and collections
   hosts                           Inventory template
   hosts-vars.yml                  Variable template with placeholders (Ubuntu)

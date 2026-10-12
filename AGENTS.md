@@ -119,7 +119,9 @@ This is an Ansible playbook repository for provisioning a DevOps workstation on 
 ├── utn.yml                       # UTN educational tools
 ├── local-roles/tinyproxy/        # Proxy configuration (local role)
 ├── ocsinventory-agent.yml        # OCS Inventory agent
-├── first-time-install-ansible.sh # Bootstrap: uv, venv, ansible, Galaxy deps
+├── bin/
+│   ├── first-time-install-ansible.sh # Bootstrap: uv, venv, ansible, Galaxy deps
+│   └── actualiza-katra1.sh           # Update script for katra1 workstation
 ├── hosts                         # Inventory file
 ├── hosts-vars.yml                # Host variables template (Ubuntu)
 ├── hosts-vars-debian.yml         # Host variables template (Debian)
@@ -150,7 +152,7 @@ This is an Ansible playbook repository for provisioning a DevOps workstation on 
         └── devopsws-forky
 ```
 
-**CI/CD:** GitHub Actions (`.github/workflows/ci.yml`) runs on push/PR to master. The pipeline uses `first-time-install-ansible.sh` for bootstrapping (same script and `~/.ansible-venv` path as local setup), then runs ansible-lint, syntax check, a full playbook run, and an idempotency check. The `astral-sh/setup-uv@v5` action pre-installs uv before the script runs (the script detects uv is present and skips its own installation). The CI passes `GITHUB_TOKEN` to avoid GitHub API rate limits.
+**CI/CD:** GitHub Actions (`.github/workflows/ci.yml`) runs on push/PR to master. The pipeline uses `bin/first-time-install-ansible.sh` for bootstrapping (same script and `~/.ansible-venv` path as local setup), then runs ansible-lint, syntax check, a full playbook run, and an idempotency check. The `astral-sh/setup-uv@v5` action pre-installs uv before the script runs (the script detects uv is present and skips its own installation). The CI passes `GITHUB_TOKEN` to avoid GitHub API rate limits.
 
 ## Vagrant Testing Infrastructure
 
@@ -173,7 +175,7 @@ Each Vagrantfile provisions in this order:
 1. `fix-no-tty` -- fixes mesg/tty issue
 2. `actualiza` -- full apt upgrade
 3. `ssh_pub_key` -- injects host SSH key
-4. `instala-ansible` -- runs `first-time-install-ansible.sh`
+4. `instala-ansible` -- runs `bin/first-time-install-ansible.sh`
 5. `link-ansible` -- symlinks venv binaries to `/usr/local/bin/`
 6. `ansible-provision` -- runs `site.yml` via `ansible_local` provisioner using `vagrant-inventory/`
 
@@ -278,8 +280,8 @@ ansible-inventory -i vagrant-inventory/ --list
 ### Bootstrap (Install Dependencies)
 ```bash
 # Single script handles everything: uv, venv, ansible, ansible-lint, Galaxy roles/collections
-./first-time-install-ansible.sh                  # venv at ~/.ansible-venv
-./first-time-install-ansible.sh --venv /path     # custom venv path
+./bin/first-time-install-ansible.sh                  # venv at ~/.ansible-venv
+./bin/first-time-install-ansible.sh --venv /path     # custom venv path
 ```
 
 ## Code Style Guidelines
@@ -412,7 +414,7 @@ ansible_python_interpreter=/usr/bin/python3
 5. **Use descriptive names** for plays and tasks
 6. **Comment complex conditionals**
 7. **Use `changed_when: false`** for read-only operations
-8. **Install dependencies first**: `./first-time-install-ansible.sh` (handles venv, ansible, and Galaxy deps)
+8. **Install dependencies first**: `./bin/first-time-install-ansible.sh` (handles venv, ansible, and Galaxy deps)
 9. **Keep inventory sources in sync**: when changing variables, update `hosts-vars*.yml`, `inventario/`, and `vagrant-inventory/`
 10. **Use GITHUB_TOKEN pattern** in new tasks that call the GitHub API
 

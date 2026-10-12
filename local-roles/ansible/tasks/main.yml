@@ -1,6 +1,6 @@
 ---
 # Self-updating Ansible installation using uv
-# Bootstrap: run first-time-install-ansible.sh to create venv with uv + ansible
+# Bootstrap: run bin/first-time-install-ansible.sh to create venv with uv + ansible
 # This task keeps the installation updated using the same uv tooling
 # Default venv: ~/.ansible-venv (override with ansible_venv_path)
 

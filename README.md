@@ -120,7 +120,9 @@ Some performance optimizations are considered for those working with low-end com
 ├── hosts-vars.yml                  # Variable template with placeholders (Ubuntu)
 ├── hosts-vars-debian.yml           # Variable template with placeholders (Debian)
 ├── inventario/                     # Production inventory (separate git repo)
-├── first-time-install-ansible.sh   # Bootstrap: uv, venv, Ansible, Galaxy deps
+├── bin/
+│   ├── first-time-install-ansible.sh   # Bootstrap: uv, venv, Ansible, Galaxy deps
+│   └── actualiza-katra1.sh             # Update script for katra1 workstation
 ├── requirements.yml                # Ansible Galaxy roles and collections
 ├── ansible.cfg                     # Ansible configuration
 ├── .ansible-lint                   # ansible-lint configuration
@@ -169,7 +171,7 @@ From this point on, the rest of the activities will be performed from that direc
 A single script handles all setup (uv, Python venv, Ansible, ansible-lint, Galaxy roles/collections):
 
 ```bash
-./first-time-install-ansible.sh
+./bin/first-time-install-ansible.sh
 ```
 
 The venv is created at `~/.ansible-venv` by default. Use `--venv /path` for a custom location.
