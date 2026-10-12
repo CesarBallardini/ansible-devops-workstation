@@ -55,7 +55,6 @@
 - name: mise-en-place | actualizo lista paquetes .deb despues de agregar repo
   ansible.builtin.apt:
     update_cache: true
-    cache_valid_time: 3600
   become: true
   when: reg_add_repo_mise is changed
   tags:
