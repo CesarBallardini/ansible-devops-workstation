@@ -1,5 +1,6 @@
 ---
-- ansible.builtin.set_fact:
+- name: snap | set proxy env facts
+  ansible.builtin.set_fact:
     __env_http_proxy: "{{ http_proxy }}"
     __env_https_proxy: "{{ https_proxy }}"
     __env_no_proxy: "{{ no_proxy }}"

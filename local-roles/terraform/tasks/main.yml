@@ -65,7 +65,8 @@
     - devops
     - terraform
 
-- ansible.builtin.set_fact:
+- name: devops | terraform | set version facts
+  ansible.builtin.set_fact:
     terraform_version_instalada: "{{ reg_terraform_version.rc == 0 and reg_terraform_version.stdout or false }}"
     terraform_url_actual: "{{ reg_terraform_url_actual.stdout }}"
     terraform_url_version: "{{ reg_terraform_url_version.stdout }}"
@@ -73,21 +74,25 @@
     - devops
     - terraform
 
-- ansible.builtin.set_fact:
+- name: devops | terraform | set version to install
+  ansible.builtin.set_fact:
     terraform_version_a_instalar: "{{ terraform_version_deseada | d('')  if terraform_version_deseada | d('') != '' else  terraform_url_version }}"
   tags:
     - devops
     - terraform
 
-- ansible.builtin.debug: msg="Terraform, version deseada    - {{ terraform_version_deseada | d() }}"
+- name: devops | terraform | show desired version
+  ansible.builtin.debug: msg="Terraform, version deseada    - {{ terraform_version_deseada | d() }}"
   tags:
     - devops
     - terraform
-- ansible.builtin.debug: msg="Terraform, version instalada - {{ terraform_version_instalada }}"
+- name: devops | terraform | show installed version
+  ansible.builtin.debug: msg="Terraform, version instalada - {{ terraform_version_instalada }}"
   tags:
     - devops
     - terraform
-- ansible.builtin.debug: msg="Terraform, url actual        - {{ terraform_url_actual }}"
+- name: devops | terraform | show current URL
+  ansible.builtin.debug: msg="Terraform, url actual        - {{ terraform_url_actual }}"
   tags:
     - devops
     - terraform

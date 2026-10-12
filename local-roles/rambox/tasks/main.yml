@@ -64,7 +64,8 @@
   ansible.builtin.debug: msg="ramboxapp, url actual        - {{ rambox_url_actual }}"
   tags:
     - rambox
-- ansible.builtin.debug: msg="ramboxapp, url version       - {{ rambox_url_version }}"
+- name: rambox | show version URL
+  ansible.builtin.debug: msg="ramboxapp, url version       - {{ rambox_url_version }}"
   tags:
     - rambox
 # "

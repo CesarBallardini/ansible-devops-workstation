@@ -16,11 +16,13 @@
 - name: fuse | Install fuse (prefer fuse3)
   become: true
   block:
-    - ansible.builtin.apt:
+    - name: fuse | install fuse3
+      ansible.builtin.apt:
         name: fuse3
         state: present
   rescue:
-    - ansible.builtin.apt:
+    - name: fuse | install fuse (fallback)
+      ansible.builtin.apt:
         name: fuse
         state: present
         install_recommends: false
@@ -49,7 +51,7 @@
     name: "{{ item }}"
     groups: "fuse"
     append: true
-  with_flattened:
+  with_community.general.flattened:
     - "{{ devops_user_name }}"
   become: true
 
