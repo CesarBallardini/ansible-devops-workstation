@@ -25,13 +25,39 @@
   tags:
     - mise-en-place
 
-- name: mise-en-place | Add Mise repository to sources list
-  ansible.builtin.apt_repository:
-    repo: "{{ mise_apt_repo }}"
-    state: present
-    filename: mise-in-place
-    update_cache: true
+- name: mise-en-place | elimina repo legacy (.list)
+  ansible.builtin.file:
+    path: /etc/apt/sources.list.d/mise-in-place.list
+    state: absent
   become: true
+  tags:
+    - mise-en-place
+
+- name: mise-en-place | Add Mise repository to sources list
+  ansible.builtin.deb822_repository:
+    name: mise-en-place
+    types:
+      - deb
+    uris: "{{ mise_repo_uri }}"
+    suites:
+      - "{{ mise_repo_suite }}"
+    components:
+      - "{{ mise_repo_component }}"
+    architectures:
+      - amd64
+    signed_by: "{{ mise_repo_signed_by }}"
+    state: present
+  become: true
+  register: reg_add_repo_mise
+  tags:
+    - mise-en-place
+
+- name: mise-en-place | actualizo lista paquetes .deb despues de agregar repo
+  ansible.builtin.apt:
+    update_cache: true
+    cache_valid_time: 3600
+  become: true
+  when: reg_add_repo_mise is changed
   tags:
     - mise-en-place
 

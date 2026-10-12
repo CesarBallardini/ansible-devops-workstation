@@ -34,11 +34,19 @@
   tags:
     - apt
 
+- name: apt | elimina repos legacy (.list)
+  ansible.builtin.shell: rm -f /etc/apt/sources.list.d/*.list
+  become: true
+  changed_when: false
+  tags:
+    - apt
+
 - name: apt | agrega repositorios
   ansible.builtin.include_tasks: agrego_repositorio.yml
   loop: "{{ apt_repositories }}"
   loop_control:
     loop_var: un_repo
+    index_var: un_repo_idx
   tags:
     - apt
 

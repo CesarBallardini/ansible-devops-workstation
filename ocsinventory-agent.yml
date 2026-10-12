@@ -27,10 +27,21 @@
       when: not (ocs_server is defined and ocs_server | length > 0)
       tags: [ocsinventory-agent]
 
-    - name: ocsinventory-agent | elimina repositorio APT
-      ansible.builtin.apt_repository:
-        repo: "deb http://deb.ocsinventory-ng.org/{{ ansible_distribution | lower }} stable main"
-        filename: ocsinventory
+    - name: ocsinventory-agent | elimina repositorio APT (deb822 format)
+      ansible.builtin.deb822_repository:
+        name: ocsinventory
+        uris: "http://deb.ocsinventory-ng.org/{{ ansible_facts['distribution'] | lower }}"
+        suites:
+          - stable
+        components:
+          - main
+        state: absent
+      when: not (ocs_server is defined and ocs_server | length > 0)
+      tags: [ocsinventory-agent]
+
+    - name: ocsinventory-agent | elimina repositorio APT legacy (.list)
+      ansible.builtin.file:
+        path: /etc/apt/sources.list.d/ocsinventory.list
         state: absent
       when: not (ocs_server is defined and ocs_server | length > 0)
       tags: [ocsinventory-agent]

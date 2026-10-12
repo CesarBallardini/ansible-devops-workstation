@@ -35,13 +35,29 @@
 
 # FIXME: sudo apt-key export 2980AECF | sudo gpg --dearmour -o /usr/share/keyrings/virtualbox.gpg
 
+- name: virtualbox | elimina repo legacy (.list)
+  ansible.builtin.file:
+    path: /etc/apt/sources.list.d/virtualbox.list
+    state: absent
+  become: true
+  tags:
+    - devops
+    - virtualbox
+
 - name: virtualbox | agrego repo
-  ansible.builtin.apt_repository:
-    repo: "deb [arch=amd64 signed-by=/usr/share/keyrings/oracle_vbox_2016.asc] https://download.virtualbox.org/virtualbox/debian {{ ansible_facts['distribution_release']
-      }} contrib"
+  ansible.builtin.deb822_repository:
+    name: virtualbox
+    types:
+      - deb
+    uris: "https://download.virtualbox.org/virtualbox/debian"
+    suites:
+      - "{{ ansible_facts['distribution_release'] }}"
+    components:
+      - contrib
+    architectures:
+      - amd64
+    signed_by: /usr/share/keyrings/oracle_vbox_2016.asc
     state: present
-    update_cache: true
-    filename: virtualbox
   become: true
   register: reg_add_repo_vb
   tags:

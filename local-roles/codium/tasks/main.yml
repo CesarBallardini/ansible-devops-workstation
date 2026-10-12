@@ -50,15 +50,40 @@
 
 ## Workaround: https://gitlab.com/paulcarroty/vscodium-deb-rpm-repo/-/issues/36#note_395793123
 #
+- name: codium | elimina repo legacy (.list)
+  ansible.builtin.file:
+    path: /etc/apt/sources.list.d/codium.list
+    state: absent
+  become: true
+  tags:
+    - codium
+
 - name: codium | agrego repo
-  ansible.builtin.apt_repository:
-    # repo: "deb [signed-by=/etc/apt/trusted.gpg.d/vscodium-archive-keyring.gpg] https://paulcarroty.gitlab.io/vscodium-deb-rpm-repo/debs/ vscodium main"
-    repo: "deb [arch=amd64 signed-by=/usr/share/keyrings/codium.asc] https://paulcarroty.gitlab.io/vscodium-deb-rpm-repo/debs/ vscodium main"
+  ansible.builtin.deb822_repository:
+    name: codium
+    types:
+      - deb
+    uris: "https://paulcarroty.gitlab.io/vscodium-deb-rpm-repo/debs/"
+    suites:
+      - vscodium
+    components:
+      - main
+    architectures:
+      - amd64
+    signed_by: /usr/share/keyrings/codium.asc
     state: present
-    update_cache: true
-    filename: codium
     mode: "0644"
   become: true
+  register: reg_add_repo_codium
+  tags:
+    - codium
+
+- name: codium | actualizo lista paquetes .deb despues de agregar repo
+  ansible.builtin.apt:
+    update_cache: true
+    cache_valid_time: 3600
+  become: true
+  when: reg_add_repo_codium is changed
   tags:
     - codium
 

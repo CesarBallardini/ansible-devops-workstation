@@ -12,12 +12,28 @@
   tags:
     - escritorio
 
+- name: escritorio | elimina repo legacy (.list)
+  ansible.builtin.file:
+    path: /etc/apt/sources.list.d/google-chrome.list
+    state: absent
+  become: true
+  tags:
+    - escritorio
+
 - name: escritorio | agrego repo google chrome
-  ansible.builtin.apt_repository:
-    repo: "deb [arch=amd64 signed-by=/usr/share/keyrings/google-chrome.asc] http://dl.google.com/linux/chrome/deb/ stable main"
+  ansible.builtin.deb822_repository:
+    name: google-chrome
+    types:
+      - deb
+    uris: "http://dl.google.com/linux/chrome/deb/"
+    suites:
+      - stable
+    components:
+      - main
+    architectures:
+      - amd64
+    signed_by: /usr/share/keyrings/google-chrome.asc
     state: present
-    filename: google-chrome
-    update_cache: true
   become: true
   tags:
     - escritorio

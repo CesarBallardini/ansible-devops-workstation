@@ -62,7 +62,7 @@
 
 - name: apt-fast | agrega clave del repo
   ansible.builtin.get_url:
-    url: "https://keyserver.ubuntu.com/pks/lookup?op=get&search=0x1EE2FF37CA8DA16B"
+    url: "https://keyserver.ubuntu.com/pks/lookup?op=get&search=0x1E2824A7F22B44BD"
     mode: "0644"
     dest: /usr/share/keyrings/apt-fast.asc
   become: true
@@ -86,13 +86,30 @@
 
 # FIXME: sudo apt-key export CA8DA16B | sudo gpg --dearmour -o /usr/share/keyrings/apt-fast.gpg
 
+- name: apt-fast | elimina repo legacy (.list)
+  ansible.builtin.file:
+    path: /etc/apt/sources.list.d/aptfast.list
+    state: absent
+  become: true
+  when: ansible_facts['distribution'] == 'Ubuntu'
+  tags:
+    - apt
+    - apt-fast
+
 - name: apt-fast | agrego repo
-  ansible.builtin.apt_repository:
-    # repo: 'ppa:apt-fast/stable' # no se puede porque intenta descargar la key mediante hkp: y no sale si el proxy no permite HKP
-    repo: "deb [arch=amd64 signed-by=/usr/share/keyrings/apt-fast.asc] http://ppa.launchpad.net/apt-fast/stable/ubuntu {{ apt_fast_distro_release }} main"
+  ansible.builtin.deb822_repository:
+    name: aptfast
+    types:
+      - deb
+    uris: "http://ppa.launchpad.net/apt-fast/stable/ubuntu"
+    suites:
+      - "{{ apt_fast_distro_release }}"
+    components:
+      - main
+    architectures:
+      - amd64
+    signed_by: /usr/share/keyrings/apt-fast.asc
     state: present
-    update_cache: true
-    filename: aptfast
   become: true
   register: reg_add_ppa_aptfast
   when: ansible_facts['distribution'] == 'Ubuntu'
@@ -124,7 +141,7 @@
 # https://stackoverflow.com/a/27617181 sed multistage para separar por espacios y comas
 - name: apt-fast | configura mirrors
   ansible.builtin.shell: |
-    APT_FAST_MIRRORS=$( grep -R "^deb" /etc/apt/sources.list* | awk '$2 ~ /http/ {print $2; next; } {print $3 } ' | sort -u | sed -n '$! s/$/,/; 1 h; 1 ! H; $ { x; s/\n/ /g; p; }' )
+    APT_FAST_MIRRORS=$( (grep -Rh "^deb " /etc/apt/sources.list /etc/apt/sources.list.d/*.list 2>/dev/null | awk '$2 ~ /http/ {print $2; next; } {print $3}'; grep -Rh "^URIs:" /etc/apt/sources.list.d/*.sources 2>/dev/null | awk '{for(i=2;i<=NF;i++) print $i}') | sort -u | sed -n '$! s/$/,/; 1 h; 1 ! H; $ { x; s/\n/ /g; p; }' )
     APT_FAST_MIRRORS="'"$APT_FAST_MIRRORS"'"
 
     # si es la primera vez que se instala, cambia el comentario original

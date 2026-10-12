@@ -6,7 +6,7 @@
   tasks:
     - name: Check APT sources file exists
       ansible.builtin.stat:
-        path: /etc/apt/sources.list.d/liveUSB-multiboot.list
+        path: /etc/apt/sources.list.d/liveUSB-multiboot.sources
       register: multiboot_sources
 
     - name: Assert APT sources file exists

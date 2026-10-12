@@ -39,12 +39,29 @@
     - devops
     - docker
 
+- name: devops | docker | elimina repo legacy (.list)
+  ansible.builtin.file:
+    path: /etc/apt/sources.list.d/docker.list
+    state: absent
+  become: true
+  tags:
+    - devops
+    - docker
+
 - name: devops | docker | agrego repo
-  ansible.builtin.apt_repository:
-    repo: "deb [arch=amd64 signed-by=/usr/share/keyrings/docker.asc] https://download.docker.com/linux/{{ ansible_facts['distribution'] | lower }}  {{ ansible_facts['distribution_release'] }} stable"
+  ansible.builtin.deb822_repository:
+    name: docker
+    types:
+      - deb
+    uris: "https://download.docker.com/linux/{{ ansible_facts['distribution'] | lower }}"
+    suites:
+      - "{{ ansible_facts['distribution_release'] }}"
+    components:
+      - stable
+    architectures:
+      - amd64
+    signed_by: /usr/share/keyrings/docker.asc
     state: present
-    update_cache: true
-    filename: docker
   become: true
   register: reg_add_repo_docker
   tags:

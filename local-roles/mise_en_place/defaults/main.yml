@@ -2,4 +2,7 @@
 install_mise_en_place: true
 
 mise_gpg_key_url: "https://mise.jdx.dev/gpg-key.pub"
-mise_apt_repo: "deb [signed-by=/etc/apt/keyrings/mise-archive-keyring.gpg arch=amd64] https://mise.jdx.dev/deb stable main"
+mise_repo_uri: "https://mise.jdx.dev/deb"
+mise_repo_suite: "stable"
+mise_repo_component: "main"
+mise_repo_signed_by: "/etc/apt/keyrings/mise-archive-keyring.gpg"

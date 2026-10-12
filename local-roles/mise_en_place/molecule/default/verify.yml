@@ -25,7 +25,7 @@
 
     - name: Check APT sources file exists
       ansible.builtin.stat:
-        path: /etc/apt/sources.list.d/mise-in-place.list
+        path: /etc/apt/sources.list.d/mise-en-place.sources
       register: mise_sources
 
     - name: Assert APT sources file exists

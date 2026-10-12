@@ -15,12 +15,27 @@
   tags: [multiboot]
 
 
+- name: liveUSB-multiboot | elimina repo legacy (.list)
+  ansible.builtin.file:
+    path: /etc/apt/sources.list.d/liveUSB-multiboot.list
+    state: absent
+  become: true
+  tags: [multiboot]
+
 - name: liveUSB-multiboot | agrego repo
-  ansible.builtin.apt_repository:
-    repo: "deb [arch=amd64 signed-by=/usr/share/keyrings/liveusb-multiboot.asc] http://liveusb.info/multisystem/depot all main"
+  ansible.builtin.deb822_repository:
+    name: liveUSB-multiboot
+    types:
+      - deb
+    uris: "http://liveusb.info/multisystem/depot"
+    suites:
+      - all
+    components:
+      - main
+    architectures:
+      - amd64
+    signed_by: /usr/share/keyrings/liveusb-multiboot.asc
     state: present
-    update_cache: true
-    filename: liveUSB-multiboot
   become: true
   register: reg_add_ppa_liveusb_multiboot
   tags: [multiboot]
