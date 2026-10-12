@@ -68,7 +68,8 @@
     - devops
     - vagrant
 
-- ansible.builtin.set_fact:
+- name: devops | vagrant | set version facts
+  ansible.builtin.set_fact:
     vagrant_version_instalada: "{{ reg_vagrant_version.rc == 0 and reg_vagrant_version.stdout or false }}"
     vagrant_url_actual: "{{ reg_vagrant_url_actual.stdout }}"
     vagrant_url_version: "{{ reg_vagrant_url_version.stdout }}"
@@ -76,29 +77,35 @@
     - devops
     - vagrant
 
-- ansible.builtin.set_fact:
+- name: devops | vagrant | set version to install
+  ansible.builtin.set_fact:
     vagrant_version_a_instalar: "{{ vagrant_version_deseada | d('')  if vagrant_version_deseada | d('') != '' else  vagrant_url_version }}"
   tags:
     - devops
     - vagrant
 
-- ansible.builtin.debug: msg="Vagrant, version instalada  - {{ vagrant_version_instalada }}"
+- name: devops | vagrant | show installed version
+  ansible.builtin.debug: msg="Vagrant, version instalada  - {{ vagrant_version_instalada }}"
   tags:
     - devops
     - vagrant
-- ansible.builtin.debug: msg="Vagrant, version deseada    - {{ vagrant_version_deseada | d() }}"
+- name: devops | vagrant | show desired version
+  ansible.builtin.debug: msg="Vagrant, version deseada    - {{ vagrant_version_deseada | d() }}"
   tags:
     - devops
     - vagrant
-- ansible.builtin.debug: msg="Vagrant, version a instalar - {{ vagrant_version_a_instalar }}"
+- name: devops | vagrant | show version to install
+  ansible.builtin.debug: msg="Vagrant, version a instalar - {{ vagrant_version_a_instalar }}"
   tags:
     - devops
     - vagrant
-- ansible.builtin.debug: msg="Vagrant, url actual         - {{ vagrant_url_actual}}"
+- name: devops | vagrant | show current URL
+  ansible.builtin.debug: msg="Vagrant, url actual         - {{ vagrant_url_actual}}"
   tags:
     - devops
     - vagrant
-- ansible.builtin.debug: msg="Vagrant, url version        - {{ vagrant_url_version}}"
+- name: devops | vagrant | show version URL
+  ansible.builtin.debug: msg="Vagrant, url version        - {{ vagrant_url_version}}"
   tags:
     - devops
     - vagrant

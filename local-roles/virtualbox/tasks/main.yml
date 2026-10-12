@@ -30,7 +30,7 @@
 # The apt-key command has been deprecated and suggests to 'manage keyring files in trusted.gpg.d instead'.
 # sudo apt-key list | less
 # los ultimos 8 caracteres de la segunda linea son: 2980AECF
-#sudo apt-key export 2980AECF | sudo gpg --dearmour -o /etc/apt/trusted.gpg.d/virtualbox.gpg
+# sudo apt-key export 2980AECF | sudo gpg --dearmour -o /etc/apt/trusted.gpg.d/virtualbox.gpg
 # FIXME: ver enlace manpage Ansible mas arriba
 
 # FIXME: sudo apt-key export 2980AECF | sudo gpg --dearmour -o /usr/share/keyrings/virtualbox.gpg
@@ -82,14 +82,16 @@
     - devops
     - virtualbox
 
-- ansible.builtin.set_fact:
+- name: virtualbox | set extension pack keys
+  ansible.builtin.set_fact:
     ext_pack_claves: "{{ reg_extpack_list.stdout_lines | map('regex_replace', '^(?P<clave>.+):[ ]*(?P<valor>.+)$', '\\g<clave>') | list }}"
     ext_pack_valores: "{{ reg_extpack_list.stdout_lines | map('regex_replace', '^(?P<clave>.+):[ ]*(?P<valor>.+)$', '\\g<valor>') | list }}"
   tags:
     - devops
     - virtualbox
 
-- ansible.builtin.set_fact:
+- name: virtualbox | set extension pack info
+  ansible.builtin.set_fact:
     ext_pack_info: "{{ dict(ext_pack_claves | zip(ext_pack_valores)) }}"
   tags:
     - devops
