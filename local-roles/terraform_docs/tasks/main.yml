@@ -174,7 +174,7 @@
 
 - name: devops | terraform-docs | instala binario desde .tar.gz
   ansible.builtin.shell: |
-    tar xzf /tmp/{{ terraform_docs_url_a_descargar | basename }} --one-top-level=/usr/local/bin/ terraform-docs
+    tar xzf /tmp/{{ terraform_docs_url_a_descargar | basename }} -C /usr/local/bin/ terraform-docs
     chmod a+rx /usr/local/bin/terraform-docs
   become: true
   when: terraform_docs_version_a_instalar | length > 0 and terraform_docs_version_a_instalar != terraform_docs_version_instalada and terraform_docs_url_a_descargar.endswith('.tar.gz')
