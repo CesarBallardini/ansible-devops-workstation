@@ -73,29 +73,25 @@
     - devops
     - virtualbox
 
-- name: virtualbox | instala virtualbox desde Oracle repo
-  ansible.builtin.apt:
-    name: "{{ virtualbox_version_to_install }}"
-    state: present
-  become: true
-  register: reg_install_vb_oracle
-  failed_when: false
-  tags:
-    - devops
-    - virtualbox
-
-- name: virtualbox | instala virtualbox desde repo Ubuntu/Debian
-  ansible.builtin.apt:
-    name: virtualbox
-    state: present
-  become: true
-  when: reg_install_vb_oracle is failed
+- name: virtualbox | instala virtualbox
+  block:
+    - name: virtualbox | instala virtualbox desde Oracle repo
+      ansible.builtin.apt:
+        name: "{{ virtualbox_version_to_install }}"
+        state: present
+      become: true
+  rescue:
+    - name: virtualbox | instala virtualbox desde repo Ubuntu/Debian
+      ansible.builtin.apt:
+        name: virtualbox
+        state: present
+      become: true
   tags:
     - devops
     - virtualbox
 
 - name: virtualbox | VirtualBox version
-  ansible.builtin.shell: "VBoxManage --version | awk -F'[r_]' '{print $1}'"
+  ansible.builtin.shell: "VBoxManage --version 2>&1 | grep -oE '^[0-9]+\\.[0-9]+\\.[0-9]+' | head -1"
   register: reg_virtualbox_version
   changed_when: false
   tags:
@@ -103,9 +99,10 @@
     - virtualbox
 
 - name: virtualbox | Check if extension pack is already installed
-  ansible.builtin.shell: "VBoxManage list extpacks"
+  ansible.builtin.shell: "VBoxManage list extpacks 2>&1 | grep -E '^(Extension Packs|Pack no\\.|Version|Revision|Edition|Usable|Why unusable):'"
   register: reg_extpack_list
   changed_when: false
+  failed_when: false
   tags:
     - devops
     - virtualbox
