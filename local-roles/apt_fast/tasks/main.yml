@@ -120,7 +120,6 @@
 - name: apt-fast | actualizo lista paquetes .deb
   ansible.builtin.apt:
     update_cache: true
-    cache_valid_time: 3600
   become: true
   when: ansible_facts['distribution'] == 'Ubuntu' and reg_add_ppa_aptfast is changed
   tags:
