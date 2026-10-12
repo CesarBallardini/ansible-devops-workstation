@@ -39,7 +39,8 @@
     - devops
     - aws
 
-- ansible.builtin.set_fact:
+- name: devops | aws | set version facts
+  ansible.builtin.set_fact:
     aws_version_instalada: "{{ reg_aws_version.rc == 0 and reg_aws_version.stdout or false }}"
     aws_url_version: "{{ reg_aws_url_version.stdout if reg_aws_url_version.stdout is match('^[0-9]') else '' }}"
   tags:
@@ -54,14 +55,16 @@
     - devops
     - aws
 
-- ansible.builtin.set_fact:
+- name: devops | aws | set filename fact
+  ansible.builtin.set_fact:
     aws_filename_actual: "awscli-exe-linux-x86_64-{{ aws_url_version }}.zip"
   when: aws_url_version | length > 0
   tags:
     - devops
     - aws
 
-- ansible.builtin.set_fact:
+- name: devops | aws | set URL fact
+  ansible.builtin.set_fact:
     aws_url_actual: "https://awscli.amazonaws.com/{{ aws_filename_actual }}"
   when: aws_url_version | length > 0
   tags:

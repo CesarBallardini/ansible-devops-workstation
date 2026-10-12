@@ -2,21 +2,24 @@
 - hosts: utn
 
   tasks:
-    - ansible.builtin.include_role:
+    - name: utn | include prolog role
+      ansible.builtin.include_role:
         name: prolog
         apply:
           tags: [utn, prolog]
       when: install_prolog | bool
       tags: [utn, prolog]
 
-    - ansible.builtin.include_role:
+    - name: utn | include racket role
+      ansible.builtin.include_role:
         name: racket
         apply:
           tags: [utn, racket]
       when: install_racket | bool
       tags: [utn, racket]
 
-    - ansible.builtin.include_role:
+    - name: utn | include pharo role
+      ansible.builtin.include_role:
         name: pharo
         apply:
           tags: [utn, pharo]

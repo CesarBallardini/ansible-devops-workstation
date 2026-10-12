@@ -40,7 +40,8 @@
     - devops
     - ansible
 
-- ansible.builtin.debug:
+- name: devops | ansible | show desired version
+  ansible.builtin.debug:
     msg: "Ansible desired version    - {{ ansible_version_deseada | d('latest') }}"
   tags:
     - devops

@@ -3,7 +3,7 @@
   ansible.builtin.apt:
     name:
       - flatpak
-      #- gnome-software-plugin-flatpak
+      # - gnome-software-plugin-flatpak
     state: present
   become: true
   tags:
@@ -15,7 +15,7 @@
     name: "{{ flatpak_repo_name }}"
     state: present
     flatpakrepo_url: "{{ flatpak_repo_url }}"
-    #method: user
+    # method: user
   become: true
   tags:
     - escritorio

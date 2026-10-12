@@ -76,7 +76,8 @@
 # sudo apt-key list | less
 # sudo apt-key export CA8DA16B | sudo gpg --dearmour -o /etc/apt/trusted.gpg.d/apt-fast.gpg
 
-- ansible.builtin.set_fact:
+- name: apt-fast | set distro release fact
+  ansible.builtin.set_fact:
     apt_fast_distro_release: "{{ ansible_facts['distribution_release'] }}"
   when: ansible_facts['distribution'] == 'Ubuntu'
   tags:

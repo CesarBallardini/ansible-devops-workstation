@@ -115,12 +115,14 @@
     - devops
     - docker
 
-- ansible.builtin.debug: var=docker__env_https_proxy
+- name: devops | docker | show https proxy env var
+  ansible.builtin.debug: var=docker__env_https_proxy
   tags:
     - devops
     - docker
 
-- ansible.builtin.debug: var=https_proxy
+- name: devops | docker | show https_proxy env var
+  ansible.builtin.debug: var=https_proxy
   tags:
     - devops
     - docker
