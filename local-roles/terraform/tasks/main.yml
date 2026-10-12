@@ -96,7 +96,8 @@
   tags:
     - devops
     - terraform
-- ansible.builtin.debug: msg="Terraform, url version       - {{ terraform_url_version }}"
+- name: devops | terraform | show version URL
+  ansible.builtin.debug: msg="Terraform, url version       - {{ terraform_url_version }}"
   tags:
     - devops
     - terraform

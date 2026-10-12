@@ -40,7 +40,8 @@
     - terraform
     - terragrunt
 
-- ansible.builtin.set_fact:
+- name: devops | terragrunt | set version facts
+  ansible.builtin.set_fact:
     terragrunt_url_version: "{{ reg_terragrunt_url_version.stdout[1:] if reg_terragrunt_url_version.stdout is match('^v[0-9]') else '' }}"
     terragrunt_version_instalada: "{{ reg_terragrunt_version.rc == 0 and reg_terragrunt_version.stdout or false }}"
   tags:
@@ -72,7 +73,8 @@
     - terraform
     - terragrunt
 
-- ansible.builtin.set_fact:
+- name: devops | terragrunt | set download URL
+  ansible.builtin.set_fact:
     terragrunt_url_actual: "{{ reg_terragrunt_url_actual.stdout }}"
   when: terragrunt_url_version | length > 0
   tags:

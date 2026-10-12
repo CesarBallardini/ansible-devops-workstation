@@ -7,11 +7,11 @@ vagrant_plugins_deseados:
   # - hostmanager
   - vagrant-cachier
   - vagrant-disksize
-  #- vagrant-hostmanager
+  # - vagrant-hostmanager
   - vagrant-mutate
   - vagrant-proxyconf
   - vagrant-reload
   - vagrant-share
   - vagrant-vbguest
-  #- vagrant-lxc
-  #- vagrant-libvirt
+  # - vagrant-lxc
+  # - vagrant-libvirt

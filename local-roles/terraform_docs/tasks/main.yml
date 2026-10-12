@@ -14,7 +14,8 @@
     - terraform
     - terraform-docs
 
-- ansible.builtin.set_fact:
+- name: devops | terraform-docs | set desired version
+  ansible.builtin.set_fact:
     # terraform_docs_version_deseada: '0.13.0'
     # terraform_docs_version_deseada: '0.12.1'
     terraform_docs_version_deseada: ""
@@ -72,7 +73,8 @@
     - terraform
     - terraform-docs
 
-- ansible.builtin.set_fact:
+- name: devops | terraform-docs | set version facts
+  ansible.builtin.set_fact:
     terraform_docs_url_version: "{{ reg_terraform_docs_url_version.stdout[1:] if reg_terraform_docs_url_version.stdout is match('^v[0-9]') else '' }}"
     terraform_docs_version_instalada: "{{ reg_terraform_docs_version.rc == 0 and reg_terraform_docs_version.stdout or false }}"
   tags:
@@ -89,7 +91,8 @@
     - terraform
     - terraform-docs
 
-- ansible.builtin.set_fact:
+- name: devops | terraform-docs | set version to install
+  ansible.builtin.set_fact:
     terraform_docs_version_a_instalar: "{{ terraform_docs_version_deseada | d('')  if terraform_docs_version_deseada | d('') != '' else  terraform_docs_url_version
       }}"
   tags:
@@ -111,7 +114,8 @@
     - terraform
     - terraform-docs
 
-- ansible.builtin.set_fact:
+- name: devops | terraform-docs | set download URL
+  ansible.builtin.set_fact:
     terraform_docs_url_a_descargar: "{{ reg_terraform_docs_url_a_descargar.stdout_lines[-1] }}"
   when: terraform_docs_version_a_instalar | length > 0 and terraform_docs_version_a_instalar != terraform_docs_version_instalada
   tags:
