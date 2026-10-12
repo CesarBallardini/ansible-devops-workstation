@@ -97,7 +97,8 @@
     - devops
     - virtualbox
 
-- ansible.builtin.debug: var=ext_pack_info
+- name: virtualbox | show extension pack info
+  ansible.builtin.debug: var=ext_pack_info
   tags:
     - devops
     - virtualbox
@@ -115,7 +116,7 @@
     url: "https://download.virtualbox.org/virtualbox/{{ reg_virtualbox_version.stdout }}/Oracle_VM_VirtualBox_Extension_Pack-{{ reg_virtualbox_version.stdout }}.vbox-extpack"
     dest: /tmp/
     force: true
-    #checksum: "sha256:https://www.virtualbox.org/download/hashes/{{ reg_virtualbox_version.stdout }}/SHA256SUMS"
+    # checksum: "sha256:https://www.virtualbox.org/download/hashes/{{ reg_virtualbox_version.stdout }}/SHA256SUMS"
   register: reg_download_result
   when: 'reg_extpack_list.stdout == "Extension Packs: 0" or ext_pack_info["Version"] != reg_virtualbox_version.stdout'
   tags:
