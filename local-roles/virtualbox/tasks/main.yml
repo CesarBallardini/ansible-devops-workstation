@@ -96,10 +96,24 @@
       ansible.builtin.set_fact:
         virtualbox_from_oracle: false
 
+- name: virtualbox | debug versiones
+  ansible.builtin.debug:
+    msg: "virtualbox instalando={{ virtualbox_version_to_install }}"
+  tags:
+    - devops
+    - virtualbox
+
 - name: virtualbox | VirtualBox version
   ansible.builtin.shell: "VBoxManage --version 2>&1 | grep -oE '^[0-9]+\\.[0-9]+\\.[0-9]+' | head -1"
   register: reg_virtualbox_version
   changed_when: false
+  tags:
+    - devops
+    - virtualbox
+
+- name: virtualbox | debug version instalada
+  ansible.builtin.debug:
+    msg: "virtualbox version instalada={{ reg_virtualbox_version.stdout }}"
   tags:
     - devops
     - virtualbox
@@ -148,13 +162,18 @@
     - devops
     - virtualbox
 
-# LatestVirtualBoxVersion=$(wget -qO - http://download.virtualbox.org/virtualbox/LATEST-STABLE.TXT) && wget "http://download.virtualbox.org/virtualbox/${LatestVirtualBoxVersion}/Oracle_VM_VirtualBox_Extension_Pack-${LatestVirtualBoxVersion}.vbox-extpack"
+- name: virtualbox | set extension pack filename prefix
+  ansible.builtin.set_fact:
+    virtualbox_extpack_prefix: "{{ 'Oracle_VirtualBox_Extension_Pack' if reg_virtualbox_version.stdout is version('7.1.0', '>=') else 'Oracle_VM_VirtualBox_Extension_Pack' }}"
+  tags:
+    - devops
+    - virtualbox
+
 - name: virtualbox | Download VirtualBox extension pack
   ansible.builtin.get_url:
-    url: "https://download.virtualbox.org/virtualbox/{{ reg_virtualbox_version.stdout }}/Oracle_VM_VirtualBox_Extension_Pack-{{ reg_virtualbox_version.stdout }}.vbox-extpack"
+    url: "https://download.virtualbox.org/virtualbox/{{ reg_virtualbox_version.stdout }}/{{ virtualbox_extpack_prefix }}-{{ reg_virtualbox_version.stdout }}.vbox-extpack"
     dest: /tmp/
     force: true
-    # checksum: "sha256:https://www.virtualbox.org/download/hashes/{{ reg_virtualbox_version.stdout }}/SHA256SUMS"
   register: reg_download_result
   when: virtualbox_from_oracle and virtualbox_extpack_needs_install | bool
   tags:

@@ -34,12 +34,31 @@
   tags:
     - zoom
 
+- name: zoom | check if local deb exists
+  ansible.builtin.stat:
+    path: "{{ zoom_download_dir }}/zoom_amd64.deb"
+  register: reg_zoom_local_deb
+  tags:
+    - zoom
+
+- name: zoom | version del paquete local existente
+  ansible.builtin.shell: dpkg-deb -f {{ zoom_download_dir }}/zoom_amd64.deb Version
+  register: reg_zoom_version_local
+  changed_when: false
+  when: reg_zoom_local_deb.stat.exists
+  tags:
+    - zoom
+
 - name: zoom | descarga paquete
   ansible.builtin.get_url:
     url: "{{ zoom_download_url }}"
     dest: "{{ zoom_download_dir }}/zoom_amd64.deb"
     force: true
   become: true
+  when: >-
+    reg_zoom_version_instalada.rc != 0
+    or not reg_zoom_local_deb.stat.exists
+    or reg_zoom_version_local.stdout == reg_zoom_version_instalada.stdout
   tags:
     - zoom
 
